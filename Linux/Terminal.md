@@ -109,25 +109,11 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
      * Ctrl+X -> salir 
 -  **VIM**  -> como nano pero mas sofisticado
      * I -> modo edición ||  * Esc → salir a modo normal ||
-     * : -> comandos
-      &nbsp  :q! Salir sin guardar
-      *  :w → guardar
-      *  :wq! → salir guardando
-      *  :%s/palabra/replace/g
-      *  dd  → cortar linea (d2d 2 ls.)
-      *  yy  → copiar 
-      *  p → pegar
-      *  o → nueva linea
-      *  u → deshacer 
-      *  ctrol r → rehacer
-     * v → modo visual  (se selecciona con los controles)
-      *	d → cortar
-      *	y → copiar
-      *	p -> pegar
-     * gg → irse al principio
-     * G → irse al final
+     * : -> comandos ->  :q! Salir sin guardar || :w → guardar || :wq! → salir guardando || :%s/palabra/replace/g
+     * Copiar Pegar ->  dd  → cortar linea (d2d 2 ls.) || yy  → copiar || p → pegar || o → nueva linea || u → deshacer  || ctrol r → rehacer
+     * v → modo visual  (se selecciona con los controles) -> *	d → cortar || y → copiar || p -> pegar
+     * Moverse -> gg → irse al principio || G → irse al final
      * / buscar palabra
-
 	Borrar/sutituir:
 			Sustituir → :%s/palabra/replace/g
 			Borrar (ej, todas las lienas comentadas) → :g/^\#/d    Borrar lineas vacias → :g/^$/d
