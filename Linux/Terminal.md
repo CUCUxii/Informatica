@@ -84,7 +84,7 @@ Algunos se les puede pasar un input: Ej leer:  que archivo quieres leer (que se 
 	* mv fichero.txt ruta/ → Meter fichero de directorio actual a otra carpeta
 	* mv ruta/archivo . → Mover fichero de una carpeta al directorio actual.
 	* mv nombre.txt nuevo_nombre.txt → renombra el archivo (si no existe el segundo, si existe lo sobreescribe)
-	* *mv /* */dev/null* → *mueve toda la raiz al "dev null" y despidete de tu ordenador*
+	* mv /* /dev/null → *mueve toda la raiz al "dev null" y manda el sistema operativo a tomar por culo*
 	```console
 	[usuario@linux]-[~/escritorio]:$ mv ../musica/nirvana .
 	[usuario@linux]-[~/escritorio]:$ ls
