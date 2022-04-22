@@ -21,7 +21,6 @@ Antes de empezar, quiero aclarar que en informática a las carpetas las llamamos
 
 Los comandos son programas y como tales, te dan una respuesta. Es decir, una salida a una entrada.
       \[comando] -> \[respuesta]       whoami -> usuario
-
 Algunos se les puede pasar un input: Ej
  	```console
  	[usuario@linux]-[~/escritorio]:$ cat ./archivo.txt
