@@ -36,11 +36,11 @@ Algunos se les puede pasar un input: Ej leer:  que archivo quieres leer (que se 
 
 	. carpeta actual      .. carpeta padre (la que contiene a la actual)   ~ /home/usuario    - directorio anterior
   
-   ### Movimiento: desplazamiento entre directorios (carpetas)
-   *  **PWD** -> comando para que el sistema te diga en que directorio estás 
-   * **LS** -> Listar las carpetas que hay dentro del directorios
-   	- ls -l -> que te salga en forma de lista, información mas detallada
-   	- -a -> Que te salgan tambien los archivos/carpetas ocultas
+## Movimiento: desplazamiento entre directorios (carpetas)
+*  **PWD** -> comando para que el sistema te diga en que directorio estás 
+*   * **LS** -> Listar las carpetas que hay dentro del directorios
+   - ls -l -> que te salga en forma de lista, información mas detallada
+   - -a -> Que te salgan tambien los archivos/carpetas ocultas
 
 	```console
 	[usuario@linux]-[~/escritorio]:$ pwd
