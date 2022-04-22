@@ -23,9 +23,9 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
       \[comando] -> \[respuesta]       whoami -> usuario
 
 Algunos se les puede pasar un input: Ej leer:  que archivo quieres leer (que se le pasa mediante las rutas que a continuación explicaré)
- ```console
-    cat ./archivo.txt
- ```
+ 	```console
+ 	[usuario@linux]-[~/escritorio]:$ cat ./archivo.txt
+ 	```
 ---------------------------------------------------------------------------
 ## Lo Básico: Las rutas (carpetas)
 
@@ -65,6 +65,7 @@ Algunos se les puede pasar un input: Ej leer:  que archivo quieres leer (que se 
      * rm -f * → forzar, para archivos que te pregunta todo el rato como los .git
 - **MKDIR** -> Crear una nueva carpeta 
 - **RMDIR** -> Para borrar carpetas vacias, pero mejor usar \[rm -rf]
+
 	```console
 	[usuario@linux]-[~/escritorio]:$ ls
 	programas  Archivo.txt
