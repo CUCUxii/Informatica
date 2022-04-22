@@ -127,7 +127,54 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
 	Angela@mail.com
 	Darlene@mail.com
     ```
+---------------------------------------------------------------------------
+## Filtros
+-  **GREP** ->  Buscar una palabra en un archivo de texto grep “palabra” ./fichero.txt  → palabra y toda la línea que la siga.
+     * -n Indicar en que linea de texto esta la palabra
+     * -oP → Regex  →  grep ^f fichero.txt         grep -oP ‘\w{1.10}’
+     * Mostrar lineas debajo y encima ademas →  grep “palabra” -A (después) -B(antes) -C(antes y después), grep “palabra” -A 4 → es recomendable | tail -n (después) 
+     * -v “palabra” → Quita las lineas donde esta cierta palabra: grep -v “palabra”	  
+     *	grep -r -i -E “users|pass|key” → Busca estas palabras dentro de todos los archivos (-r recursivo (carpetas en carpetas) -i (da igual sean mayusculas o minusulas  -E palabras )
+     *	grep -r -i “palabra” –text → busca la palabra incluso dentro de binarios y comprimidos	
+-  **AWK** -> Filtrar elementos de una linea (columnas)   → Ideal pipearlo con el grep
+     * awk `NR==4´ → muestra solo la columna 4 
+     * awk 'NF{print $NF}'. Imprime el último argumento  → awk 'NF{print $NF}' el primero
+     * awk ‘/palabra/’ filtrar lo que está al lado de “palabra”
+     * awk ‘{print $2}’ Imprimeme el segundo argumento.      FS=:  →   delimitador (:)
+-  **CUT** → Filtrar partes de una string 
+     * cut -d “”-f 3 → -d es delimitador “” lo que hay antes de lo que interesa filtrar -f es la columna
+     * Mas de una columna → -f 3,5 (solo la 3 y 5)  -f 3-5 de la tres a la cinco -f 3- todas desde la 3
+-  **TAIL** -> Mostrar un archivo de texto a partir de cierta linea:
+     * tail -n 2        -n es numero de linea -> -n 2: muestra las últimas dos líneas -n +2 muestra a partir de la línea 2.
+-  **HEAD** -> el texto de antes de cierta línea (- n 2: muestra las primeras dos líneas, -n +2 muestra antes de la línea
+---------------------------------------------------------------------------
+## Busqueda
+-  **FIND** ->  Buscar un archivo en el sistema   find ruta -name “encontrar.txt”
+     * | xargs cat →  Imprime lo que contenga escrito → “Hola Mundo”
+     * -size Xc  → filtra por tamaño -size 1024
+     * -type f →  buscar ficheros, (d directorios) (-type f -printf “%f\t%p\t%u\%g\t%m\n t es tabulacion %p (ruta) u(usuario…) -> formateado en una tabla.)
+     *	-readable  -executable... filtra ficheros, por si son legibles, ejecutables
+     * -user  -group  filtra archivos por quien tiene derecho a abrirlos.
+     * -perm /4000 → busqueda per archivos SUID
+     * find / -type f -newermt 2017-08-16 ! -newermt 2020-08-16  -ls → busca los archivos 
+-  **FILE** -> decir que tipo de archivo es → file ./CarpetaX/* te saca todos los archivos de la carpetaX y te dice que son.
+-  **SORT** -> ordenar lineas por orden alfábetico   sort bandas.txt  → ACDC Motorhead Opeth…
+     * sort | uniq -u te muestra solo la línea de código que no esté repetida.
+-  **WC** -> Contador
+     * -l -> contar lienas
+     * -c -> contar caracteres
+-  **DIFF** → Comparar archivos:   diff archivo1 archivo2   lo diferente →   <palabradel1 (archivo1)   >palabradel2 (archivo2)  -> diff <(echo “&variable1”) <(echo “&variable2”) 	
+---------------------------------------------------------------------------
+## Sustituciones
+-  **SED** -> Sustituir algo en una cadena de texto
+     * sed “s/X/Y/g” → cambia la palabra “X” por “Y”  →  s es de search, buscar, y g es de global (mas de una vez)
+     * sed s/ */ /g →  busca “uno o más espacios” y sustituyemelos por “un solo espacio”
+     * Elimina todas lineas que empiecen por “#” (comentadas) → sed /^#/d
+     * Elimina todas las lineas vacias → sed /^$/d
+-  **TR** -> borrar y sustituir caracteres
+     * tr -s / → Borrar caracteres repetidos
+     * tr -d “ “  → Eliminar caracteres → “\n” saltos de linea “ “ espacios     
+     * tr ‘r’ ‘T’ → Susitutye caracteres (r por T) →  para palabras no va por que no toma la palabra sino todas sus letras
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
    
    
