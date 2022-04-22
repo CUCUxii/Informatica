@@ -46,7 +46,7 @@ Algunos se les puede pasar un input: Ej leer:  que archivo quieres leer (que se 
 	/home/usuario/escritorio
 	[usuario@linux]-[~/escritorio]:$ ls
 	programas  Archivo.txt
-        ```
+     ```
    - **CD** -> para cambiar de directorio
        ```console
        [usuario@linux]-[~/escritorio]:$ pwd
@@ -56,6 +56,6 @@ Algunos se les puede pasar un input: Ej leer:  que archivo quieres leer (que se 
        [usuario@linux]-[~]:$ cd ./musica
        [usuario@linux]-[~/musica]:$ ls
        nirvana   depeche_mode   metallica
-       ```
+    ```
    
    
