@@ -93,9 +93,56 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
 	programas  Archivo.txt Nirvana
 	[usuario@linux]-[~/escritorio]:$ rm -rf ./nivana
     ```
+-  **CP** -> copiar. Al contrario de mover, el archivo original no desaparece, sino que se duplica.
+     * cp ruta/documento nueva_ruta/ → haz una copia del fichero en otra carpeta
+     * cp ruta/documento nueva_ruta/ nuevo_nombre → Que la copia tenga otro nombre diferente.
+     * cp -r ruta/ nueva_ruta/ → si es una carpeta (con cosas dentro) -r de recursividad
    		
+## Leer, escribir
+-  **CAT**  -> mostrar el contenido el documento en la terminal →  cat documentoX.txt → “Hola”
+	```console
+	[usuario@linux]-[~/escritorio]:$ cat Archivo.txt
+	Hola Mundo
+    ```
+-  **NANO**  -> Editor de texto → nano fichero.txt. Si el archivo no existía lo crea.
+     * Ctrl+O -> Guardar
+     * Ctrl+X -> salir 
+-  **VIM**  -> como nano pero mas sofisticado
+     * I -> modo edición
+     * Esc → salir a modo normal
+     * : -> comandos
+      *  :q! Salir sin guardar
+      *  :w → guardar
+      *  :wq! → salir guardando
+      *  :%s/palabra/replace/g
+      *  dd  → cortar linea (d2d 2 ls.)
+      *  yy  → copiar 
+      *  p → pegar
+      *  o → nueva linea
+      *  u → deshacer 
+      *  ctrol r → rehacer
+     * v → modo visual  (se selecciona con los controles)
+      *	d → cortar
+      *	y → copiar
+      *	p -> pegar
+     * gg → irse al principio
+     * G → irse al final
+     * / buscar palabra
 
-   
-   
+	Borrar/sutituir:
+			Sustituir → :%s/palabra/replace/g
+			Borrar (ej, todas las lienas comentadas) → :g/^\#/d    Borrar lineas vacias → :g/^$/d
+			Cambiar “\\n” por saltos de linea →   %s/\\\\n/\r/g
+			
+	
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ECHO → imprime un mensaje en la terminal →   echo”Hola Mundo”
+	echo -e”\nHola Mundo”  \n es un salto de linea y -e es para que lo interprete en vez de imprimirlo.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+READ →  Suele ser para leer el input de un usuario pero si esta pipeado lee de un archivo.
+	cat users | while read user; do echo $user123; done → para que lea linea a linea de un archivo e imrpima por cada una 	123 ademas
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+SPONGE → es como un echo pero no da problemas si lee de un archivo y escribe luego en el mismo
+	for user in $(cat users); do echo “$user@email .com”; done | sponge users → Por cada liena del archivo users, ponle 	ademas @email.com y eso guardalo en el archivo users otra vez
    
    
