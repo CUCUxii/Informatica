@@ -20,4 +20,11 @@ Aunque ya hayamos perdido la capacidad de leer el código del binario (si no ten
 habíamos habaldo antes si que son legibles como código de **Ensamblador** o lenguaje de bajo nivel. El ensamblador es más abstracto que un código Python, 
 y si lo ves por primera vez, puede asustar un poco. Pero al final se trata de insutrcciones muy simples (que pasaré a explicar en otro post)
 
+============================================================================================
+## Conocer el binario
+
+   ### Protecciones:
+   Los binarios cuentan con varios tipos de protecciones disponibles, conocer estas es ideal para saber que tipo de ataque podríamos probar
+   
+   
 
