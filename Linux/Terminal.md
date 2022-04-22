@@ -108,10 +108,9 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
      * Ctrl+O -> Guardar
      * Ctrl+X -> salir 
 -  **VIM**  -> como nano pero mas sofisticado
-     * I -> modo edición
-     * Esc → salir a modo normal
+     * I -> modo edición ||  * Esc → salir a modo normal ||
      * : -> comandos
-      *  :q! Salir sin guardar
+      &nbsp  :q! Salir sin guardar
       *  :w → guardar
       *  :wq! → salir guardando
       *  :%s/palabra/replace/g
