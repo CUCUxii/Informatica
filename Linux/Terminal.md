@@ -49,7 +49,7 @@ Algunos se les puede pasar un input: Ej leer:  que archivo quieres leer (que se 
 	programas  Archivo.txt
      ```
    - **CD** -> para cambiar de directorio
-	```console
+```console
        [usuario@linux]-[~/escritorio]:$ pwd
        /home/usuario/escritorio
        [usuario@linux]-[~/escritorio]:$ cd ../
