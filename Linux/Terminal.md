@@ -80,7 +80,7 @@ Algunos se les puede pasar un input: Ej leer:  que archivo quieres leer (que se 
 	programas  Archivo.txt
     ```
     ### Mover y copiar
-    MV → mover -> vale con carpetas (movera tambien su contenido) o archivos. \[mv ruta/fichero ruta]
+    - MV → mover -> vale con carpetas (movera tambien su contenido) o archivos. \[mv ruta/fichero ruta]
 	* mv fichero.txt ruta/ → Meter fichero de directorio actual a otra carpeta
 	* mv ruta/archivo . → Mover fichero de una carpeta al directorio actual.
 	* mv nombre.txt nuevo_nombre.txt → renombra el archivo (si no existe el segundo, si existe lo sobreescribe)
