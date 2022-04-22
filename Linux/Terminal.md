@@ -41,21 +41,21 @@ Algunos se les puede pasar un input: Ej leer:  que archivo quieres leer (que se 
    - **LS** -> Listar las carpetas que hay dentro del directorios
           * ls -l -> que te salga en forma de lista, información mas detallada
           * -a -> Que te salgan tambien los archivos/carpetas ocultas
-   ```console
-      [usuario@linux]-[~/escritorio]:$ pwd
-      /home/usuario/escritorio
-      [usuario@linux]-[~/escritorio]:$ ls
-      programas  Archivo.txt
-   ```
+	```console
+	[usuario@linux]-[~/escritorio]:$ pwd
+	/home/usuario/escritorio
+	[usuario@linux]-[~/escritorio]:$ ls
+	programas  Archivo.txt
+        ```
    - **CD** -> para cambiar de directorio
-      ```console
-      [usuario@linux]-[~/escritorio]:$ pwd
-      /home/usuario/escritorio
-      [usuario@linux]-[~/escritorio]:$ cd ../
-      escritorio   musica   documentos   descargas  
-      [usuario@linux]-[~]:$ cd ./musica
-      [usuario@linux]-[~/musica]:$ ls
-      nirvana   depeche_mode   metallica
-   ```
+       ```console
+       [usuario@linux]-[~/escritorio]:$ pwd
+       /home/usuario/escritorio
+       [usuario@linux]-[~/escritorio]:$ cd ../
+       escritorio   musica   documentos   descargas  
+       [usuario@linux]-[~]:$ cd ./musica
+       [usuario@linux]-[~/musica]:$ ls
+       nirvana   depeche_mode   metallica
+       ```
    
    
