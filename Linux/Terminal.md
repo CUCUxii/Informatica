@@ -4,9 +4,6 @@
 - [Que es la Terminal](#Inicio)
 
 
-
-
-
 ---------------------------------------------------------------------------
 ## ¿Que es la Terminal?
 
@@ -36,7 +33,7 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
     - *Inciso, explicaré como funcionan las rutas relativas y ciertos riesgos de seguridad asociados.*
 
 	. carpeta actual      .. carpeta padre (la que contiene a la actual)   ~ /home/usuario    - directorio anterior
-  
+---------------------------------------------------------------------------
 ## Movimiento: desplazamiento entre directorios (carpetas)
 -  **PWD** -> comando para que el sistema te diga en que directorio estás 
 -  **LS** -> Listar las carpetas que hay dentro del directorios
@@ -59,6 +56,7 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
 	[usuario@linux]-[~/musica]:$ ls
 	nirvana   depeche_mode   metallica
     ```
+---------------------------------------------------------------------------
 ## Crear/borrar/mover carpetas y archivos
 - **TOUCH** -> Crear documentos vacios  \[touch ruta/archivo]
 - **RM** -> borrar archivos \[rm ruta/archivo]
@@ -81,6 +79,7 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
 	[usuario@linux]-[~/musica]:$ ls
 	programas  Archivo.txt
     ```
+---------------------------------------------------------------------------
 ## Mover y copiar
 -  **MV** → mover -> vale con carpetas (movera tambien su contenido) o archivos. \[mv ruta/fichero ruta]
      * mv fichero.txt ruta/ → Meter fichero de directorio actual a otra carpeta
@@ -97,7 +96,7 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
      * cp ruta/documento nueva_ruta/ → haz una copia del fichero en otra carpeta
      * cp ruta/documento nueva_ruta/ nuevo_nombre → Que la copia tenga otro nombre diferente.
      * cp -r ruta/ nueva_ruta/ → si es una carpeta (con cosas dentro) -r de recursividad
-   		
+---------------------------------------------------------------------------   		
 ## Leer, escribir
 -  **CAT**  -> mostrar el contenido el documento en la terminal →  cat documentoX.txt → “Hola”
 	```console
@@ -118,16 +117,17 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
 			Sustituir → :%s/palabra/replace/g
 			Borrar (ej, todas las lienas comentadas) → :g/^\#/d    Borrar lineas vacias → :g/^$/d
 			Cambiar “\\n” por saltos de linea →   %s/\\\\n/\r/g
-			
-	
+-  **ECHO** -> 	imprime un mensaje en la terminal →   echo”Hola Mundo”		
+     * echo -e”\nHola Mundo”  \n es un salto de linea y -e es para que lo interprete en vez de imprimirlo.
+-  **READ** -> Suele ser para leer el input de un usuario pero si esta pipeado lee de un archivo.
+-  **SPONGE** -> es como un echo pero no da problemas si lee de un archivo y escribe luego en el mismo
+	```console
+	[usuario@linux]-[~/escritorio]:$ cat users.txt | while read user; do echo $user@mail.com; done | sponge users 
+	Elliot@mail.com
+	Angela@mail.com
+	Darlene@mail.com
+    ```
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
-ECHO → imprime un mensaje en la terminal →   echo”Hola Mundo”
-	echo -e”\nHola Mundo”  \n es un salto de linea y -e es para que lo interprete en vez de imprimirlo.
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-READ →  Suele ser para leer el input de un usuario pero si esta pipeado lee de un archivo.
-	cat users | while read user; do echo $user123; done → para que lea linea a linea de un archivo e imrpima por cada una 	123 ademas
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-SPONGE → es como un echo pero no da problemas si lee de un archivo y escribe luego en el mismo
-	for user in $(cat users); do echo “$user@email .com”; done | sponge users → Por cada liena del archivo users, ponle 	ademas @email.com y eso guardalo en el archivo users otra vez
+
    
    
