@@ -7,7 +7,7 @@
 
 
 
-============================================================================================
+---------------------------------------------------------------------------
 ## ¿Que es un binario?
 
 Un binario, es lo que resulta de compilar un código en lenguaje C o java. Este código se ha traducido a bytes, que equivalen a lenguaje máquina, instrucciones 
@@ -20,7 +20,7 @@ Aunque ya hayamos perdido la capacidad de leer el código del binario (si no ten
 habíamos habaldo antes si que son legibles como código de **Ensamblador** o lenguaje de bajo nivel. El ensamblador es más abstracto que un código Python, 
 y si lo ves por primera vez, puede asustar un poco. Pero al final se trata de insutrcciones muy simples (que pasaré a explicar en otro post)
 
-============================================================================================
+---------------------------------------------------------------------------
 ## Conocer el binario
 
    ### Protecciones:
