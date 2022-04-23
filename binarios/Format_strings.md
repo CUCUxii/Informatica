@@ -120,10 +120,10 @@ Como podemos ver la segunda entrada de la pila es nuestro "0x0804960c" que se im
     	```
   Perfecto, ya están alineados nuestras, "A". Pero ahora lo que interesa es cambiar esas "A" por otra cosa, la direccion de la varaible 
   que queremos modificar:
-  	```console
-	[user@protostar]-[/opt/protostar/bin]:$ objdump -t ./format1 | grep "target"
-	08049638 g     O .bss	00000004              target
-  	```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ objdump -t ./format1 | grep "target"
+08049638 g     O .bss	00000004              target
+```
   La direccion de la variable "target" es *0x08049638* que si lo pasamos a endian (dar la vuelta a los bytes) sale -> *\x38\x96\x04\x08*
   Ahora sustituimos las "AAAA" por esa dirección (ambas cosas ocupan 4 bytes).
   	```console
