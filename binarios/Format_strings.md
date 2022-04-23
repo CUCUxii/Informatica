@@ -4,13 +4,13 @@
 
 Este binario toma un argumento (al que llama "string"), lo mete en la funcion **printf()** y te imprime dicho argumento
 
-  	```
+  	```console
   	[user@protostar]-[/opt/protostar/bin]:$ ./format1 AAA
   	AAA[user@protostar]-[/opt/protostar/bin]:$ 
   	```
 Como no hace un salto de linea, lo ponemos nosotros concatenando "; echo"
   
-	```
+	```console
 	[user@protostar]-[/opt/protostar/bin]:$ ./format1 AAA; echo
 	AAA
     	[user@protostar]-[/opt/protostar/bin]:$ 
@@ -78,16 +78,6 @@ Como podemos ver la segunda entrada de la pila es nuestro "0x0804960c" que se im
     	3174616d
     	41414100
     	42424241
-    	78382542
-    	7838252e
-    	7838252e
-    	7838252e
-    	7838252e
-    	7838252e
-    	7838252e
-    	7838252e
-    	7838252e
-    	7838252e
     	7838252e
     	7838252e
   	```
