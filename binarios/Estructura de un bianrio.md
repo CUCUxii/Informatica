@@ -13,11 +13,13 @@ Así que ejecutas esas librerias desde sistema y no del binario (son cosas indep
 Pero tanto nuestro bianrio al usarlas, variará según la versíon que estas tengan y si no estan en el sistema, no funcionará.
 O puede que el ASLR no exista en nuestro binario pero si en libc... etc.
 
-Estos links a las funciones de libc están escritos en la "Global Offset Table". Vamos a verlo en acción.
+Estos links a las funciones de libc (sus direcciones) están escritos en la "Global Offset Table". Los escribe en concreto la libreria "ld.so" o *"enlazador dinámico"* una función que busca esas direcciones por todo el sistema para despues meterlas en la GOT (lo hace la primera vez que llamamos al la funcion y despues la ejecuta)
+
+Vamos a verlo en acción.
 
 En el ensamblador, cuando sale una llamada a una función, sale como *"call   0x804839c \<fgets@plt>"*
-Es decir, salta a la dirección  "0x80483cc" que está en la tabla .plt (siguientes 3 instrucciones). EL binario, que todavía no sabe donde
-está la direccion real de la funcion de libc, salta a un sitio que si conoce, la tabla .plt.
+Es decir, salta a la dirección  "0x80483cc" que está en la tabla .plt (siguientes 3 instrucciones).
+
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ gdb ./format4 
@@ -33,33 +35,82 @@ Insutrcciones para crear el stack frame de vuln, alguna varaible y tomar input d
 Esta funcion es en la que nos vamos a centrar, imprimir dicho buffer
 Mas instrucciones que ahora no vienen a cuento...
 0x0804850f <vuln+61>:	call   0x80483ec <exit@plt>
-(gdb) x/3i 0x80483cc
-ESto es la tabla plt, la sección de nuestra funcion printf
+(gdb) disas 0x80483cc
+Esto es la tabla plt, en concreto la parte correspondiente a la funcion printf
 0x80483cc <printf@plt>:	jmp    DWORD PTR ds:0x804971c
 0x80483d2 <printf@plt+6>:	push   0x20
 0x80483d7 <printf@plt+11>:	jmp    0x804837c
-```
-¿Que hay en la .plt?
-
-1. Insutrccion a la funcion "ld.so" que se encarga de mirar en el sistema la direccion real de libc de prtinf() y  pasarsela a GOT
-2. Insuturccion push con un numero no muy grande
-3. Un salto a GOT, que si vemos el .plt de otra funcion, ejemplo exit@plt es la misma. De GOT sacara la direccion de la funcion, indicada por el push de antes, (actua como un indce (0x20 es printf() y es 0x30 es exit()) y la ejecutará.
-
-La plt de exit()
-
-```console
-(gdb) x/3i 0x80483ec
+(gdb) disas 0x80483ec
+La plt de exit, (para ver en que se diferencia de prtinf)
 0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724
 0x80483f2 <exit@plt+6>:	push   0x30
 0x80483f7 <exit@plt+11>:	jmp    0x804837c
 ```
+----------------------------------------------------------------
+
+# Estructura de la tabla .plt
+
+EL binario, que todavía no sabe donde está la direccion real de la funcion de libc, salta a un sitio que si conoce, la tabla .plt (Function trampoline)
+Esta siempre tiene tres insutrcciones por funcion.
+
+1. La primera insutruccion salta a la tabla got, a la parte correspondiente a la funcion a ejecutar, en este caso (exit()). Si quisieramos que ejecutara otra funcion, es el valor que tendriamos que cambiar. 
+
+- Si es la primera vez que se ejecuta, va a la GOT pero lo vuelve a mandar a la PLT, a la siguiente insutrccion \<exit@plt+6>.
+- Si es la sgunda, ya no saltara a \<exit@plt+6> sino que ejecutara la funcion de GOT (en la que ya estará escrita su direccion correspondiente)
+
+```console
+(gdb) x/i 0x8049724
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>
+...
+```
+2. La segunda insutrccion (plt+6) escribe un valor en la pila. Es el argumento que se le pasara a ld.so, como un indice de funciones, ej, en printf es 0x20 y en exit 0x30. Este buscar tal funcion y la escribira en la GOT.
+3. La tercera instrucción siempre es la misma, salta al inicio de la seccion "plt", este ejecuta el ld.so con el indice de antes. (Buscar la direcion, escribirla en la GOT y saltar a la primera insutrccion de exit@plt (o prinf@plt) que como ya tira de una GOT con la direccion buena, funciona)
+
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ objdump -d ./format4
+...
+Disassembly of section .plt:
+0804837c <__gmon_start__@plt-0x10>:
+804837c:	ff 35 04 97 04 08    	pushl  0x8049704
+8048382:	ff 25 08 97 04 08    	jmp    *0x8049708 -> Esta es la instruccion que llama al ld.so
+8048388:	00 00                	add    %al,(%eax)
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
+Break antes de que salga del programa
+(gdb) b *0x0804850f  -> llamada a exit()
+(gdb) r
+Starting program: /opt/protostar/bin/format4 
+AAA
+AAA
+Breakpoint alcanzado!
+(gdb) x/x 0x8049708 -> Que hemos sacado del objdump -d antes.
+0x8049708 <_GLOBAL_OFFSET_TABLE_+8>:	0xb7ff6200
+(gdb) x/x 0xb7ff6200
+0xb7ff6200 <_dl_runtime_resolve>:	0x8b525150 -> El ld.so
+```
+Ahora veremos el prinf (que como el programa ya esta en exit lo ha pasado de sobra, por lo que tendra su direccion en la GOT)
+```console
+(gdb) x/i 0x80483cc
+0x080483cc <printf@plt+0>:	jmp    DWORD PTR ds:0x804971c
+(gdb) x/x 0x804971c
+0x804971c <_GLOBAL_OFFSET_TABLE_+28>:	0xb7eddf90
+(gdb) x/x 0xb7eddf90
+0xb7eddf90 <__printf>:	0x53e58955
+```
+
 
 Podemos cambiar la direccion de la funcion de GOT por otra que nos interese (format4)
 
 Aunque cambie la direccion de libc por el ASLR, en la tabla GOT es fija, asi que si se saca de ahí, tenemos la vida resulta. (pero eso es para 
 otro articulo) 
 
-Fuente: Live Overflow, trastear con lo aprendido de eĺ con ./format4
+*Fuente: Live Overflow, trastear con lo aprendido de eĺ con ./format4*
+
+
+
+
+
+
 
 
 
