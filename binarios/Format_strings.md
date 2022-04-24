@@ -1,11 +1,11 @@
 ## Índice 
-- [Sobreescribir una varaible](#Sobreescribir-una-variable)
-- [Escribir un número de bytes en una variable](#Escribir-un-número-de-bytes-en-una-variable)
-- [Escribir un valor hexadecimal en una variable](#Escribir-un-valor-hexadecimal-en-una-variable)
+- [Sobreescribir una varaible](#sobreescribir-una-variable)
+- [Escribir un número de bytes en una variable](#escribir-un-número-de-bytes-en-una-variable)
+- [Escribir un valor hexadecimal en una variable](#escribir-un-valor-hexadecimal-en-una-variable)
 
 
 ---------------------------------------------------------------------------
-## Sobreescribir una variable -> [format1](https://exploit.education/protostar/format-one/)
+# Sobreescribir una variable -> [format1](https://exploit.education/protostar/format-one/)
 
 Este binario toma un argumento (al que llama "string"), lo mete en la funcion **printf()** y te imprime dicho argumento
 
@@ -143,7 +143,7 @@ you have modified the target :)
   **A nivel de código que hemos hecho?** Exactamente esto ->  ```printf("AAAA%n", &variable) -> varaible = "AAAA"```
   
 ---------------------------------------------------------------------------
-## Escribir un número de bytes en una variable -> [format2](https://exploit.education/protostar/format-two/)
+# Escribir un número de bytes en una variable -> [format2](https://exploit.education/protostar/format-two/)
 
 Format2 no nos pide un argumento sino un input una vez ejecutado, la manera de pasarle dichi input por tanto cambia
   
@@ -199,7 +199,7 @@ Esto tambíen se puede poner de otra forma, que es así:
 you have modified the target :)
 ```
 ---------------------------------------------------------------------------
-## Escribir un valor hexadecimal en una variable -> [format3](https://exploit.education/protostar/format-three/)
+# Escribir un valor hexadecimal en una variable -> [format3](https://exploit.education/protostar/format-three/)
 
 Otra vez lo mismo, buscar una varaible con el objdump -t -> 080496f4 =  \xf4\x96\x04\x08
 Esta vez en vez de tener que escribir un numero de bytes en concreto, hay que meter un valor en hexadecimal, es decir que la memoria a donde
