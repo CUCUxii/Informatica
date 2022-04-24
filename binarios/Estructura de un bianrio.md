@@ -40,9 +40,12 @@ ESto es la tabla plt, la sección de nuestra funcion printf
 0x80483d7 <printf@plt+11>:	jmp    0x804837c
 ```
 ¿Que hay en la .plt?
-1. Instrucción para que saltemos otra vez, a 0x804971c. Exactamente a la tabla GOT, la parte de prtinf donde está su direccion real (prinf@got)
-2. Tambien una insutrccion push con un numero no muy grande 
-3. Y otro salto a otra direeción, que si vemos el .plt de otra funcion, ejemplo exit@plt es la misma.
+
+1. Insutrccion a la funcion "ld.so" que se encarga de mirar en el sistema la direccion real de libc de prtinf() y  pasarsela a GOT
+2. Insuturccion push con un numero no muy grande 
+3. Un salto a una direeción, que si vemos el .plt de otra funcion, ejemplo exit@plt es la misma. Es la direccion de la tabla GOT, de donde sacara la direccion de la funcion en concreto indicada por el valor que hemos pasado a push, actual como un indce (0x20 es printf() y si es 0x30 es exit() para ejecutarla.
+
+La plt de exit()
 
 ```console
 (gdb) x/3i 0x80483ec
@@ -50,10 +53,6 @@ ESto es la tabla plt, la sección de nuestra funcion printf
 0x80483f2 <exit@plt+6>:	push   0x30
 0x80483f7 <exit@plt+11>:	jmp    0x804837c
 ```
-Esta ultima funcion (ld.so) es la que se encarga de encontrar en el sistema la dirección real de la función de libc y darsela a la tabla GOT, 
-el push de antes es un parametro para dicha funcion, y actua como un indice, es decir, si es 0x20 es printf() y si es 0x30 es exit(). Despues
-de darsela al GOT, se ejecuta y despues, vuelve a nuestra ducnnion principal (en este caso "vuln").
-La segunda vez que se ejecute un prtinf() como ya está su direccion en la GOT, no hace falta llamar otra vez a ld.so
 
 Podemos cambiar la direccion de la funcion de GOT por otra que nos interese (format4)
 
