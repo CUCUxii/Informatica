@@ -1,3 +1,8 @@
+## Índice 
+- [Sobreescribir una varaible](#Sobreescribir una variable)
+- [Escribir un número de bytes en una variable](#Escribir un número de bytes en una variable)
+- [Escribir un valor hexadecimal en una variable](#Escribir un valor hexadecimal en una variable)
+
 
 ---------------------------------------------------------------------------
 ## Sobreescribir una variable -> [format1](https://exploit.education/protostar/format-one/)
