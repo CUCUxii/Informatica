@@ -66,15 +66,9 @@ Esta siempre tiene tres insutrcciones por funcion.
 2. La segunda insutrccion (plt+6) escribe un valor en la pila. Es el argumento que se le pasara a ld.so, como un indice de funciones, ej, en printf es 0x20 y en exit 0x30. Este buscar tal funcion y la escribira en la GOT.
 3. La tercera instrucción siempre es la misma, salta al inicio de la seccion "plt", este ejecuta el ld.so con el indice de antes. (Buscar la direcion, escribirla en la GOT y saltar a la primera insutrccion de exit@plt (o prinf@plt) que como ya tira de una GOT con la direccion buena, funciona)
 
-
+Esta es la teroia, pero vamos a verla en acción.
+Vamos a correr el programa:
 ```console
-[user@protostar]-[/opt/protostar/bin]:$ objdump -d ./format4
-...
-Disassembly of section .plt:
-0804837c <__gmon_start__@plt-0x10>:
-804837c:	ff 35 04 97 04 08    	pushl  0x8049704
-8048382:	ff 25 08 97 04 08    	jmp    *0x8049708 -> Esta es la instruccion que llama al ld.so
-8048388:	00 00                	add    %al,(%eax)
 [user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
 Break antes de que salga del programa
 (gdb) b *0x0804850f  -> llamada a exit()
@@ -83,11 +77,8 @@ Starting program: /opt/protostar/bin/format4
 AAA
 AAA
 Breakpoint alcanzado!
-(gdb) x/x 0x8049708 -> Que hemos sacado del objdump -d antes.
-0x8049708 <_GLOBAL_OFFSET_TABLE_+8>:	0xb7ff6200
-(gdb) x/x 0xb7ff6200
-0xb7ff6200 <_dl_runtime_resolve>:	0x8b525150 -> El ld.so
 ```
+
 Ahora veremos el prinf (que como el programa ya esta en exit lo ha pasado de sobra, por lo que tendra su direccion en la GOT)
 ```console
 (gdb) x/i 0x80483cc
@@ -95,12 +86,42 @@ Ahora veremos el prinf (que como el programa ya esta en exit lo ha pasado de sob
 (gdb) x/x 0x804971c
 0x804971c <_GLOBAL_OFFSET_TABLE_+28>:	0xb7eddf90
 (gdb) x/x 0xb7eddf90
-0xb7eddf90 <__printf>:	0x53e58955
+0xb7eddf90 <__printf>:	0x53e58955 -> La funcion prtinf, es decir la GOT ya  tiene bien
+```
+Pero exit al haber hecho el breakpoint antes de que se ejecute no su dicha direccion en la GOT todavía
+
+```console
+(gdb) disas 0x80483ec
+Dump of assembler code for function exit@plt:
+0x080483ec <exit@plt+0>:	jmp    DWORD PTR ds:0x8049724
+0x080483f2 <exit@plt+6>:	push   0x30
+0x080483f7 <exit@plt+11>:	jmp    0x804837c
+End of assembler dump.
+(gdb) x/x 0x8049724
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x080483f2
+(gdb) x/2i 0x80483f2
+0x80483f2 <exit@plt+6>:	push   0x30
+0x80483f7 <exit@plt+11>:	jmp    0x804837c
+```
+Este sitio donde salta es el principio de plt
+```console
+[user@protostar]-[/opt/protostar/bin]:$ objdump -d ./format4
+...
+Disassembly of section .plt:
+0804837c <__gmon_start__@plt-0x10>:
+804837c:	ff 35 04 97 04 08    	pushl  0x8049704
+8048382:	ff 25 08 97 04 08    	jmp    *0x8049708 -> Esta es la instruccion que llama al ld.so
+8048388:	00 00                	add    %al,(%eax)
+```
+Asi que si volvemos con gdb:
+```
+(gdb) x/x 0x8049708 
+0x8049708 <_GLOBAL_OFFSET_TABLE_+8>:	0xb7ff6200
+(gdb) x/i 0xb7ff6200
+0xb7ff6200 <_dl_runtime_resolve> -> El ld.so
 ```
 
-
 Podemos cambiar la direccion de la funcion de GOT por otra que nos interese (format4)
-
 Aunque cambie la direccion de libc por el ASLR, en la tabla GOT es fija, asi que si se saca de ahí, tenemos la vida resulta. (pero eso es para 
 otro articulo) 
 
