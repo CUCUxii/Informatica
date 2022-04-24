@@ -128,9 +128,12 @@ you have modified the target :)
   Hemos sustituido un input random "AAAA" por la direccion de una varaible (target = \x38\x96\x04\x08)
   La hemos colocado al final y hemos escrito en ella con "%n". 
   Es decir gracias a "%n" podemos escribir dentro de una direccion de memoria que pongamos en la pila. (gracias a que esta actua como puntero).
+  
   **¿Que hemos escrito en la varaible target?** La "B"
+  
   **Y si en vez de una direccion de memoria válida hubieramos metido las "AAAA"?** Que %n diria de escribir en una memoria que no existe en (0x41414141)
   no hay nada. Entonces arrojaría un segmentation fault.
+  
   **A nivel de código que hemos hecho?** Exactamente esto ->  ```printf("AAAA%n", &variable) -> varaible = "AAAA"```
   
     
