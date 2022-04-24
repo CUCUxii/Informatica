@@ -7,7 +7,6 @@
 ---------------------------------------------------------------------------
 # Sobreescribir una variable -> [format1](https://exploit.education/protostar/format-one/)
 
-Sobreescribir una variable
 Este binario toma un argumento (al que llama "string"), lo mete en la funcion **printf()** y te imprime dicho argumento
 
 ```console
