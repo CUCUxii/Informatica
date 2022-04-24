@@ -42,8 +42,8 @@ ESto es la tabla plt, la sección de nuestra funcion printf
 ¿Que hay en la .plt?
 
 1. Insutrccion a la funcion "ld.so" que se encarga de mirar en el sistema la direccion real de libc de prtinf() y  pasarsela a GOT
-2. Insuturccion push con un numero no muy grande 
-3. Un salto a una direeción, que si vemos el .plt de otra funcion, ejemplo exit@plt es la misma. Es la direccion de la tabla GOT, de donde sacara la direccion de la funcion en concreto indicada por el valor que hemos pasado a push, actual como un indce (0x20 es printf() y si es 0x30 es exit() para ejecutarla.
+2. Insuturccion push con un numero no muy grande
+3. Un salto a GOT, que si vemos el .plt de otra funcion, ejemplo exit@plt es la misma. De GOT sacara la direccion de la funcion, indicada por el push de antes, (actua como un indce (0x20 es printf() y es 0x30 es exit()) y la ejecutará.
 
 La plt de exit()
 
