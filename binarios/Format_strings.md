@@ -351,7 +351,7 @@ Vamos a explotarla de una manera muy similar a format3, pero en vez de sobreescr
 ```
 0x8049724 es la dirección donde la función ld.so iría a escribir dirección de exit() (por tanto estamos ante un trozo de la tabla GOT)
 El objetivo sería que en vez de que escriba el ld.so escribamos nosotros (y al ya no estar ya vacía no lo llame)
-> TROZO DE TABLA GOT "0x8049724": \[modo normal]->  nada -> ld.so -> dir_exit()           \[exploit]-> dir_hello()
+> **TROZO DE TABLA GOT "0x8049724"**: \[modo normal]->  nada -> ld.so -> dir_exit()  .......  \[exploit]-> dir_hello()
 
 ```console
 (gdb) x/x 0x8049724 -> Insutruciion de GOT, alberga la direccion de nuestra funcion (o sea es un puntero de funcion)
