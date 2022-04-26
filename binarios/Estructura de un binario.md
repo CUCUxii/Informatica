@@ -53,20 +53,21 @@ La plt de exit, (para ver en que se diferencia de prtinf)
 EL binario, que todavía no sabe donde está la direccion real de la funcion de libc, salta a un sitio que si conoce, la tabla .plt (Function trampoline)
 Esta siempre tiene tres insutrcciones por funcion.
 
-1. La primera insutruccion salta a la tabla got, a la parte correspondiente a la funcion a ejecutar, en este caso (exit()). Si quisieramos que ejecutara otra funcion, es el valor que tendriamos que cambiar. 
+1. La primera insutruccion alberga una direccion de memoria, de la siguiente función a ejecutar (puntero de funcion)
+ Si quisieramos que ejecutara otra funcion, tendríamos que cambiar el valor que guarda dicha dirección
 
 - Si es la primera vez que se ejecuta, va a la GOT pero lo vuelve a mandar a la PLT, a la siguiente insutrccion \<exit@plt+6>.
 - Si es la sgunda, ya no saltara a \<exit@plt+6> sino que ejecutara la funcion de GOT (en la que ya estará escrita su direccion correspondiente)
 
 ```console
-(gdb) x/i 0x8049724
-0x8049724 <_GLOBAL_OFFSET_TABLE_+36>
+(gdb) x/x 0x8049724
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x080483f2
 ...
 ```
 2. La segunda insutrccion (plt+6) escribe un valor en la pila. Es el argumento que se le pasara a ld.so, como un indice de funciones, ej, en printf es 0x20 y en exit 0x30. Este buscar tal funcion y la escribira en la GOT.
 3. La tercera instrucción siempre es la misma, salta al inicio de la seccion "plt", este ejecuta el ld.so con el indice de antes. (Buscar la direcion, escribirla en la GOT y saltar a la primera insutrccion de exit@plt (o prinf@plt) que como ya tira de una GOT con la direccion buena, funciona)
 
-Esta es la teroia, pero vamos a verla en acción.
+Esta es la teoría, puede resultar algo confusa asi que vamos a verla en acción.
 Vamos a correr el programa:
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
