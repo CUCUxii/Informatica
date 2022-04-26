@@ -323,9 +323,9 @@ AAAA
 AAAA
 Breakpoint 1, 0x0804850f in vuln () at format4/format4.c:22
 (gdb) x/i 0x80483ec       -> Nos interesa ver la primera instruccion de plt (la que tiene relacion con la GOT, no las del ld.so)
-0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724 -> Llamada a buscar la dirección en la tabla GOT
+0x80483ec <exit@plt>:	jmp    DWORD PTR ds:0x8049724 -> Puntero a la tabla GOT (llama a ld.so o tiene guardada la direccion de la función)
 (gdb) x 0x8049724
-0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	repnz add DWORD PTR [eax+ecx*1],0x0 -> Insutruccion original.
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	repnz add DWORD PTR [eax+ecx*1],0x0 -> Instruccion original.
 (gdb) set {int}0x8049724=0x080484b4 -> en esta memoria que es donde se mete la direccion de la funcion a jeecutar, metemos la de hello.
 (gdb) c
 Continuing.
