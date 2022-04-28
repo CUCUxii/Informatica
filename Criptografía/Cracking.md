@@ -2,7 +2,7 @@ Disclaimer -> Este post está basado en practicas hechas con máquinas de la plt
 
 ----------------------------------------------------------------
 
-# \Archivos .zip
+# Archivos .zip
 
 En la máquina [Timelapse] (https://app.hackthebox.com/machines/Timelapse) de htb nos hemos descargado un zip, pero está protegido con una contraseña.
 
@@ -17,7 +17,7 @@ winrm_backup.zip    legacyy_dev_auth.pfx
 
 ----------------------------------------------------------------
 
-# \Archivos .pfx
+# Archivos .pfx
 
 En la máquina [Timelapse] (https://app.hackthebox.com/machines/Timelapse) me he topado con este archuivo, no tenia ni idea de que era hasta que investigué que es un archivo relacionado con temas de encriptación (como una llave).
 
