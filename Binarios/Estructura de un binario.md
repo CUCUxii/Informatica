@@ -176,8 +176,8 @@ Vamos a ver como se crea el stack frame de [./format1](https://exploit.education
 ```
 La pila de "main" va de $esp = 0xbffff690  a  $ebp = 0xbffff6a8  (16)
 > *\[esp =  0xbffff690 <- stack frame de vuln()]  \[ebp 0xbffff6a8: 	0xbffff728] \[retorno -> acabar el programa]*
+>> El retorno (despues del ebp), es a donde saltará una vez acabada la funcion (direccion que pondra en eip)
 
-Lo que llamo retorno despues del ebp, es a donde saltará una vez acabada la funcion (direccion que pondra en eip)
 Entramos en la función "vuln"
 
 ```console
