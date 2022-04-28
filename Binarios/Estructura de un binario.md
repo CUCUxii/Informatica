@@ -1,7 +1,28 @@
 
+# CÓDIGO, seccion .text
 
+El código son las instrucciones en ensamblador del programa, estas vienen de su código original en C, solo que pasadas a lenguaje máquina.
+No se pueden modificar, es decir solo "READ_ONLY" o solo lectura. Tampoco son lineales, gracias a los bucles y comparaciones. 
+user@protostar:/opt/protostar/bin$ objdump -t ./format4 | grep "text"
+```console
+[user@protostar]-[/opt/protostar/bin]:$ objdump -t ./format4 | grep "text"
+08048400 g     F .text	00000000              _start
+080484b4 g     F .text	0000001e              hello
+080484d2 g     F .text	00000042              vuln
+08048514 g     F .text	0000000f              main 
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./format4
+(gdb) set disassembly-flavor intel
+(gdb) disas main
+0x08048514 <main+0>:	push   ebp
+0x08048515 <main+1>:	mov    ebp,esp
+0x08048517 <main+3>:	and    esp,0xfffffff0
+0x0804851a <main+6>:	call   0x80484d2 <vuln>
+0x0804851f <main+11>:	mov    esp,ebp
+0x08048521 <main+13>:	pop    ebp
+0x08048522 <main+14>:	ret    
+```
 
-## \[GOT] "Global offset table" y \[PLT] "Procedure Linkage Table"
+# \[GOT] "Global offset table" y \[PLT] "Procedure Linkage Table"
 
 Escribimos un binario que utiliza funciones de libc (como por ejemplo "printf()") pero no queremos que nuestro binario sea demasiado pesado. 
 Entonces lo compilamos normalmente con  gcc ->    ```console gcc código.c -o ./binario```
@@ -122,6 +143,49 @@ otro articulo)
 *Fuente: Live Overflow, trastear con lo aprendido de eĺ con ./format4*
 
 ----------------------------------------------------------------
+
+
+# La pila
+
+La pila es una memoria, es dónde un programa almacena varaibles, argumentos y más cosas que necestia para funcionar. 
+
+Esta se crea con insutrcciones específicas llamadas "function prolog" y se llama "stack frame", cada función tiene la propia
+Pero antes de eso quiero explicar el asunto de los registros para que se entienda.
+ - EBP -> El registro ebp es el "frame base pointer", es un registro que se usa principalmente como referencia a la hora de llamar varaibles, por eejemplo \[ebp - 0x4]. 
+ - ESP -> es el inicio de la pila. 
+ - EIP -> puntero de insutrcción, almacena la dirección de la siguiente instrucción a ejecutar, por ejemplo si se hace una llamada a una funcion con call o jmp ```call   0x80483f4 <vuln>``` se pone ese número (0x80483f4) en el eip y asi saltara a "vuln"
+
+Vamos a ver como se crea el stack frame de [./format1](https://exploit.education/protostar/format-one/)
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./format1
+(gdb) set disassembly-flavor intel
+(gdb) disas main
+0x0804841c <main+0>:	push   ebp   -> Guarda ebp en la pila -> $esp = 0xbffff6a8:	0xbffff728 (dirección de EBP)
+0x0804841d <main+1>:	mov    ebp,esp -> Pon esp donde está ebp ->  $ebp = 0xbffff6a8:	0xbffff728 Igual
+0x0804841f <main+3>:	and    esp,0xfffffff0 -> Alinea la pila, esto no importa mucho.
+0x08048422 <main+6>:	sub    esp,0x10 -> Resta a esp 0x10 para crear el marco de pila -> 0xbffff690 (0xbffff6a8 - 0x10) 
+```
+La pila de "main" va de $esp = 0xbffff690  a  $ebp = 0xbffff6a8  (16)
+> *\[esp =  0xbffff690 <- stack frame de vuln()]  \[ebp 0xbffff6a8: 	0xbffff728] \[eip = 0xbffff6ac: libc_start_main+230 (acabar el programa)]*
+
+Entramos en la función "vuln"
+
+```console
+0x08048430 <main+20>:	call   0x80483f4 <vuln> -> PUSH eip (guarda en la pila el eip de main +25), POP eip,0x80483f4 
+0x08048435 <main+25>:	leave 
+(gdb) disas vuln
+0x080483f4 <vuln+0>:	push   ebp -> Lo mismo de antes; guarda el antiguo ebp en la pila, pero antes de la de main -> $esp =  0xbffff688: 0xbffff6a8
+0x080483f5 <vuln+1>:	mov    ebp,esp -> Mete esp en ebp. Tanto esp como ebp ahora son = 0xbffff688  (8 bytes antes de main)
+0x080483f7 <vuln+3>:	sub    esp,0x18 -> Restale 0x18 a esp para crear el marco de pila->  0xbffff670 (0xbffff688 - 0x18) 
+```
+
+La pila de vuln empieza en  0xbffff66c (0xbffff690 - 0x18) O sea es 18 direcciones antes que el de main.
+> *\[esp = 0xbffff670:  stack frame de vuln()]  \[ebp = 0xbffff688:0xbffff6a8]  \[0xbffff68c: eip de main+25]*
+
+Cuando ejecute **leave**: eliminara el stack frame de vuln para varaibles, restaurara el ebp (pop ebp ->  0xbffff6a8) y volvera a la siguiente insutruccion de main (pop eip -> 0x08048435).
+Ahora main vuelve con su stack original (0xbffff690 a 0xbffff6a8 (16)) Pero la siguiente insutrccion de main es otro leave, asi qeu adios al stack de main tambien.
+
 
 
 
