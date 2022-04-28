@@ -1,7 +1,8 @@
 
-En la máquina [Timelapse] (https://app.hackthebox.com/machines/Timelapse) de htb nos hemos descargado un zip, pero está protegido con una contraseña.
 
 # Puerto smb 137/139 -> Descarga de archivos
+
+En la máquina [Timelapse] (https://app.hackthebox.com/machines/Timelapse) tenemos el puerto smb abierto:
 
 Este puerto permite compartir archivos de manera remota, es decir metes la IP, un usaurio y contraseña y te bajas cosas de ese ordenador que estén compartidas por smb.
 Puede que no tengamos tal usuario ni contraseña, por lo que solo podremos acceder a los que esté compartido de manera pública.
