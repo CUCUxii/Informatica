@@ -153,7 +153,15 @@ Esta se crea con insutrcciones específicas llamadas "function prolog" y se llam
 Pero antes de eso quiero explicar el asunto de los registros para que se entienda.
  - EBP -> El registro ebp es el "frame base pointer", es un registro que se usa principalmente como referencia a la hora de llamar varaibles, por eejemplo \[ebp - 0x4]. 
  - ESP -> es el inicio de la pila. 
- - EIP -> puntero de insutrcción, almacena la dirección de la siguiente instrucción a ejecutar, por ejemplo si se hace una llamada a una funcion con call o jmp ```call   0x80483f4 <vuln>``` se pone ese número (0x80483f4) en el eip y asi saltara a "vuln"
+ - EIP -> puntero de insutrcción, almacena la dirección de la siguiente instrucción a ejecutar, 
+ 
+```console
+(gdb) b *0x08048425 Al poner el breakpoint todavia no se ha ejecutado esta insutrucción...
+(gdb) x/i $eip
+0x8048425 <main+9>:
+ ```
+Si se hace una llamada a una funcion con call o jmp ```call   0x80483f4 <vuln>``` se pone ese número (0x80483f4) en el eip y asi saltara a "vuln". 
+
 
 Vamos a ver como se crea el stack frame de [./format1](https://exploit.education/protostar/format-one/)
 
@@ -167,8 +175,9 @@ Vamos a ver como se crea el stack frame de [./format1](https://exploit.education
 0x08048422 <main+6>:	sub    esp,0x10 -> Resta a esp 0x10 para crear el marco de pila -> 0xbffff690 (0xbffff6a8 - 0x10) 
 ```
 La pila de "main" va de $esp = 0xbffff690  a  $ebp = 0xbffff6a8  (16)
-> *\[esp =  0xbffff690 <- stack frame de vuln()]  \[ebp 0xbffff6a8: 	0xbffff728] \[eip = 0xbffff6ac: libc_start_main+230 (acabar el programa)]*
+> *\[esp =  0xbffff690 <- stack frame de vuln()]  \[ebp 0xbffff6a8: 	0xbffff728] \[retorno -> acabar el programa]*
 
+Lo que llamo retorno despues del ebp, es a donde saltará una vez acabada la funcion (direccion que pondra en eip)
 Entramos en la función "vuln"
 
 ```console
@@ -181,10 +190,10 @@ Entramos en la función "vuln"
 ```
 
 La pila de vuln empieza en  0xbffff66c (0xbffff690 - 0x18) O sea es 18 direcciones antes que el de main.
-> *\[esp = 0xbffff670:  stack frame de vuln()]  \[ebp = 0xbffff688:0xbffff6a8]  \[0xbffff68c: eip de main+25]*
+> *\[esp = 0xbffff670:  stack frame de vuln()]  \[ebp = 0xbffff688:0xbffff6a8]  \[retorno -> 0xbffff68c: eip de main+25 = 0x08048435]*
 
 Cuando ejecute **leave**: eliminara el stack frame de vuln para varaibles, restaurara el ebp (pop ebp ->  0xbffff6a8) y volvera a la siguiente insutruccion de main (pop eip -> 0x08048435).
-Ahora main vuelve con su stack original (0xbffff690 a 0xbffff6a8 (16)) Pero la siguiente insutrccion de main es otro leave, asi qeu adios al stack de main tambien.
+Ahora main vuelve con su stack original (0xbffff690 a 0xbffff6a8 (16)) Pero como la siguiente insutrccion de main es otro leave, adios al stack de main tambien.
 
 
 
