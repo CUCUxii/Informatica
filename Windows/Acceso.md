@@ -38,7 +38,7 @@ Nos hemos metido en la carpeta Shares, ya que el resto que tiene el "$" después
 nos de una consola y bajarnos los archivos.
 
 ```console
-[cucuxii]-[~/Timelapse]:$ smbclient "\\\10.10.11.152\Shares" -N     -> "-N" es null session, o sea como invitado (no tenemos contraseñas) 
+[cucuxii]-[~/Timelapse]:$ smbclient "\\\10.10.11.152\Shares" -N     # "-N" es null session, o sea como invitado (no tenemos contraseñas) 
 smb: \> dir
   Dev                                 D        0  Mon Oct 25 21:40:06 2021
   HelpDesk                            D        0  Mon Oct 25 17:48:42 2021
