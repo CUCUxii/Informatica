@@ -192,6 +192,18 @@ Entramos en la función "vuln"
 La pila de vuln empieza en  0xbffff66c (0xbffff690 - 0x18) O sea es 18 direcciones antes que el de main.
 > *\[esp = 0xbffff670:  stack frame de vuln()]  \[ebp = 0xbffff688:0xbffff6a8]  \[retorno -> 0xbffff68c: eip de main+25 = 0x08048435]*
 
+```console
+(gbd) b *vuln
+(gbd) run
+(gdb) x/40x $esp
+0xbffff670:	0xb7ff1040	0x0804960c	0xbffff6a8	0x08048469 -> Pila de vuln
+0xbffff680:	0xb7fd8304	0xb7fd7ff4	0xbffff6a8	0x08048435
+0xbffff690:	0xbffff8ae	0xb7ff1040	0x0804845b	0xb7fd7ff4 -> Pila de main
+0xbffff6a0:	0x08048450	0x00000000	0xbffff728	0xb7eadc76
+(gdb) x/i 0x08048435
+0x8048435 <main+25>:	leave
+```
+
 Cuando ejecute **leave**: eliminara el stack frame de vuln para varaibles, restaurara el ebp (pop ebp ->  0xbffff6a8) y volvera a la siguiente insutruccion de main (pop eip -> 0x08048435).
 Ahora main vuelve con su stack original (0xbffff690 a 0xbffff6a8 (16)) Pero como la siguiente insutrccion de main es otro leave, adios al stack de main tambien.
 
