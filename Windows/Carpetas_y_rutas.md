@@ -19,4 +19,4 @@
 
  - \System32 → alberga librerias y archivos esenciales para que windows funcione.
  - \config → donde esta el registro de Windows
- - control.exe (pandel de control)
+### control.exe (pandel de control)
