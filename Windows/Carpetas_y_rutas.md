@@ -17,6 +17,6 @@
 
 ## **C:\Windows** → archivos del sistema operativo    %windir%
 
-	  \System32 → alberga librerias y archivos esenciales para que windows funcione.
-		\config → donde esta el registro de Windows
-		control.exe (pandel de control)
+ - \System32 → alberga librerias y archivos esenciales para que windows funcione.
+ - \config → donde esta el registro de Windows
+ - control.exe (pandel de control)
