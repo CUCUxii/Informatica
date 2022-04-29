@@ -321,7 +321,7 @@ input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 whoami
 root
 ```
-# Extra ROP programming 
+# Extra ROP programming -> RET
 
 El rop programming significa que nos aprovechamos de insutrucciones de ensamblador del propio código para hacer determinadas cosas en el programa.
 Una de ellas es la intrucción **RET**, la cuál hace un *POP EIP*, 
