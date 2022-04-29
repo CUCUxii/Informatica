@@ -324,10 +324,10 @@ root
 # Extra ROP programming -> RET
 
 Fuente [Live Overflow](https://www.youtube.com/watch?v=m17mV24TgwY)
-El rop programming significa que nos aprovechamos de insutrucciones de ensamblador del propio código para hacer determinadas cosas en el programa.
+El rop programming significa que nos aprovechamos de instrucciones de ensamblador del propio código para hacer determinadas cosas en el programa.
 Una de ellas es la intrucción **RET**, la cuál hace un *POP EIP*, 
 
-Es decir la última instruccion de la pila (dirección de RET) la pasa al eip, eliminandose a si misma (POP EIP), pero haciendo otro POP EIP de lo que haya despues (EIP a la pila por ejemplo), asi podemos burlar protecciones de no retorno a la pila como ```if((ret & 0xbf000000) == 0xbf000000)``` ES decir es como que pasa el turno... Vamos a verlo en acción.
+Es decir la última instruccion de la pila la pasa al eip, eliminandose a si misma (POP EIP), pero al ser RET, deja otro *POP EIP* tras de si que afecta a lo que haya despues en la pila. Es decir es como retrasara el salto un lugar, pero asi podemos burlar protecciones de no retorno a la pila como ```if((ret & 0xbf000000) == 0xbf000000)```... Vamos a verlo en acción.
 
 
 ```console
