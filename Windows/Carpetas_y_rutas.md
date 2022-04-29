@@ -2,14 +2,15 @@
 
 
 
-## C:\ → disco C, la raiz del sistema
+## C:\ 
+Disco C, la raiz del sistema
 
 ## C:\Users
+ - **C:\Users\Elliot** → carpeta por cada usaurio
+ - **C:\Users\\Public** → Archivos Publicos, de acceso a cualquier usaurio, normalemnte fotos y videos de muestra.
 
-	\usuario → carpeta por cada usaurio
-	\Public → Archivos Publicos, de acceso a cualquier usaurio, normalemnte fotos y videos de muestra.
-
-## **C:\PerfLogs** → reportes de crasheos e informacion del sistema, en teoria porque siempre suele star vacia	
+## **C:\PerfLogs** 
+Reportes de crasheos e informacion del sistema, en teoria porque siempre suele estar vacia	
 
 ## **C:\Program Files** → programas de 64 bits
 
@@ -17,6 +18,7 @@
 
 ## **C:\Windows** → archivos del sistema operativo    %windir%
 
- - \System32 → alberga librerias y archivos esenciales para que windows funcione.
- - \config → donde esta el registro de Windows
-### control.exe (pandel de control)
+ - **C:\Windows\System32** → alberga librerias y archivos esenciales para que windows funcione.
+     * C:\Windows\System32\control.exe -> pandel de control
+     * C:\Windows\System32\config\ -> carpeta donde está el registro de windows
+ 	
