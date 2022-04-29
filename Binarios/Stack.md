@@ -323,6 +323,7 @@ root
 ```
 # Extra ROP programming -> RET
 
+Fuente [Live Overflow](https://www.youtube.com/watch?v=m17mV24TgwY)
 El rop programming significa que nos aprovechamos de insutrucciones de ensamblador del propio código para hacer determinadas cosas en el programa.
 Una de ellas es la intrucción **RET**, la cuál hace un *POP EIP*, 
 
