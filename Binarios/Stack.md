@@ -534,4 +534,27 @@ whoami
 root
 ```
 
+------------------------------------------
+
+EN CONSTRUCCION
+
+
+# Extra ROP programming -> POP POP RET
+[Fuente](https://decepticode.wordpress.com/2018/09/08/protostar-stack7/)
+
+La instruccion pop pop ret pasa dos argumentos (uno por POP) a la funcion a la que apunta RET.
+¿Y como lo hace? POP en ensamblador saca un valor de la pila y lo mete en un registro. Resulta ser que para pasarle argumentos a una funcion, estos se tienen que meter en dichos registros ¿CUales? los que nos digan las calling conventions.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ objdump -d /opt/protostar/bin/stack7 | grep -ne "pop * %ebx" -A2
+124: 8048492:   5b                      pop    %ebx
+125- 8048493:   5d                      pop    %ebp
+126- 8048494:   c3                      ret    
+```
+Tambien salia otro igual en la direccion 0x80485f7 pero nos vamos a quedar con 0x8048492
+Despues de POP-POP-RET hay que meterle las tres cosas (dos a las que hará POP "argumentos" y otro a la que hara RET "función") 
+
+# Extra ROP programming -> CALL EAX
+
+
 
