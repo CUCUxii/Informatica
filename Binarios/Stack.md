@@ -244,6 +244,7 @@ $4 = 76 -> La diferencia entre el cominezo de las AAAA y el eip es de 76.
 
 > NOPs -> "no operation code" código que no hace nada más que seguir el flujo del programa... un tobogan hacia lo que vaya despues.
 > \xCC -> Son insutrccione de breakpoint o pausa, si funcionan estas, funcionara un shellcode futuro.
+
 > Shellcode -> El shellcode es codigo a bajo nivel que hace determinadas acciones, en este caso darnos una consola como root.
 
 La cosa esque por las varaibles de entorno y demás, varia la pila entre gdb y fuera de él... así que exactamente no se sabe donde caerá este eip. Si tenemos un shellcode pero el eip cae en mitad lo "rebanará" y ya no funcionará bien, asi que tiene que caer en los nops estos que continuarán el flujo del programa al principio del shellcode que va detras. (De ahí la metáfora del tobogán que te desliza)
