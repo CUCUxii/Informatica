@@ -513,7 +513,7 @@ Las direcciones son las mismas que antes y el offset igual asi que usamos el exp
 [user@protostar]-[/opt/protostar/bin]:$ (python /tmp/exploit.py;cat) | ./stack7
 input path please: bzzzt (0xb7ecffb0)
 ```
-Resulta ser que la direccion de system empeiza por 0xb algo, asi que nos la chapa. Que hacer? tirar del recursod el RET.
+Resulta ser que la direccion de system empeiza por 0xb algo, asi que nos la chapa. Que hacer? tirar del recurso del RET para retrasar el eip y burlar la medida.
 ```console
 (gdb) disas getpath
 0x08048544 <getpath+128>:       ret 
