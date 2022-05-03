@@ -430,6 +430,14 @@ Es decir la última instruccion de la pila la pasa al eip, eliminandose a si mis
 0x080484f8 <getpath+116>:	leave  
 0x080484f9 <getpath+117>:	ret  -> Esta es la instruccion que nos interesa :)
 ```
+Tambien se pueden buscar los gadgets asi:
+```console
+[user@protostar]-[/opt/protostar/bin]:$  objdump -d stack6 -M intel | grep "ret"
+ 804835f:	c3                   	ret    
+ 8048454:	c3                   	ret    
+ 8048482:	c3                   	ret    
+ 80484f9:	c3                   	ret   # La que hemos usado
+```
 Ahora a armar el exploit.
 
 ```python
