@@ -13,7 +13,7 @@ Disco C, la raiz del sistema
       * C:\Users\Elliot\Appdata\Local\Temp (%temp%)
       * C:\Users\Elliot\Appdata\Local\Packages -> hay muchas aplicaciones de windows (las tipicas preinstaladas)
       * C:\Users\Elliot\AppData\Local\Packages\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\LocalState -> copia de seguridad de las "Notas"
-
+      * C:\Users\Elliot\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt -> historial de comandos de la shell
 
 ## **C:\PerfLogs** 
 Reportes de crasheos e informacion del sistema, en teoria porque siempre suele estar vacia	
