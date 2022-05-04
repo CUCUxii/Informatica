@@ -275,7 +275,8 @@ you have modified the target :)
 Articulo que me ha ayudado y del que he aprendido [aqui](https://infosecwriteups.com/expdev-exploit-exercise-protostar-format-3-33e8d8f1e83)
 
 ---------------------------------------------------------------------------
-# Sobreescribir la GOT para saltar a una funcion que queramos
+# Sobreescribir la GOT para saltar a la funcion que queramos
+
 > [format4](https://exploit.education/protostar/format-four/)
 
 Este binario al ejecutarlo se parece mucho a format2, pero no nos sale nada mas. Tambien, hay la vuln de format string.
