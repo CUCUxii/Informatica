@@ -107,7 +107,7 @@ C:\Users\cucuxii\Documents\carpeta> dir | findstr /V "Archivo"
 
 ---------------------------------------------------------------------------
 
-## Informacion del sistema
+## Información del sistema
 
 -  **tasklist** -> Procesos en ejecución
 
