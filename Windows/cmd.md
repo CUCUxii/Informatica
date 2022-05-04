@@ -1,7 +1,7 @@
 # Guía de cmd (linea de comandos)
  - [Movimiento](#movimiento)
  - [Filtros](#filtro)
- - [Información del Sistema](#ver-informacion-del-sistema)
+ - [Información del Sistema](#informacion-del-sistema)
 ---------------------------------------------------------------------------
 
 ## Movimiento
@@ -107,7 +107,8 @@ C:\Users\cucuxii\Documents\carpeta> dir | findstr /V "Archivo"
 
 ---------------------------------------------------------------------------
 
-## Ver información del sistema
+## Informacion del sistema
+
 -  **tasklist** -> Procesos en ejecución
 
 ```cmd
