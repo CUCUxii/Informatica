@@ -1,5 +1,14 @@
+### \[Índice]
 
-# CÓDIGO, seccion .text
+ - [CODIGO seccion .text](#codigo-seccion-.text)
+ - [Global offset table](#global-offset-table)
+ - [Procedure Linkage Table](#procedure-linkage-table)
+ - [La pila](#la-pila)
+
+
+----------------------------------------------------------------
+
+# CODIGO seccion .text
 
 El código son las instrucciones en ensamblador del programa, estas vienen de su código original en C, solo que pasadas a lenguaje máquina.
 No se pueden modificar, es decir solo "READ_ONLY" o solo lectura. Tampoco son lineales, gracias a los bucles y comparaciones. 
@@ -22,7 +31,11 @@ user@protostar:/opt/protostar/bin$ objdump -t ./format4 | grep "text"
 0x08048522 <main+14>:	ret    
 ```
 
-# \[GOT] "Global offset table" y \[PLT] "Procedure Linkage Table"
+----------------------------------------------------------------
+
+# Global offset table 
+
+**\[GOT]**
 
 Escribimos un binario que utiliza funciones de libc (como por ejemplo "printf()") pero no queremos que nuestro binario sea demasiado pesado. 
 Entonces lo compilamos normalmente con  gcc ->    ```console gcc código.c -o ./binario```
@@ -68,7 +81,9 @@ Mas instrucciones que ahora no vienen a cuento...
 ```
 ----------------------------------------------------------------
 
-# Estructura de la tabla .plt
+# Procedure Linkage Table
+
+**\[PLT] **
 
 EL binario, que todavía no sabe donde está la direccion real de la funcion de libc, salta a un sitio que si conoce, la tabla .plt (Function trampoline)
 Esta siempre tiene tres insutrcciones por funcion.
@@ -143,7 +158,6 @@ otro articulo)
 *Fuente: Live Overflow, trastear con lo aprendido de eĺ con ./format4*
 
 ----------------------------------------------------------------
-
 
 # La pila
 
