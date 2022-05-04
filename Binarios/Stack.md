@@ -476,9 +476,9 @@ Resulta ser que la direccion de system empieza por 0xb algo, asi que nos la chap
 ```
  > ROP PROGRAMMING -> El rop programming significa que nos aprovechamos de instrucciones de ensamblador del propio código para hacer determinadas cosas en el programa.
 
-Una de esas instrucciones es **RET**, la cuál hace un *POP EIP*.  
+Una de esas instrucciones es **RET** (0x08048544), la cuál hace un *POP EIP*. En ROP programming a las insutrcciones las llamamos gadgets. 
 Es decir en la pila, la direccion de RET la pasa al eip, eliminandola en el acto (POP EIP), pero esa propia *instruccion RET*, deja otro *POP EIP* tras de si, que afecta a lo siguiente que hay en la pila (la direccion real a la que queremos retornar) pasandola al EIP y saltando a ella pues.
- > \[pila] direccion1(RET), direccion2  ->  EIP=direccion1(no hace nada) ->  EIP=direccion2 (salta aquí)
+ > RET gadget -> \[pila] direccion1(RET), direccion2  ->  EIP=direccion1(no hace nada) ->  EIP=direccion2 (salta aquí)
 
 Es decir retrasara el salto un lugar, con lo que podemos burlar protecciones de no retorno a la pila como ```if((ret & 0xb0000000) == 0xb0000000)```... Vamos a verlo en acción.  
 Hemos obtenido la instruccion RET del codigo desensamblado, pero tambien se peude conseguir con ```console objdump -d stack6 -M intel | grep "ret"```
