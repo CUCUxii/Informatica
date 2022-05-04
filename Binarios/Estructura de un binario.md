@@ -1,6 +1,6 @@
 ### \[Índice]
 
- - [CODIGO seccion text](#codigo-seccion-text)
+ - [Codigo: seccion text](#codigo-seccion-text)
  - [Global offset table](#global-offset-table)
  - [Procedure Linkage Table](#procedure-linkage-table)
  - [La pila](#la-pila)
