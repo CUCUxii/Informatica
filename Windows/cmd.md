@@ -1,7 +1,8 @@
 # Guía de cmd (linea de comandos)
-
-
+ - [Lo básico: movimiento](#Lo-Básico:-movimiento)
+ - [Lo básico: movimiento](#Filtro)
 ---------------------------------------------------------------------------
+
 ## Lo Básico: movimiento
 
 -  **CD** -> cambiar de directorio (igual que en Linux)  *cd ruta*
@@ -60,6 +61,7 @@ C:\Users\cucuxii\Documents>  >dir /b/s | findstr "txt"
 C:\Users\cucuxii\Documents\carpeta\Carpeta\Factura1.txt
 C:\Users\cucuxii\Documents\carpeta\Carpeta\Factura2.txt
 ```
+
 ---------------------------------------------------------------------------
 
 ## Filtro -> 
@@ -100,6 +102,7 @@ C:\Users\cucuxii\Documents\carpeta> dir
 C:\Users\cucuxii\Documents\carpeta> dir | findstr /V "Archivo"
 10/11/2020  20:24    <DIR>          Carpeta
 ```
+
 ---------------------------------------------------------------------------
 
 ## Ver información del sistema
@@ -130,3 +133,25 @@ C:\Users\cucuxii>tasklist /fi "memusage gt 300000"
 SearchApp.exe                 8724 Console                    1   359.116 KB
 soffice.bin                   7432 Console                    1   329.460 KB
 ```
+
+--------------------------------------------------------------------------------
+
+## Redes
+-  **netstat** 
+```cmd
+C:\Users\cucuxii> netstat -ano
+TCP    192.168.0.236:139      0.0.0.0:0              LISTENING       4
+TCP    192.168.0.236:49484    185.116.156.173:25565  TIME_WAIT       0
+TCP    192.168.0.236:49486    198.50.209.201:25565   ESTABLISHED     15196
+TCP    192.168.0.236:49521    185.199.108.154:443    ESTABLISHED     13988
+TCP    192.168.0.236:49522    185.199.108.133:443    ESTABLISHED     13988
+```
+Primero nos dice el protocolo, luego la conexión nuestra y despues, a dónde se dirige, esta es la parte interesante ya que se ven claramente los puertos/servicios de
+la conexión (443 = https.   25565 = mineacraft) Despues sale el estado de la conexion (ejemplo ESTABILISHED es que se estan mandando datos) y despues el PID o identificador de proceso
+
+Resulta que he encontrado muchas conexiones realizadas por el PID "13988" ¿Pero que es exactamente ese proceso?
+```cmd
+C:\Users\cucuxii> tasklist /fi "pid eq 13988"
+chrome.exe                   13988 Console                    1    43.372 KB
+```
+Pues era el Chrome.
