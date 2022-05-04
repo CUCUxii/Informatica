@@ -9,6 +9,7 @@
 ---------------------------------------------------------------------------
 
 # Sobreescribir una variable 
+
 > [format1](https://exploit.education/protostar/format-one/)
 
 Este binario toma un argumento (al que llama "string"), lo mete en la funcion **printf()** y te imprime dicho argumento
@@ -147,7 +148,9 @@ you have modified the target :)
   **A nivel de código que hemos hecho?** Exactamente esto ->  ```printf("AAAA%n", &variable) -> varaible = "AAAA"```
   
 ---------------------------------------------------------------------------
+
 # Escribir un numero de bytes en una variable 
+
 > [format2](https://exploit.education/protostar/format-two/)
 
 Format2 no nos pide un argumento sino un input una vez ejecutado, la manera de pasarle dichi input por tanto cambia
