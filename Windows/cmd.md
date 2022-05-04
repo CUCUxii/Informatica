@@ -1,6 +1,6 @@
 # Guía de cmd (linea de comandos)
  - [Lo básico: movimiento](#Lo-Básico:-movimiento)
- - [Lo básico: movimiento](#Filtro)
+ - [Filtros](#Filtro)
 ---------------------------------------------------------------------------
 
 ## Lo Básico: movimiento
@@ -64,7 +64,7 @@ C:\Users\cucuxii\Documents\carpeta\Carpeta\Factura2.txt
 
 ---------------------------------------------------------------------------
 
-## Filtro -> 
+# Filtros -> 
 -  **Findstr** -> comando para filtrar la salida.
 
 findstr patron
