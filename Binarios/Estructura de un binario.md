@@ -83,7 +83,7 @@ Mas instrucciones que ahora no vienen a cuento...
 
 # Procedure Linkage Table
 
-**\[PLT] **
+**\[PLT]**
 
 EL binario, que todavía no sabe donde está la direccion real de la funcion de libc, salta a un sitio que si conoce, la tabla .plt (Function trampoline)
 Esta siempre tiene tres insutrcciones por funcion.
