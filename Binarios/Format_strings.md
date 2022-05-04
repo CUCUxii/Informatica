@@ -1,11 +1,15 @@
-## Índice 
-- [Sobreescribir una varaible](#sobreescribir-una-variable)
-- [Escribir un número de bytes en una variable](#escribir-un-número-de-bytes-en-una-variable)
-- [Escribir un valor hexadecimal en una variable](#escribir-un-valor-hexadecimal-en-una-variable)
+### \[Índice]
+ - format 1 -> [Sobreescribir una varaible](#sobreescribir-una-variable)
+ - format 2 -> [Escribir un número de bytes en una variable](#escribir-un-número-de-bytes-en-una-variable)
+ - format 3 -> [Escribir un valor hexadecimal en una variable](#escribir-un-valor-hexadecimal-en-una-variable)
+ - format 5 -> [Sobreescribir la GOT para saltar a la funcion que queramos](#sobreescribir-la-got-para-saltar-a-la-funcion-que-queramos)
+
 
 
 ---------------------------------------------------------------------------
-# Sobreescribir una variable -> [format1](https://exploit.education/protostar/format-one/)
+
+# Sobreescribir una variable 
+> [format1](https://exploit.education/protostar/format-one/)
 
 Este binario toma un argumento (al que llama "string"), lo mete en la funcion **printf()** y te imprime dicho argumento
 
@@ -143,7 +147,8 @@ you have modified the target :)
   **A nivel de código que hemos hecho?** Exactamente esto ->  ```printf("AAAA%n", &variable) -> varaible = "AAAA"```
   
 ---------------------------------------------------------------------------
-# Escribir un número de bytes en una variable -> [format2](https://exploit.education/protostar/format-two/)
+# Escribir un numero de bytes en una variable 
+> [format2](https://exploit.education/protostar/format-two/)
 
 Format2 no nos pide un argumento sino un input una vez ejecutado, la manera de pasarle dichi input por tanto cambia
   
@@ -199,7 +204,8 @@ Esto tambíen se puede poner de otra forma, que es así:
 you have modified the target :)
 ```
 ---------------------------------------------------------------------------
-# Escribir un valor hexadecimal en una variable -> [format3](https://exploit.education/protostar/format-three/)
+# Escribir un valor hexadecimal en una variable 
+> [format3](https://exploit.education/protostar/format-three/)
 
 Otra vez lo mismo, buscar una varaible con el objdump -t -> 080496f4 =  \xf4\x96\x04\x08
 Esta vez en vez de tener que escribir un numero de bytes en concreto, hay que meter un valor en hexadecimal, es decir que la memoria a donde
@@ -269,7 +275,8 @@ you have modified the target :)
 Articulo que me ha ayudado y del que he aprendido [aqui](https://infosecwriteups.com/expdev-exploit-exercise-protostar-format-3-33e8d8f1e83)
 
 ---------------------------------------------------------------------------
-# Sobreescribir la GOT para saltar a una funcion que nos interese-> [format4](https://exploit.education/protostar/format-four/)
+# Sobreescribir la GOT para saltar a una funcion que queramos
+> [format4](https://exploit.education/protostar/format-four/)
 
 Este binario al ejecutarlo se parece mucho a format2, pero no nos sale nada mas. Tambien, hay la vuln de format string.
 
