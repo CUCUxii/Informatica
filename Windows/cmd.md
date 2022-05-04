@@ -64,7 +64,7 @@ C:\Users\cucuxii\Documents\carpeta\Carpeta\Factura2.txt
 
 ---------------------------------------------------------------------------
 
-## Filtros -> 
+##Filtro -> 
 -  **Findstr** -> comando para filtrar la salida.
 
 findstr patron
