@@ -120,7 +120,8 @@ you have correctly got the variable to the right value
 ```
 
 ---------------------------------------------------------------------------
-# Sobreescribir un puntero de instruccion -> [stack3](https://exploit.education/protostar/stack-one/)
+# Sobreescribir un puntero de instruccion 
+> [stack3](https://exploit.education/protostar/stack-one/)
 
 Aquí tenemos que modificar el registro "eip" el cual contiene la dirección de la siguiente insutrucción que el programa va a ejecutar. 
 Hay que mandarlo en concreto a la funcion "win"
@@ -178,7 +179,8 @@ code flow successfully changed
 ```
 ---------------------------------------------------------------------------
 
-# Sobreescribir un puntero de instruccion 2 -> [stack4](https://exploit.education/protostar/stack-four/)
+# Sobreescribir un puntero de instruccion 2 
+> [stack4](https://exploit.education/protostar/stack-four/)
 
 La teoría es la misma que con el caso anterior, solo que este es algo mas realista ya que el eip no esta pegado al final del buffer.
 
@@ -224,8 +226,9 @@ Segmentation fault -> Aunque se queje nos ha ejecutado la win (el mensaje de ant
 ```
 ---------------------------------------------------------------------------
 
-# Shellcode BufferOverflow -> [stack5](https://exploit.education/protostar/stack-five/)
+# Shellcode BufferOverflow 
 
+> [stack5](https://exploit.education/protostar/stack-five/)
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ python -c "print('AAAA'*17 + 'BBBB')" | ./stack5
@@ -318,7 +321,8 @@ root
 
 ---------------------------------------------------------------------------
 
-# Ret2libc -> [stack6](https://exploit.education/protostar/stack-six/)
+# Ret2libc 
+> [stack6](https://exploit.education/protostar/stack-six/)
 
 Con el stack 6 no podemos inyectar shellcode en la pila, ya que no nos permite volver a ella poniendola en el eip. Entonces como no hay shellcode, hay
 que aprovecharse de código que ya existe en el programa, en concreto las funciones de stdlib de C.
@@ -427,7 +431,9 @@ root
 
 ---------------------------------------------------------------------------
 
-# ROP y Ret2libc -> [stack7](https://exploit.education/protostar/stack-seven/)
+# Ret2libc y ROP 
+
+> [stack7](https://exploit.education/protostar/stack-seven/)
 
 Este ejercicio es identico al anterior, solo cambia ligeramente la parte de no poder retornar a la pila
 
