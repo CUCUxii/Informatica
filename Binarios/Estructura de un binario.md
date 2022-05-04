@@ -1,6 +1,6 @@
 ### \[Índice]
 
- - [CODIGO seccion .text](#codigo-seccion-.text)
+ - [CODIGO seccion text](#codigo-seccion-text)
  - [Global offset table](#global-offset-table)
  - [Procedure Linkage Table](#procedure-linkage-table)
  - [La pila](#la-pila)
@@ -8,7 +8,9 @@
 
 ----------------------------------------------------------------
 
-# CODIGO seccion .text
+# codigo seccion text
+
+**\[.text]**
 
 El código son las instrucciones en ensamblador del programa, estas vienen de su código original en C, solo que pasadas a lenguaje máquina.
 No se pueden modificar, es decir solo "READ_ONLY" o solo lectura. Tampoco son lineales, gracias a los bucles y comparaciones. 
