@@ -1,7 +1,7 @@
 # Guía de cmd (linea de comandos)
  - [Movimiento](#movimiento)
  - [Filtros](#filtro)
-
+ - [Información del Sistema](#ver-informacion-del-sistema)
 ---------------------------------------------------------------------------
 
 ## Movimiento
