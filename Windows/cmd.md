@@ -1,9 +1,10 @@
 # Guía de cmd (linea de comandos)
- - [Lo básico: movimiento](#Lo-Básico:-movimiento)
- - [Filtros](#Filtro)
+ - [Movimiento](#movimiento)
+ - [Filtros](#filtro)
+
 ---------------------------------------------------------------------------
 
-## Lo Básico: movimiento
+## Movimiento
 
 -  **CD** -> cambiar de directorio (igual que en Linux)  *cd ruta*
 -  **DIR** -> listar todos los contenidos de una carpeta *dir ruta*
@@ -64,7 +65,8 @@ C:\Users\cucuxii\Documents\carpeta\Carpeta\Factura2.txt
 
 ---------------------------------------------------------------------------
 
-##Filtro -> 
+## Filtro 
+
 -  **Findstr** -> comando para filtrar la salida.
 
 findstr patron
