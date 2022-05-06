@@ -29,11 +29,9 @@ Mode                 LastWriteTime         Length Name
  - **Get-Member** -> Muestra las propiedades que puede tener la salida. 
    * Get-Member -Name C* → Cancel, Close, Create...
  - **Select-Object** -> Para mostrar la salida como quieras
-   * Get-ChilItem | Select-Object Name,BaseName -> Mostrar solo esas propiedades.
-   * Get-ChilItem | Select-Object -First 3 → Muestra tres primeras lineas de la salida.
 ```powershell
 PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Get-Member | Select-Object Name -> Mode, Name, Extension, Lenght
-PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Select-Object Name, BaseName -> Archivo1.txt    -a----, Archivo2.txt    -a----
+PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Select-Object Name, BaseName -First 3 -> Archivo1.txt    -a----, Archivo2.txt    -a----
 ```
  - **Short-Object** -> Ordenar por orden alfabético
 ```powershell
@@ -45,11 +43,10 @@ PS C:\Users\cucuxii> Get-Process | Sort-Object | Select-Object -First 2 -> Admin
 PS C:\Users\cucuxii> Get-Process | Where-Object Name -eq  'svchost' | Select-Object -First 2 Name -> svchost, svchost
 ```
  - **Where** -> where {$_.Propiedad filtro}. El "$_" se refiere a que se aplica para cada elemento de la salida
-   *  Get-ChildItem | where {$_.Name -like "Do*"} ->  Documents, Downloads       
-   *  Get-Process | where {$_.ProcessName -notmatch "svchost|chrome|lenovo"}   -> Varios parámetros, en este caso que el nombre no coincida con svchost, chrome...
-   *  Get-Process | where {$_.Handles -gt 1000 -and $_.ProcessName -match “svchost|chrome”} -> Que se cumplan varios parámetros
 ```powershell
 PS C:\Users\palki> Get-Process | where {$_.ProcessName -notlike "svc"} | Select-Object -First 2 Name -> AdminService, AdobeIPCBroker
+PS C:\Users\palki> Get-ChildItem | where {$_.Name -like "Do*"} ->  Documents, Downloads   
+PS C:\Users\palki> Get-Process | where {$_.Handles -gt 1000 -and $_.ProcessName -match “svchost|chrome”}
 ```
 --------------------------------------------------------------------
 
