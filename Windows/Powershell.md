@@ -2,11 +2,59 @@
 ##  Archivos
 
  - **Get-ChildItem** → listar elementos (ls)
-   *   -Path → indicar ruta   Get-ChildItem C:\Users\  (se puede omitir el -Path)
-   *   -Name → solo da el nombre    |  -Recurse → recursivo, buscar subdirectorios dentro de las carpetas
-   *   -Attributes → atributos   Directory+!System → busca archivos del sistema que no sean directorios.
-   *   -Regex → Get-ChildItem C:\Windows\S* → Sytem32 Systemapps
-   *   -Exclude / -Include *.txt → no muestra archivos txt, solo muestra archivos txt (o cualquier otra extension)
+   *   **-Path** → indicar ruta   Get-ChildItem C:\Users\  (se puede omitir el -Path)
+   *   **-Name** → solo da el nombre    
+   *   **-Recurse** → recursivo, buscar subdirectorios dentro de las carpetas
+   *   **-Attributes** → atributos   Directory+!System → busca archivos del sistema que no sean directorios.
+   *   **-Filter** -> buscar algo en concreto
+   *   **-Regex** → Get-ChildItem C:\Windows\S* → Sytem32 Systemapps
+   *   **-Exclude / -Include \*.txt**→ no muestra archivos txt, solo muestra archivos txt (o cualquier otra extension)
+
+Buscar un archivo en concreto en el sistema (desde cierta ruta) y que te diga su localización.
+```powershell
+PS C:\Users\cucuxii> Get-ChildItem -Recurse -Filter "Vocabulario.txt" -Name
+C:\Users\cucuxii\Desktop\JAPONÉS\vocabulario.txt
+```
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+##  Objetos
+
+Cuando ejecutas un comando en Powershell (ej, Get-ChildItem) te sale un output en formato objeto  (como una tabla, cada elemento tiene sus propiedades (Columnas))  
+*Ejemplo, con Get-ChildItem los objetos Archivo1.txt y Archivo2.txt tienen las propiedades "Mode", "Name", "LastWriteTime" y "Lenght"*   
+
+ - **Get-Member** -> Muestra las propiedades que puede tener la salida. 
+   * Get-Member -Name C* → Cancel, Close, Create...
+ - **Select-Object** -> Para mostrar la salida como quieras
+   * Get-ChilItem | Select-Object Name,BaseName -> Mostrar solo esas propiedades.
+   * Get-ChilItem | Select-Object -First 3 → Muestra tres primeras lineas de la salida.
+ - **Short-Object** -> Ordenar por...
+   * Sort-Object -Ascending -Porperty Name  “Nombre” por orden alfabetico 
+ - **Where-Object** -> Filtrar por valor →  Where-Object Propiedad comparador numero
+   * -eq (=) | -lt (<) | -gt (>) |-ne (!=)  Ej Where-Object Name -eq  ‘svchost’ 
+
+```powershell
+PS C:\Users\cucuxii\Documents\carpeta > Get-ChildItem
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-ar---        23/10/2020     21:10                Archivo1.txt
+-ar---        05/05/2022     18:21                Archivo1.txt
+PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Get-Member
+   TypeName: System.IO.DirectoryInfo
+Name                      MemberType     Definition
+----                      ----------     ----------
+Mode                      CodeProperty   System.String Mode{get=Mode;}
+Name                      Property       string Name {get;}
+PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Select-Object Name, BaseName
+Name            Mode
+----            ----
+Archivo1.txt    -a----
+Archivo2.txt    -a----
+PS C:\Users\cucuxii> Get-Process | Where-Object Name -eq  'svchost'
+Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
+-------  ------    -----      -----     ------     --  -- -----------
+    301      16     3896      14728               508   0 svchost
+   1776      23    12700      23976              1320   0 svchost
+```
 
 --------------------------------------------------------------------
 
