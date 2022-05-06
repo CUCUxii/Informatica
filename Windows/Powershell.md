@@ -31,6 +31,8 @@ Cuando ejecutas un comando en Powershell (ej, Get-ChildItem) te sale un output e
    * Sort-Object -Ascending -Porperty Name  “Nombre” por orden alfabetico 
  - **Where-Object** -> Filtrar por valor →  Where-Object Propiedad comparador numero
    * -eq (=) | -lt (<) | -gt (>) |-ne (!=)  Ej Where-Object Name -eq  ‘svchost’ 
+ - **Where** -> where {$_.Propiedad filtro}
+ - 
 
 ```powershell
 PS C:\Users\cucuxii\Documents\carpeta > Get-ChildItem
@@ -49,11 +51,16 @@ Name            Mode
 ----            ----
 Archivo1.txt    -a----
 Archivo2.txt    -a----
-PS C:\Users\cucuxii> Get-Process | Where-Object Name -eq  'svchost'
+PS C:\Users\cucuxii> Get-Process | Where-Object Name -eq  'svchost' | Select-Object -First 2
 Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
 -------  ------    -----      -----     ------     --  -- -----------
     301      16     3896      14728               508   0 svchost
    1776      23    12700      23976              1320   0 svchost
+PS C:\Users\palki> Get-Process | where {$_.ProcessName -notlike "svc"} | Select-Object -First 2
+Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
+-------  ------    -----      -----     ------     --  -- -----------
+    162       9     2188       7420              6444   0 AdminService
+    205      12     2496       9872       0,20   6456   1 AdobeIPCBroker
 ```
 
 --------------------------------------------------------------------
