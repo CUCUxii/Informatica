@@ -19,24 +19,21 @@ C:\Users\cucuxii\Desktop\JAPONÉS\vocabulario.txt
 ##  Objetos
 Cuando ejecutas un comando en Powershell (ej, Get-ChildItem) te sale un output en formato objeto  (como una tabla, cada elemento tiene sus propiedades (Columnas))  
 *Ejemplo, con Get-ChildItem los objetos Archivo1.txt y Archivo2.txt tienen las propiedades "Mode", "Name", "LastWriteTime" y "Lenght"*   
-
- - **Get-Member** -> Muestra las propiedades que puede tener la salida. 
-   * Get-Member -Name C* → Cancel, Close, Create...
 ```powershell
 PS C:\Users\cucuxii\Documents\carpeta > Get-ChildItem
 Mode                 LastWriteTime         Length Name
 ----                 -------------         ------ ----
 -ar---        23/10/2020     21:10                Archivo1.txt
 -ar---        05/05/2022     18:21                Archivo1.txt
-PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Get-Member | Select-Object Name 
-Mode, Name  
 ```
+ - **Get-Member** -> Muestra las propiedades que puede tener la salida. 
+   * Get-Member -Name C* → Cancel, Close, Create...
  - **Select-Object** -> Para mostrar la salida como quieras
    * Get-ChilItem | Select-Object Name,BaseName -> Mostrar solo esas propiedades.
    * Get-ChilItem | Select-Object -First 3 → Muestra tres primeras lineas de la salida.
 ```powershell
-PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Select-Object Name, BaseName 
-Archivo1.txt    -a----, Archivo2.txt    -a----
+PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Get-Member | Select-Object Name -> Mode, Name, Extension, Lenght
+PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Select-Object Name, BaseName -> Archivo1.txt    -a----, Archivo2.txt    -a----
 ```
  - **Short-Object** -> Ordenar por orden alfabético
 ```powershell
