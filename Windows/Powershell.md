@@ -1,6 +1,5 @@
 
 ##  Archivos
-
  - **Get-ChildItem** → listar elementos (ls)
    *   **-Path** → indicar ruta   Get-ChildItem C:\Users\  (se puede omitir el -Path)
    *   **-Name** → solo da el nombre    
@@ -18,7 +17,6 @@ C:\Users\cucuxii\Desktop\JAPONÉS\vocabulario.txt
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ##  Objetos
-
 Cuando ejecutas un comando en Powershell (ej, Get-ChildItem) te sale un output en formato objeto  (como una tabla, cada elemento tiene sus propiedades (Columnas))  
 *Ejemplo, con Get-ChildItem los objetos Archivo1.txt y Archivo2.txt tienen las propiedades "Mode", "Name", "LastWriteTime" y "Lenght"*   
 
@@ -58,24 +56,16 @@ Operaciones con strings
 ```powershell
 PS C:\Users\cucuxii> $str = “Hola Mundo”		
 PS C:\Users\cucuxii> $str.Substring(1 ,5) -> "ola M"  # Corta un par de caracteres 
-PS C:\Users\cucuxii> $str.IndexOf(“l”) → 2   
 PS C:\Users\cucuxii> $str.Substring(1,$str.IndexOf("M")) -> "ola M"
 PS C:\Users\cucuxii> $str.Trim(“Hola”) → mundo
 PS C:\Users\cucuxii> $str.Replace(“Hola”,”Adios”) → Adios Mundo
-PS C:\Users\cucuxii>	$str.Contains(“Mundo”) → true
-PS C:\Users\cucuxii>	Get-ChildItem -Recurse |  where {$_.Name.ToLower().Contains("archivo")} -> Archivo1.txt, Atchivo2.txt
+PS C:\Users\cucuxii> $str.Contains(“Mundo”) → true
+PS C:\Users\cucuxii> Get-ChildItem -Recurse |  where {$_.Name.ToLower().Contains("archivo")} -> Archivo1.txt, Atchivo2.txt
+PS C:\Users\cucuxii> ([text.encoding]::ASCII).GetBytes("Hola Mundo") -> 72,111,108,97,32,77,117,110,100,111
 ```
-	
-	
-
-		Case Insensitive “where” → Get-ChilItem | where {$_.Name.ToLower().Contains(“svchost”)}
-
-	Sacar los bytes → ([text.encoding]::ASCII).GetBytes("Hola Mundo") 
-
 --------------------------------------------------------------------
 
 ##  Redes
-
  - **Get-NetTCPConnection** -> Para sacar las conexiones por TCP
 ```powershell
 PS C:\Users\palki>  Get-NetTCPConnection -State Listen,Established
@@ -87,8 +77,6 @@ LocalAddress                        LocalPort RemoteAddress                     
 0.0.0.0                             49670     0.0.0.0                             0          Listen                     308
 0.0.0.0                             49668     0.0.0.0                             0          Listen                     6004
 ```
-
 Había muchas mas pero para resumir. De la salida de este comando, lo que interesa es el RemotePort ya que es el puerto de salida,
 por el que hace las conexiones, y que nos permite ver mas claramente de que tipo son. 
 *Por ejemplo las 443 son las que usa https y el 25565 en este caso es del minecraft que lo dejé abierto a la hora de hacer el comando*
-
