@@ -32,7 +32,8 @@ Cuando ejecutas un comando en Powershell (ej, Get-ChildItem) te sale un output e
  - **Where-Object** -> Filtrar por valor →  Where-Object Propiedad comparador numero
    * -eq (=) | -lt (<) | -gt (>) |-ne (!=)  Ej Where-Object Name -eq  ‘svchost’ 
  - **Where** -> where {$_.Propiedad filtro}
- - 
+   *  Get-ChildItem | where {$_.Name -like "Do*"} ->  *Documents, Downloads       
+   *  Get-Process | where {$_.ProcessName -notmatch "svchost|chrome|lenovo"}   -> *Varios parámetros, en este caso que el nombre no coincida con svchost, chrome...
 
 ```powershell
 PS C:\Users\cucuxii\Documents\carpeta > Get-ChildItem
