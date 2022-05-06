@@ -31,10 +31,11 @@ Cuando ejecutas un comando en Powershell (ej, Get-ChildItem) te sale un output e
    * Sort-Object -Ascending -Porperty Name  “Nombre” por orden alfabetico 
  - **Where-Object** -> Filtrar por valor →  Where-Object Propiedad comparador numero
    * -eq (=) | -lt (<) | -gt (>) |-ne (!=)  Ej Where-Object Name -eq  ‘svchost’ 
- - **Where** -> where {$_.Propiedad filtro}
+ - **Where** -> where {$_.Propiedad filtro}. El "$_" se refiere a que se aplica para cada elemento de la salida
    *  Get-ChildItem | where {$_.Name -like "Do*"} ->  Documents, Downloads       
    *  Get-Process | where {$_.ProcessName -notmatch "svchost|chrome|lenovo"}   -> Varios parámetros, en este caso que el nombre no coincida con svchost, chrome...
-   *  PS C:\Users\palki> Get-Process | where {$_.Handles -gt 1000} -
+   *  Get-Process | where {$_.Handles -gt 1000} 
+   *  Get-Process | where {$_.Handles -gt 1000 -and $_.ProcessName -match “svchost|chrome”} -> Que se cumplan varios parámetros
 
 ```powershell
 PS C:\Users\cucuxii\Documents\carpeta > Get-ChildItem
