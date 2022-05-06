@@ -34,7 +34,6 @@ Cuando ejecutas un comando en Powershell (ej, Get-ChildItem) te sale un output e
  - **Where** -> where {$_.Propiedad filtro}. El "$_" se refiere a que se aplica para cada elemento de la salida
    *  Get-ChildItem | where {$_.Name -like "Do*"} ->  Documents, Downloads       
    *  Get-Process | where {$_.ProcessName -notmatch "svchost|chrome|lenovo"}   -> Varios parámetros, en este caso que el nombre no coincida con svchost, chrome...
-   *  Get-Process | where {$_.Handles -gt 1000} 
    *  Get-Process | where {$_.Handles -gt 1000 -and $_.ProcessName -match “svchost|chrome”} -> Que se cumplan varios parámetros
 
 ```powershell
@@ -43,28 +42,35 @@ Mode                 LastWriteTime         Length Name
 ----                 -------------         ------ ----
 -ar---        23/10/2020     21:10                Archivo1.txt
 -ar---        05/05/2022     18:21                Archivo1.txt
-PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Get-Member
-   TypeName: System.IO.DirectoryInfo
-Name                      MemberType     Definition
-----                      ----------     ----------
-Mode                      CodeProperty   System.String Mode{get=Mode;}
-Name                      Property       string Name {get;}
-PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Select-Object Name, BaseName
-Name            Mode
-----            ----
-Archivo1.txt    -a----
-Archivo2.txt    -a----
-PS C:\Users\cucuxii> Get-Process | Where-Object Name -eq  'svchost' | Select-Object -First 2
-Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
--------  ------    -----      -----     ------     --  -- -----------
-    301      16     3896      14728               508   0 svchost
-   1776      23    12700      23976              1320   0 svchost
-PS C:\Users\palki> Get-Process | where {$_.ProcessName -notlike "svc"} | Select-Object -First 2
-Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
--------  ------    -----      -----     ------     --  -- -----------
-    162       9     2188       7420              6444   0 AdminService
-    205      12     2496       9872       0,20   6456   1 AdobeIPCBroker
+PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Get-Member | Select-Object Name 
+Mode, Name  
+PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Select-Object Name, BaseName 
+Archivo1.txt    -a----, Archivo2.txt    -a----
+PS C:\Users\cucuxii> Get-Process | Where-Object Name -eq  'svchost' | Select-Object -First 2 Name 
+svchost, svchost
+PS C:\Users\palki> Get-Process | where {$_.ProcessName -notlike "svc"} | Select-Object -First 2 Name 
+AdminService, AdobeIPCBroker
 ```
+--------------------------------------------------------------------
+
+##  Strings
+Operaciones con strings 
+```powershell
+PS C:\Users\cucuxii> $str = “Hola Mundo”		
+PS C:\Users\cucuxii> $str.Substring(1 ,5) -> "ola M"  # Corta un par de caracteres 
+PS C:\Users\cucuxii> $str.IndexOf(“l”) → 2   
+PS C:\Users\cucuxii> $str.Substring(1,$str.IndexOf("M")) -> "ola M"
+PS C:\Users\cucuxii> $str.Trim(“Hola”) → mundo
+PS C:\Users\cucuxii> $str.Replace(“Hola”,”Adios”) → Adios Mundo
+PS C:\Users\cucuxii>	$str.Contains(“Mundo”) → true
+PS C:\Users\cucuxii>	Get-ChildItem -Recurse |  where {$_.Name.ToLower().Contains("archivo")} -> Archivo1.txt, Atchivo2.txt
+```
+	
+	
+
+		Case Insensitive “where” → Get-ChilItem | where {$_.Name.ToLower().Contains(“svchost”)}
+
+	Sacar los bytes → ([text.encoding]::ASCII).GetBytes("Hola Mundo") 
 
 --------------------------------------------------------------------
 
