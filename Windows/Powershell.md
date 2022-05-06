@@ -22,9 +22,22 @@ Cuando ejecutas un comando en Powershell (ej, Get-ChildItem) te sale un output e
 
  - **Get-Member** -> Muestra las propiedades que puede tener la salida. 
    * Get-Member -Name C* → Cancel, Close, Create...
+```powershell
+PS C:\Users\cucuxii\Documents\carpeta > Get-ChildItem
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-ar---        23/10/2020     21:10                Archivo1.txt
+-ar---        05/05/2022     18:21                Archivo1.txt
+PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Get-Member | Select-Object Name 
+Mode, Name  
+```
  - **Select-Object** -> Para mostrar la salida como quieras
    * Get-ChilItem | Select-Object Name,BaseName -> Mostrar solo esas propiedades.
    * Get-ChilItem | Select-Object -First 3 → Muestra tres primeras lineas de la salida.
+```powershell
+PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Select-Object Name, BaseName 
+Archivo1.txt    -a----, Archivo2.txt    -a----
+```
  - **Short-Object** -> Ordenar por...
    * Sort-Object -Ascending -Porperty Name  “Nombre” por orden alfabetico 
  - **Where-Object** -> Filtrar por valor →  Where-Object Propiedad comparador numero
@@ -35,15 +48,6 @@ Cuando ejecutas un comando en Powershell (ej, Get-ChildItem) te sale un output e
    *  Get-Process | where {$_.Handles -gt 1000 -and $_.ProcessName -match “svchost|chrome”} -> Que se cumplan varios parámetros
 
 ```powershell
-PS C:\Users\cucuxii\Documents\carpeta > Get-ChildItem
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--ar---        23/10/2020     21:10                Archivo1.txt
--ar---        05/05/2022     18:21                Archivo1.txt
-PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Get-Member | Select-Object Name 
-Mode, Name  
-PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Select-Object Name, BaseName 
-Archivo1.txt    -a----, Archivo2.txt    -a----
 PS C:\Users\cucuxii> Get-Process | Where-Object Name -eq  'svchost' | Select-Object -First 2 Name 
 svchost, svchost
 PS C:\Users\palki> Get-Process | where {$_.ProcessName -notlike "svc"} | Select-Object -First 2 Name 
