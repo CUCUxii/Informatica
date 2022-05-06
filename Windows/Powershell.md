@@ -1,5 +1,14 @@
 
+##  Archivos
 
+ - **Get-ChildItem** → listar elementos (ls)
+	  * -Path → indicar ruta   Get-ChildItem C:\Users\  (se puede omitir el -Path)
+   * 	-Name → solo da el nombre    |  -Recurse → recursivo, buscar subdirectorios dentro de las carpetas
+   * 	-Attributes → atributos   Directory+!System → busca archivos del sistema que no sean directorios.
+   * 	Regex → Get-ChildItem C:\Windows\S* → Sytem32 Systemapps
+   * 	-Exclude / -Include *.txt → no muestra archivos txt, solo muestra archivos txt (o cualquier otra extension)
+
+--------------------------------------------------------------------
 
 ##  Redes
 
