@@ -38,20 +38,21 @@ Mode, Name
 PS C:\Users\cucuxii\Documents\carpeta> Get-ChildItem  | Select-Object Name, BaseName 
 Archivo1.txt    -a----, Archivo2.txt    -a----
 ```
- - **Short-Object** -> Ordenar por...
-   * Sort-Object -Ascending -Porperty Name  “Nombre” por orden alfabetico 
+ - **Short-Object** -> Ordenar por orden alfabético
+```powershell
+PS C:\Users\cucuxii> Get-Process | Sort-Object | Select-Object -First 2 -> AdminService,  AdobeIPCBroker
+```
  - **Where-Object** -> Filtrar por valor →  Where-Object Propiedad comparador numero
    * -eq (=) | -lt (<) | -gt (>) |-ne (!=)  Ej Where-Object Name -eq  ‘svchost’ 
+```powershell
+PS C:\Users\cucuxii> Get-Process | Where-Object Name -eq  'svchost' | Select-Object -First 2 Name -> svchost, svchost
+```
  - **Where** -> where {$_.Propiedad filtro}. El "$_" se refiere a que se aplica para cada elemento de la salida
    *  Get-ChildItem | where {$_.Name -like "Do*"} ->  Documents, Downloads       
    *  Get-Process | where {$_.ProcessName -notmatch "svchost|chrome|lenovo"}   -> Varios parámetros, en este caso que el nombre no coincida con svchost, chrome...
    *  Get-Process | where {$_.Handles -gt 1000 -and $_.ProcessName -match “svchost|chrome”} -> Que se cumplan varios parámetros
-
 ```powershell
-PS C:\Users\cucuxii> Get-Process | Where-Object Name -eq  'svchost' | Select-Object -First 2 Name 
-svchost, svchost
-PS C:\Users\palki> Get-Process | where {$_.ProcessName -notlike "svc"} | Select-Object -First 2 Name 
-AdminService, AdobeIPCBroker
+PS C:\Users\palki> Get-Process | where {$_.ProcessName -notlike "svc"} | Select-Object -First 2 Name -> AdminService, AdobeIPCBroker
 ```
 --------------------------------------------------------------------
 
