@@ -8,6 +8,7 @@
  - [Consultar datos](#consultar-datos)
  - [Funciones](#funciones)
  - [Tabla information schema](#tabla-information-schema)
+ - [Los archivos .sql](#los-archivos-sql)
 
 ----------------------------------------------------------------------
 
@@ -190,7 +191,7 @@ id, nombre, año, pais,
 ```
 ----------------------------------------------------------------------
 
-## Los archivos .sql
+## Los archivos sql
 
 - Exportar
 ```console
