@@ -2,10 +2,39 @@
 
 \[Indice]
 
+ - [¿Que es SQL?](#que-es-sql)
+ - [Instalación y uso](#instalacion-y-uso)
  - [Crear base de datos](#crear-base-de-datos)
  - [Consultar datos](#consultar-datos)
  - [Funciones](#funciones)
  - [Tabla information schema](#tabla-information-schema)
+
+----------------------------------------------------------------------
+
+## Que es SQL
+
+**SQL** se traduce como *"Structured Query Languaje"* o lenguaje de consultas estruturado, es decir, es una manera de clasificar datos creando lo que 
+se llama base de datos. Estas bases de datos tienen cada una tablas, que son como las clasicas tablas excel, donde cada columna es un atributo (ej nombre, edad, sueldo...) y cada fila es un dato con esos atributos(ej empleado). Con simples consultas se pueden acceder a esos datos ordenandolos, filtrandolos, hasta modificandolos...
+
+SQL es un estilo de lenguaje para estas bases de datos, dentro de SQL hay diferentes lenguajes como MySQL, SQLite...
+
+----------------------------------------------------------------------
+
+## Instalacion y uso (Linux)
+
+```console
+[usaurio@linux]─[~]:$ sudo apt install mariadb-client mariadb-server
+[usaurio@linux]─[~]:$ sudo service mysql start
+[usaurio@linux]─[~]:$ lsof -i:3306                                                                                                                       
+COMMAND   PID  USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+mariadbd 1588 mysql   19u  IPv4  23975      0t0  TCP localhost:mysql (LISTEN)
+[usaurio@linux]─[~]:$ sudo mysql
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 35
+MariaDB [(none)]> exit;
+Bye
+[usaurio@linux]─[~]:$
+```
 
 ----------------------------------------------------------------------
 
@@ -134,7 +163,6 @@ EE.UU, Japón, Suecia
 
 ## Funciones
 
-- Funciones
 ```sql
 MariaDB [pruebas]> SELECT UPPER(concat(nombre,0x3a,pais)) FROM peliculas ORDER BY nombre;
 BLADE RUNNER:EE.UU, ELYISUM:EE.UU, GHOST IN THE SHELL:JAPON, JHONNY MNEMONIC:EE.UU, MILENIUM:SUECIA   
@@ -160,11 +188,29 @@ peliculas, bandas
 MariaDB [pruebas]> SELECT column_name FROM information_schema.columns WHERE table_schema='prueba' AND table_name='peliculas';
 id, nombre, año, pais, 
 ```
+----------------------------------------------------------------------
 
+## Los archivos .sql
 
-
-
-
+- Exportar
+```console
+[usaurio@linux]─[~]:$ sudo mysqldump prueba > ~/Documentos/ejercicios.sql
+[usaurio@linux]─[~]:$ ls
+ejercicios.sql
+```
+- Importar 
+```console
+[usaurio@linux]─[~]:$ sudo mysql
+MariaDB [(none)]> show databases;
+information_schema, mysql, performance_schema
+MariaDB [(none)]> create database prueba;
+MariaDB [(none)]> exit
+[usaurio@linux]─[~]:$sudo mysqldump prueba < ~/Documentos/ejercicios.sql
+-- Dump completed on 2022-05-09 12:33:36
+[usaurio@linux]─[~]:$ sudo mysql
+MariaDB [(none)]> show databases;
+information_schema, mysql, performance_schema, prueba
+```
 
 
 
