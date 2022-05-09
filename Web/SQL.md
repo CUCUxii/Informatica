@@ -124,7 +124,7 @@ Blade Runner:EE.UU, Elyisum:EE.UU, Ghost in the shell:Japon, Jhonny Mnemonic:EE.
 MariaDB [pruebas]> SELECT nombre FROM peliculas WHERE año>(SELECT AVG(año) FROM peliculas);
 Millenium, Elysium
 ```
-- **DISTINCT* 
+- **DISTINCT** 
 ```sql
 MariaDB [pruebas]> SELECT DISTINCT pais FROM peliculas;
 EE.UU, Japón, Suecia
