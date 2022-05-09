@@ -19,6 +19,9 @@ se llama base de datos. Estas bases de datos tienen cada una tablas, que son com
 
 SQL es un estilo de lenguaje para estas bases de datos, dentro de SQL hay diferentes lenguajes como MySQL, SQLite...
 
+SQL esta presente en casi todas las webs, teniendo en cuenta de que suelen usar una tabal para almacenar los usuarios y sus contraseñas y roles, o entradas de cosas
+(ejemplo, pagina de consulta de datos de peliculas, tienda de informatica con todos sus productos)
+
 ----------------------------------------------------------------------
 
 ## Instalacion y uso (Linux)
