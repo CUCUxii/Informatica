@@ -1,5 +1,11 @@
 # Bases de datos SQL
 
+\[Indice]
+
+ - [Crear base de datos](#crear-base-de-datos)
+ - [Consultar datos](#consultar-datos)
+ - [Funciones](#funciones)
+ - [Tabla information schema](#tabla-information-schema)
 
 ----------------------------------------------------------------------
 
@@ -33,7 +39,7 @@ MariaDB [pruebas]> UPDATE peliculas SET pais='España', año= WHERE id=4;
 ```
 - Borrar entrada
 ```sql
-MariaDB [pruebas]> DELETE FROM Peliculas WHERE ID=6;
+MariaDB [pruebas]> DELETE FROM bandas WHERE nombre='Maluma';
 ```
 - Crear columna, (todos los valores se pondran en NULL); Borrarla
 ```sql
@@ -43,10 +49,11 @@ MariaDB [pruebas]> ALTER TABLE peliculas RENAME nombre TO titulo;
 ```
 ----------------------------------------------------------------------
 
-## Mostrar datos de la Database, consultas
+## Consultar datos 
 
 > En SQL una base de datos se le conoce tabmien como table_schema
 
+- **SHOW**
 ```sql
 MariaDB [pruebas]> show databases;
 prueba, information_schema, mysql, performance_schema
@@ -55,7 +62,7 @@ bandas, peliculas
 MariaDB [pruebas]> SHOW COLUMNS FROM peliculas; 
 id, nombre, año, pais
 ```
-- SELECT
+- **SELECT**
 
 ```sql
 MariaDB [(none)]>  SELECT * FROM pruebas.peliculas;
@@ -81,8 +88,85 @@ MariaDB [pruebas]> SELECT nombre FROM peliculas WHERE pais IN ('EE.UU','Suecia')
 Blade Runner, Millenium, Elysium, Jhonne Memmonic
 MariaDB [pruebas]> SELECT nombre FROM peliculas WHERE pais NOT IN ('EE.UU','Suecia');
 Ghost in the shell
-
 ```
+- **UNION SELECT** -> conbinar varias tablas 
+
+```sql
+MariaDB [pruebas]> SELECT nombre FROM peliculas WHERE pais='Suecia' UNION SELECT nombre from bandas;
+Millenium, Nirvana, Scorpions, Metallica
+MariaDB [pruebas]> SELECT id,nombre FROM peliculas WHERE pais='Suecia' UNION SELECT id,nombre from bandas;
++----+-----------+
+| id | nombre    |
++----+-----------+
+|  3 | Millenium |
+|  1 | Nirvana   |
+|  2 | Scorpions |
+|  3 | Metallica |
++----+-----------+
+```
+- **LIMIT** -> por cual empieza, cuantos resultados  
+```sql
+MariaDB [pruebas]> SELECT nombre FROM peliculas LIMIT 2,3;
+Millenium, Elysium, Jhonne Mnemonic
+```
+- **ORDER BY** -> ordena la columna especificada por orden alfabetico
+```sql
+MariaDB [pruebas]> SELECT nombre FROM peliculas ORDER BY nombre;
+Blade Runner, Elyisum, Ghost in the shell, Jhonny Mnemonic, Milenium      
+```
+- **CONCAT** -> Une resultados de dos columnas en una sola, pero esta pegado, para separarlo por ":" se po e 0x3a (: en hexadecimal)
+```sql
+MariaDB [pruebas]> SELECT concat(nombre,0x3a,pais) FROM peliculas ORDER BY nombre;
+Blade Runner:EE.UU, Elyisum:EE.UU, Ghost in the shell:Japon, Jhonny Mnemonic:EE.UU, Milenium:Suecia   
+```
+ - Subconsultas
+```sql
+MariaDB [pruebas]> SELECT nombre FROM peliculas WHERE año>(SELECT AVG(año) FROM peliculas);
+Millenium, Elysium
+```
+- **DISTINCT* 
+```sql
+MariaDB [pruebas]> SELECT DISTINCT pais FROM peliculas;
+EE.UU, Japón, Suecia
+```
+
+----------------------------------------------------------------------
+
+## Funciones
+
+- Funciones
+```sql
+MariaDB [pruebas]> SELECT UPPER(concat(nombre,0x3a,pais)) FROM peliculas ORDER BY nombre;
+BLADE RUNNER:EE.UU, ELYISUM:EE.UU, GHOST IN THE SHELL:JAPON, JHONNY MNEMONIC:EE.UU, MILENIUM:SUECIA   
+MariaDB [pruebas]> SELECT LOWER(nombre) FROM peliculas ORDER BY nombre LIMIT 2,1;
+ghost in the shell
+MariaDB [pruebas]> SELECT MIN(año) FROM peliculas UNION SELECT MAX(año) FROM peliculas UNION SELECT AVG(año) FROM peliculas;
+1984, 2013, 1998
+MariaDB [pruebas]> SELECT DISTINCT UPPER(substr(pais,1,2)) FROM peliculas;
+EE, JA, SU
+```
+
+----------------------------------------------------------------------
+
+## Tabla information schema
+
+Es una database especial que contiene los nombres de tablas, bases de datos y columnas del sistema
+
+```sql
+MariaDB [pruebas]> SELECT schema_name FROM information_schema.schemata;
+information_schema, mysql, performance_schema, ejercicios
+MariaDB [pruebas]> SELECT table_name FROM information_schema.tables WHERE table_schema='prueba';
+peliculas, bandas
+MariaDB [pruebas]> SELECT column_name FROM information_schema.columns WHERE table_schema='prueba' AND table_name='peliculas';
+id, nombre, año, pais, 
+```
+
+
+
+
+
+
+
 
 
 
