@@ -3,11 +3,10 @@
 
 Todas las funciones de C (el codigo) son una simplificación de los syscalls. Estos son llamadas al modo kernel (el modo con máximos privilegios sobre el hardware)
 Este realiza ciertas acciones sobre lo que se le ha pasado en el modo usaurio (como escribir algo en la pantalla) y devuelve a este el control y el resultado.  
-En lenguaje ensamblador se traduce como la insutrrución *SYSCALL* precedido de un MOV de un numero a un registro, el cual actua como [indice]
-(https://filippo.io/linux-syscall-table/) de la insutruccón del
-syscall que se está haciendo.
-Ej MOV EAX 1 = write. Se usa en muchas funciones de C como "puts", "printf"
+En lenguaje ensamblador se traduce como la insutrrución *SYSCALL* precedido de un MOV de un numero a un registro, el cual actua como 
+[indice](https://filippo.io/linux-syscall-table/) de la insutruccón del syscall que se está haciendo.
 
+Ej MOV EAX 1 = write. Se usa en muchas funciones de C como "puts", "printf"
 
 -------------------------------------------------
 
