@@ -22,16 +22,26 @@ correspondiente ej -> Si habiamos abierto un archivo al que le habíamos asignad
  # PRIVILEGIOS
    S_ + R/W/X + USR/GRP/OTH -> leer escribir ejecutar   usuario grupo otros. Tiene un codigo numerico
  ```
- - **close** -> close(desc_de_fichero). Se puede usar para tuberias, archivos, sockets y demonios.
- - **dup** -> dup(desc, desc) -> 
+ - **close** -> close(descpt.). Se puede usar para tuberias, archivos, sockets y demonios.
+ - **dup** -> dup(descpt., descpt.) -> 
 dup(4, 1) -> que el stdout vaya al descriptor 4 (por ejemplo asociado a un archivo) es decir escribir en ese archivo y no en pantalla
-Ejemplo ->  ```bash cat archivo.txt > /dev/null``` -> ```C open("/sev/null", O_RDWR) = 4; dup2(4,0); dup2(4,1); dup2(4,2); close(4)```
+Ejemplo ->  ```bash cat archivo.txt > /dev/null``` -> ```C open("/dev/null", O_RDWR) = 4; dup2(4,0); dup2(4,1); dup2(4,2); close(4)```
 
 ----------------------------------------------------------------
  
  ## SOCKETS Y CONEXIONES 
  
- 
+  - **socket** -> crear un socket   socket(tipo, modo) = descpt.   -> socket(AF_INET, SOCK_STREAM) = 5    socket ipv4 en el descpt. 5
+ipv4 suele ser AF_INET
+  - **setsockopt** -> defimir caracteristicas del socket
+  - **bind** -> darle al socket sus puerto/ip -> bind(descpt., {sa_family=tipo, sin_port=htons(puerto), sin_addr("ip")}, bytes_que_acepta)
+  - **listen** -> ponerlo en escucha ->  listen(descpt)
+
+ ```C
+socket(AF_INET, SOCK_STREAM) = 5;
+bind(5, {sa_family=AF_INET, sin_port=htons(443), sin_addr("127.0.0.1")}, 16)
+listen(5)
+ ```
  
 ----------------------------------------------------------------
  
@@ -46,5 +56,9 @@ Un buen ejemplo de esto es el proceso padre "shell" y el hijo cualquier otro pro
 
 Las funciones fork y clone suelen tener como argumento el PID del hijo resultante (o su descriptor de fichero () = desc. aunque se usa mas el PID)
  
- 
+  ```C
+open("/opt/protostar/run/net0.pid", O_RDWR|O_CREAT|O_TRUNC, 0700) = 3
+clone(3) = 404
+codigo que hace el hijo, ejemplo va en incognito por lo que redirige todo al /dev/null
+ ```
  
