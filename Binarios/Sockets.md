@@ -61,7 +61,7 @@ con = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 con.connect(("127.0.0.1", 2999))
 resp1 = con.recv(1024)
 numero = re.findall(r"Please send '(.*?)'",resp1)[0]
-numero =  struct.pack('<I',int(numero))   # El numero se pasa a bytes y a little endian "<I". (Si se pasa como str da error)
+numero =  struct.pack('I',int(numero))   # El numero se pasa a bytes (Si se pasa como str da error)
 con.send(numero)   # Enviarlo y luego recibir el mensaje
 resp2 = con.recv(1024)
 print(resp2)
