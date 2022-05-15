@@ -41,7 +41,7 @@ Please send '851767090' as a little endian 32bit int
 Please send '1461411396' as a little endian 32bit int
 ```
 Asi que lo que hay que hacer el filtrar el numero este directamente del mensaje, ponerlo en formato correcto y volver a enviarlo.
-```console
+```python
 import socket, struct, re
 con = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 con.connect(("127.0.0.1", 2999))
@@ -61,7 +61,7 @@ con = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 con.connect(("127.0.0.1", 2999))
 resp1 = con.recv(1024)
 numero = re.findall(r"Please send '(.*?)'",resp1)[0]
-numero =  struct.pack('<L',int(numero))   # El numero se pasa a entero (porque es una string) y  a little endian "<L" (no se puede hacer con strings)
+numero =  struct.pack('<I',int(numero))   # El numero se pasa a bytes y a little endian "<I". (Si se pasa como str da error)
 con.send(numero)   # Enviarlo y luego recibir el mensaje
 resp2 = con.recv(1024)
 print(resp2)
@@ -70,5 +70,90 @@ print(resp2)
 [user@protostar]-[/opt/protostar/bin]:$ python /tmp/exploit.py 
 Thank you sir/madam
 ```
+
+---------------------------------------------------------------
+
+## Net1
+
+Este escucha en el 2998
+```python
+import socket, struct, re
+con = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+con.connect(("127.0.0.1", 2998))
+resp1 = con.recv(1024)
+print(resp1)
+```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python /tmp/exploit.py 
+?
+▒
+```
+Parece que nos mandan bytes, que el ordenador intenta imprirnos en caracteres ascii (su equivalencia) y al no encontrarlos nos pone estos caracteres tan kafkianos (con saltos de linea "\n"). Asi que habra que pasarlo a otro formato. En concreto a hexadcimal (ya que los caracteres ascii operan con hexadecimal)
+
+> struct.pack es para pasar a bytes. Lo hemos usado en los stack para pasar una memoria en hexadecimal (str) a bytes bien formateados. Puede ser endian 
+> "I" o little endian "<I". 
+> 
+> El unpack es para pasar bytes o hexadecimal a ascii, en concreto a un entero (I)
+
+```python
+import socket, struct, re
+con = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+con.connect(("127.0.0.1", 2998))
+resp1 = con.recv(1024)
+print(resp1)
+resp1 = struct.unpack("I",resp1)[0]   # Pasar a un entero la data que recibimos (y que sea legible)
+con.send(str(resp1))        # Mandarlo de vuelta en formato string (si no da error)
+resp2 = con.recv(1024)
+print(resp2)
+```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python /tmp/exploit.py 
+you correctly sent the data
+```
+---------------------------------------------------------------
+
+## Net2
+
+Este tiene un bucle donde crea un numero random de 4 bytes, lo imprime (nos lo manda), le suma otro, imprime el resulado (y lo manda)... asi 4 veces.
+Asi que voy a utilizar un bucle para recibir 4 datos de 4 bytes y pasarlos a enteros, luego sumarlas.
+```python
+import socket, struct, re
+con = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+con.connect(("127.0.0.1", 2997))
+lista = []
+for i in range(4):
+    resp = struct.unpack("I",con.recv(4))[0]
+    lista.append(resp)
+print(sum(lista))
+```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python /tmp/exploit.py 
+4812543778
+```
+Esto ahora hay que mandarselo
+```python
+numero = sum(lista)
+con.send(str(numero))      
+print(con.recv(1024))
+```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python /tmp/exploit.py 
+sorry, try again. invalid
+```
+Poz no le guzto :(. Quiere que se lo enviemos en formato bytes, o sea como lo que nos envia. Entonces lo "structpackeamos" y punto
+```console
+numero = sum(lista)
+con.send(struct.pack("I",numero))
+print(con.recv(1024))
+```
+```console
+[user@protostar]-[/opt/protostar/bin]:$ python /tmp/exploit.py 
+you added them correctly
+```
+Ahora zi :)
+
+
+
+
 
 
