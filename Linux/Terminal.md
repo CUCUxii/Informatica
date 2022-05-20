@@ -5,26 +5,23 @@
 
 
 ---------------------------------------------------------------------------
+
 ## ¿Que es la Terminal?
 
-La Terminal o shell es la linea de comandos, la consola. Normalmente estamos acostumbrados a operar un sistema operativo mediante una interfaz gráfica (iconos,
-desplazamiento a base de clicks) ya que estas se inventaron para hacer la informática mas accesible, ya que a mucha gente ver una terminal de letras verdes
-sobre fondo negro le eche para atras, piense que es algo muy complicado o algo de *hackers*
-
+La Terminal o shell es la linea de comandos, la consola. Normalmente estamos acostumbrados a operar un sistema operativo mediante una interfaz gráfica (iconos, desplazamiento a base de clicks) ya que estas se inventaron para hacer la informática mas accesible, ya que a mucha gente ver una terminal de letras verdes sobre fondo negro le eche para atras, piense que es algo muy complicado o algo de *hackers*  
 Yo aprendi a utilizar la terminal y me acabó encantando, tiene muchas mas posibilidadades que una interfaz gráfica (en mi Linux he eliminado esta última,
-reduciendolo todo a la consola).
-
+reduciendolo todo a la consola).  
 Antes de empezar, quiero aclarar que en informática a las carpetas las llamamos **directorios** y a los archivos **ficheros**.
-
 Los comandos son programas y como tales, te dan una respuesta. Es decir, una salida a una entrada.
       \[comando] -> \[respuesta]       whoami -> usuario
       
 - Algunos se les puede pasar un input: Ej
- 	```console
- 	[usuario@linux]-[~/escritorio]:$ cat ./archivo.txt
-    ```
+```console
+ [usuario@linux]-[~/escritorio]:$ cat ./archivo.txt
+```
 
 ---------------------------------------------------------------------------
+
 ## Lo Básico: Las rutas (carpetas)
 
  * **Ruta absoluta** →  /home/usuario/escritorio/carpeta_1 ->  Siempre es la misma
@@ -33,30 +30,33 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
     - *Inciso, explicaré como funcionan las rutas relativas y ciertos riesgos de seguridad asociados.*
 
 	. carpeta actual      .. carpeta padre (la que contiene a la actual)   ~ /home/usuario    - directorio anterior
+	
 ---------------------------------------------------------------------------
+
 ## Movimiento: desplazamiento entre directorios (carpetas)
 -  **PWD** -> comando para que el sistema te diga en que directorio estás 
 -  **LS** -> Listar las carpetas que hay dentro del directorios
      * ls -l -> que te salga en forma de lista, información mas detallada
      * -a -> Que te salgan tambien los archivos/carpetas ocultas
 
-	```console
-	[usuario@linux]-[~/escritorio]:$ pwd
-	/home/usuario/escritorio
-	[usuario@linux]-[~/escritorio]:$ ls
-	programas  Archivo.txt
-	```
+```console
+[usuario@linux]-[~/escritorio]:$ pwd
+/home/usuario/escritorio
+[usuario@linux]-[~/escritorio]:$ ls
+programas  Archivo.txt
+```
 -  **CD** -> para cambiar de directorio
-	```console
-	[usuario@linux]-[~/escritorio]:$ pwd
-	/home/usuario/escritorio
-	[usuario@linux]-[~/escritorio]:$ cd ../
-	escritorio   musica   documentos   descargas  
-	[usuario@linux]-[~]:$ cd ./musica
-	[usuario@linux]-[~/musica]:$ ls
-	nirvana   depeche_mode   metallica
-    ```
+```console
+[usuario@linux]-[~/escritorio]:$ pwd
+/home/usuario/escritorio
+[usuario@linux]-[~/escritorio]:$ cd ../
+escritorio   musica   documentos   descargas  
+[usuario@linux]-[~]:$ cd ./musica
+[usuario@linux]-[~/musica]:$ ls
+nirvana   depeche_mode   metallica
+```
 ---------------------------------------------------------------------------
+
 ## Crear/borrar/mover carpetas y archivos
 - **TOUCH** -> Crear documentos vacios  \[touch ruta/archivo]
 - **RM** -> borrar archivos \[rm ruta/archivo]
@@ -65,44 +65,47 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
 - **MKDIR** -> Crear una nueva carpeta 
 - **RMDIR** -> Para borrar carpetas vacias, pero mejor usar \[rm -rf]
 
-	```console
-	[usuario@linux]-[~/escritorio]:$ ls
-	programas  Archivo.txt
-	[usuario@linux]-[~/escritorio]:$ mkdir ./Carpeta
-	programas  Archivo.txt  Carpeta  
-	[usuario@linux]-[~]:$ cd ./Carpeta
-	[usuario@linux]-[~/musica]:$ touch Ejemplo.txt
-	[usuario@linux]-[~/musica]:$ ls 
-	Ejemplo.txt
-	[usuario@linux]-[~/musica]:$ cd ../
-	[usuario@linux]-[~/musica]:$ rm -rf ./Carpeta
-	[usuario@linux]-[~/musica]:$ ls
-	programas  Archivo.txt
-    ```
+```console
+[usuario@linux]-[~/escritorio]:$ ls
+programas  Archivo.txt
+[usuario@linux]-[~/escritorio]:$ mkdir ./Carpeta
+programas  Archivo.txt  Carpeta  
+[usuario@linux]-[~]:$ cd ./Carpeta
+[usuario@linux]-[~/musica]:$ touch Ejemplo.txt
+[usuario@linux]-[~/musica]:$ ls 
+Ejemplo.txt
+[usuario@linux]-[~/musica]:$ cd ../
+[usuario@linux]-[~/musica]:$ rm -rf ./Carpeta
+[usuario@linux]-[~/musica]:$ ls
+programas  Archivo.txt
+```
 ---------------------------------------------------------------------------
+
 ## Mover y copiar
 -  **MV** → mover -> vale con carpetas (movera tambien su contenido) o archivos. \[mv ruta/fichero ruta]
      * mv fichero.txt ruta/ → Meter fichero de directorio actual a otra carpeta
      * mv ruta/archivo . → Mover fichero de una carpeta al directorio actual.
      * mv nombre.txt nuevo_nombre.txt → renombra el archivo (si no existe el segundo, si existe lo sobreescribe)
      * mv /* /dev/null → *mueve toda la raiz al "dev null" y manda el sistema operativo a tomar por culo*
-	```console
-	[usuario@linux]-[~/escritorio]:$ mv ../musica/nirvana .
-	[usuario@linux]-[~/escritorio]:$ ls
-	programas  Archivo.txt Nirvana
-	[usuario@linux]-[~/escritorio]:$ rm -rf ./nivana
-    ```
+```console
+[usuario@linux]-[~/escritorio]:$ mv ../musica/nirvana .
+[usuario@linux]-[~/escritorio]:$ ls
+programas  Archivo.txt Nirvana
+[usuario@linux]-[~/escritorio]:$ rm -rf ./nivana
+```
 -  **CP** -> copiar. Al contrario de mover, el archivo original no desaparece, sino que se duplica.
      * cp ruta/documento nueva_ruta/ → haz una copia del fichero en otra carpeta
      * cp ruta/documento nueva_ruta/ nuevo_nombre → Que la copia tenga otro nombre diferente.
      * cp -r ruta/ nueva_ruta/ → si es una carpeta (con cosas dentro) -r de recursividad
----------------------------------------------------------------------------   		
+     * 
+---------------------------------------------------------------------------   	
+
 ## Leer, escribir
 -  **CAT**  -> mostrar el contenido el documento en la terminal →  cat documentoX.txt → “Hola”
-	```console
-	[usuario@linux]-[~/escritorio]:$ cat Archivo.txt
-	Hola Mundo
-    ```
+```console
+[usuario@linux]-[~/escritorio]:$ cat Archivo.txt
+Hola Mundo
+```
 -  **NANO**  -> Editor de texto → nano fichero.txt. Si el archivo no existía lo crea.
      * Ctrl+O -> Guardar
      * Ctrl+X -> salir 
@@ -121,13 +124,14 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
      * echo -e”\nHola Mundo”  \n es un salto de linea y -e es para que lo interprete en vez de imprimirlo.
 -  **READ** -> Suele ser para leer el input de un usuario pero si esta pipeado lee de un archivo.
 -  **SPONGE** -> es como un echo pero no da problemas si lee de un archivo y escribe luego en el mismo
-	```console
-	[usuario@linux]-[~/escritorio]:$ cat users.txt | while read user; do echo $user@mail.com; done | sponge users 
-	Elliot@mail.com
-	Angela@mail.com
-	Darlene@mail.com
-    ```
+```console
+[usuario@linux]-[~/escritorio]:$ cat users.txt | while read user; do echo $user@mail.com; done | sponge users 
+Elliot@mail.com
+Angela@mail.com
+Darlene@mail.com
+```
 ---------------------------------------------------------------------------
+
 ## Filtros
 -  **GREP** ->  Buscar una palabra en un archivo de texto grep “palabra” ./fichero.txt  → palabra y toda la línea que la siga.
      * -n Indicar en que linea de texto esta la palabra
@@ -147,7 +151,9 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
 -  **TAIL** -> Mostrar un archivo de texto a partir de cierta linea:
      * tail -n 2        -n es numero de linea -> -n 2: muestra las últimas dos líneas -n +2 muestra a partir de la línea 2.
 -  **HEAD** -> el texto de antes de cierta línea (- n 2: muestra las primeras dos líneas, -n +2 muestra antes de la línea
+-  
 ---------------------------------------------------------------------------
+
 ## Busqueda
 -  **FIND** ->  Buscar un archivo en el sistema   find ruta -name “encontrar.txt”
      * | xargs cat →  Imprime lo que contenga escrito → “Hola Mundo”
@@ -164,7 +170,9 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
      * -l -> contar lienas
      * -c -> contar caracteres
 -  **DIFF** → Comparar archivos:   diff archivo1 archivo2   lo diferente →   <palabradel1 (archivo1)   >palabradel2 (archivo2)  -> diff <(echo “&variable1”) <(echo “&variable2”) 	
+
 ---------------------------------------------------------------------------
+
 ## Sustituciones
 -  **SED** -> Sustituir algo en una cadena de texto
      * sed “s/X/Y/g” → cambia la palabra “X” por “Y”  →  s es de search, buscar, y g es de global (mas de una vez)
@@ -175,6 +183,37 @@ Los comandos son programas y como tales, te dan una respuesta. Es decir, una sal
      * tr -s / → Borrar caracteres repetidos
      * tr -d “ “  → Eliminar caracteres → “\n” saltos de linea “ “ espacios     
      * tr ‘r’ ‘T’ → Susitutye caracteres (r por T) →  para palabras no va por que no toma la palabra sino todas sus letras
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * 
+-------------------------------------------------------------------------------------------------------------------
    
-   
+## Peticiones WEB curl
+
+- **CURL**
+
+Peticion GET
+```console
+[usuario@linux]-[~/escritorio]:$ curl -s "http://web.xii"	# Peticion GET normal, la salida es el codigo fuente de la página
+[usuario@linux]-[~/escritorio]:$ curl -H 		# Te imprime los headers (caracteristicas de la peticion)
+```
+Peticion POST
+```console
+[usuario@linux]-[~/escritorio]:$ curl -sX POST "http://web.xii/quote.php" -d "name=github&description=subir codigo a la web&fecha=2022"
+[usuario@linux]-[~/escritorio]:$ curl -sX POST "http://web.xii/upload.php" -F "name=Informe" -F "file=<archivo.txt"  # "<" para subir cosas
+```
+Autenticaciones
+```console
+[usuario@linux]-[~/escritorio]:$ curl "http://admin.web.xii/manage" -H "Cookie: PHPSESSID=0a123; admin=1" # Poner dos cookies
+[usuario@linux]-[~/escritorio]:$ curl "http://web.xii/login" -U "admin:password123"
+```
+Archivos y Otros
+```console
+[usuario@linux]-[~/escritorio]:$ curl "http://admin.web.xii/download/archivo.txt -o ./archivo.txt # Descargar el archivo en tu carpeta actual
+[usuario@linux]-[~/escritorio]:$ curl "http://admin.web.xii" -x http://localhost:8080   # Redireccionar trafico a un proxy
+```
+
+
+
+
+
+
+
