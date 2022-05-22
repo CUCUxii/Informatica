@@ -90,10 +90,8 @@ print(resp1)
 ```
 Parece que nos mandan bytes, que el ordenador intenta imprirnos en caracteres ascii (su equivalencia) y al no encontrarlos nos pone estos caracteres tan kafkianos (con saltos de linea "\n"). Asi que habra que pasarlo a otro formato. En concreto a hexadcimal (ya que los caracteres ascii operan con hexadecimal)
 
-> struct.pack es para pasar a bytes. Lo hemos usado en los stack para pasar una memoria en hexadecimal (str) a bytes bien formateados. Puede ser endian 
-> "I" o little endian "<I".  struct.pack("I", int o str(hexadecimales, como direcciones de memoria))
-> 
-> El unpack es para pasar bytes o hexadecimal a ascii, en concreto a un entero (I)  struct.unpack("I",  int o str(hex))
+> struct.pack("I", entero o hexadecimal)   # entero -> bytes .Little endian ("<I")     
+> struct.unpack("I", con.recv(1024)) # bytes -> entero  
 
 ```python
 import socket, struct, re
