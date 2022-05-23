@@ -209,6 +209,7 @@ Archivos y Otros
 ```console
 [usuario@linux]-[~/escritorio]:$ curl "http://admin.web.xii/download/archivo.txt -o ./archivo.txt # Descargar el archivo en tu carpeta actual
 [usuario@linux]-[~/escritorio]:$ curl "http://admin.web.xii" -x http://localhost:8080   # Redireccionar trafico a un proxy
+[usuario@linux]-[~/escritorio]:$ curl -A "Googlebot/2.1 (+http://www.google.com/bot.html)" http://example.com   # Cambiar el User Agent
 ```
 
 
