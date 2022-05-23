@@ -12,15 +12,23 @@ o un programa (juego, red social, peticion curl…)
 
 ## Peticion al servidor
 
-En una peticion web se envian lo que llamamos cabeceras, una string con los datos de la peticion. Se suelen escribir automáticamente.
+En una peticion web se envian lo que llamamos cabeceras, una string con los datos de la peticion. Se suelen escribir automáticamente pero con python requests o curl
+se pueden modificar.
 
  - Peticion -> ```GET /store/index.html  HTTP/1.1```
  - Host ->  ip  ```Host: 10.10.20.20```
  - User agent -> programa mediante el cual realizas la peticion (un navegador, python, el curl…)   ```User-Agent: Mozilla/5.0```
  - Cookie -> json serializado que tiene credenciales o entradas de bases de datos (utiles para webs de compras)
  - Content-Type -> tipo de contenido que estas enviando (util para que el servidor sepa como lo tendra que gestionar) ```Content-Type: text/html; charset=UTF-8```
-    * application/json → para jsons → ```curl -H “Content-Type: application/json”```
-    * text/html -> para hmtls  → ```curl -H “Content-Type: application/json”```
+
+## Respuesta del servidor
+
+Tambien tiene headers, pero a diferencia de una peticion, una respuesta tiene contenido (por ejemplo una imagen, una respuesta de una base de datos, un html)
+Todo eso en texto plano (bytes). Por ejemplo el html nos viene como codigo html que nuestro navegador formatea automaticamente siguiendo un css por links.
+Es decir, los Los links de un html los interpreta.  Pero si la peticion se hace con el programa "curl" se imprime todo como RAW o texto plano.
+
+ - Respuesta ->  Protocolo y Codigo de estado ```HTTP/1.1 200 OK```  
+ - Content-Lenght -> la longitud de la respuesta ```Content-Lenght: 3288```
 
 -------------------------------------------------------------------------
 
@@ -65,7 +73,13 @@ Ej 200 ok y 201 created (PUT) 202 accepted (acepta la petcion pero no la ha proc
  - 404: no existe el recurso
  - 504: significa TIMEOUT. Es un error que aparece cuando el tiempo es demasiado largo
 	
+### 3.Tipos de contenido
 
+Los content type. Sirven para que el navegador identifique que tipo de archuvo se esta mandando y lo muestre correctemente ```Content-Type: text/html; charset=UTF-8```
+* application/json → para jsons → ```curl -H “Content-Type: application/json”```
+* text/html -> para htmls  → ```curl -H “Content-Type: application/json”```
+* text/css -> para los css
+* image/png (o jpg) -> para fotos
 
 
 
