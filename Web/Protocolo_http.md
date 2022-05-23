@@ -20,6 +20,7 @@ se pueden modificar.
  - User agent -> programa mediante el cual realizas la peticion (un navegador, python, el curl…)   ```User-Agent: Mozilla/5.0```
  - Cookie -> json serializado que tiene credenciales o entradas de bases de datos (utiles para webs de compras)
  - Content-Type -> tipo de contenido que estas enviando (util para que el servidor sepa como lo tendra que gestionar) ```Content-Type: text/html; charset=UTF-8```
+ - Contenido -> Lo que mandas, Ejemplo de peticion por post a un formulario de contactos  ```nombre=Antonio&correo=mariscos@recio.com```
 
 ## Respuesta del servidor
 
