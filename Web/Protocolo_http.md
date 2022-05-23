@@ -14,20 +14,17 @@ o un programa (juego, red social, peticion curl…)
 
 En una peticion web se envian lo que llamamos cabeceras, una string con los datos de la peticion. Se suelen escribir automáticamente.
 
- - Peticion -> ```GET /store/products.php```
- - Host ->  ip  ```10.10.20.20```
-
- - User agent -> programa mediante el cual realizas la peticion (un navegador, python, el curl…)
-```console 
-[cucuxii]─[Timming]$ curl -A "Googlebot/2.1 (+http://www.google.com/bot.html)" http://example.com
-```
+ - Peticion -> ```GET /store/index.html  HTTP/1.1```
+ - Host ->  ip  ```Host: 10.10.20.20```
+ - User agent -> programa mediante el cual realizas la peticion (un navegador, python, el curl…)   ```User-Agent: Mozilla/5.0```
  - Cookie -> json serializado que tiene credenciales o entradas de bases de datos (utiles para webs de compras)
- - Content-Type -> tipo de contenido que estas enviando (util para que el servidor sepa como lo tendra que gestionar)
-    * application/json → para jsons → curl -H “Content-Type: application/json”
+ - Content-Type -> tipo de contenido que estas enviando (util para que el servidor sepa como lo tendra que gestionar) ```Content-Type: text/html; charset=UTF-8```
+    * application/json → para jsons → ```curl -H “Content-Type: application/json”```
+    * text/html -> para hmtls  → ```curl -H “Content-Type: application/json”```
 
 -------------------------------------------------------------------------
 
-## Métodos
+### 1. Métodos
 
 Definen que tipo de accion se puden hacer sobre un recurso.
 
@@ -52,7 +49,7 @@ Directory listing: cuando por GET pones una carpeta que contiene entidades y te 
 	
 -------------------------------------------------------------------------
 
-## Códigos de estado
+### 2. Códigos de estado
 
 [Estandar](https://es.wikipedia.org/wiki/Anexo:C%C3%B3digos_de_estado_HTTP) de codigo de error: numeros
 - Informativos: 100 -199 
