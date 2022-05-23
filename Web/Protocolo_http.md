@@ -81,6 +81,8 @@ Los content type. Sirven para que el navegador identifique que tipo de archuvo s
 * text/html -> para htmls  → ```curl -H “Content-Type: application/json”```
 * text/css -> para los css
 * image/png (o jpg) -> para fotos
+* application/x-www-form-urlencoded -> Para enviar formularios POST a un php como "nombre=Antonio&apellido=Recio"
+* application/json -> igual pero en Json.
 
 
 
