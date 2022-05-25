@@ -90,13 +90,13 @@ Mas instrucciones que ahora no vienen a cuento...
 EL binario, que todavía no sabe donde está la direccion real de la funcion de libc, salta a un sitio que si conoce, la tabla .plt (Function trampoline)
 Esta siempre tiene tres insutrcciones por funcion.
 
-1. La primera insutruccion alberga una direccion de memoria, de la siguiente función a ejecutar (puntero de funcion)
+1. *La primera insutruccion* alberga una direccion de memoria, de la siguiente función a ejecutar (puntero de funcion)
  Si quisieramos que ejecutara otra funcion, tendríamos que cambiar el valor que guarda dicha dirección
-- Si es la primera vez que se ejecuta, la direccion de la insturcciíon que esta guardada te vuelve a mandar a la PLT (\<exit@plt+6>).
+- Si es la primera vez que se ejecuta, la direccion de la insturuccíon que esta guardada te vuelve a mandar a la PLT (\<exit@plt+6>).
 - Si es la sgunda, ya no saltara a \<exit@plt+6> sino que te mandará a la entrada de la GOT en la que ya estará escrita su direccion correspondiente.
 
-2. La segunda insutrccion (plt+6) escribe un valor en la pila. Es el argumento que se le pasara a ld.so, como un indice de funciones, (ej: en printf es 0x20 y en exit 0x30) Este se basará en este índice a la hora de buscar la función a escribir en GOT.
-3. La tercera instrucción siempre es la misma, salta al inicio de la seccion "plt", este ejecuta el ld.so con el indice de antes. (Buscar la direcion, escribirla en la GOT y saltar a la primera insutrccion de exit@plt (o prinf@plt) que como ya tira de una GOT con la direccion buena, funciona)
+2. *La segunda insutrucción* (plt+6) escribe un valor en la pila. Es el argumento que se le pasara a ld.so, como un indice de funciones, (ej: en printf es 0x20 y en exit 0x30) Este se basará en este índice a la hora de buscar la función a escribir en GOT.
+3. *La tercera instrucción* siempre es la misma, salta al inicio de la seccion "plt", este ejecuta el ld.so con el indice de antes. (Buscar la direcion, escribirla en la GOT y saltar a la primera insutrccion de exit@plt (o prinf@plt) que como ya tira de una GOT con la direccion buena, funciona)
 
 Esta es la teoría, puede resultar algo confusa asi que vamos a verla en acción.
 Vamos a correr el programa:
@@ -152,7 +152,9 @@ Asi que si volvemos con gdb:
 (gdb) x/i 0xb7ff6200
 0xb7ff6200 <_dl_runtime_resolve> -> El ld.so
 ```
-
+> Primera vez: plt -> got vacio -> plt+6 y +12 (perdirle al loader que busque la direccion) -> got con la direccion. -> funcion  
+> Segunda vez: plt -> got con la direccion -> funcion
+ 
 Como ya hemos dicho en la primera entrada de plt tenemos guardado un puntero, este apunta a la entrada en la GOT o de vuelta a plt para llamar al ld.so, si sobreescribimos ese puntero con la dirección de una función que nos interese, podemos manipular el programa a nuestro antojo.
 Aunque cambie la direccion de libc por el ASLR, en la tabla GOT es fija, asi que si se saca de ahí, tenemos la vida resulta. (pero eso es para 
 otro articulo) 
