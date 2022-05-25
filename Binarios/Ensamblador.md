@@ -53,7 +53,11 @@ Las funciones toman sus argumentos de los registros siguiendo las calling conven
 0x00005555555551ad <+88>:    call   0x555555555030 <puts@plt>
 pwndbg> x/s 0x555555556018
 0x555555556018: "you have modified the target :)"   # O sea esta string se la hemos pasado a puts
+> puts("you have modified the target :)")
 ```
+
+------------------------------------------------------------------------------------------
+
 Mas ejemplos de como los dos programas nos muestran el ensamblador
 ```
 #RADARE2
