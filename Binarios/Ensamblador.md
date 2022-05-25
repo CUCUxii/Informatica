@@ -2,6 +2,10 @@
 ## Instrucciones (más basico)
 
  - **MOV** -> MOV(destino, origen) -> mueve los datos de un sitio a otro (en general registros)
+```
+x32 -> mov    [esp+0x08], 0x3   -> mete un "3" en la pila (offset 08 ya que es esp+08    esp=0000 0000 0003 0000)
+x64 -> mov    rdi,rsp     -> mueve lo del registro rsp(inicio de la pila) al rdi(para convertirlo en el argumento de en una proxima funcion)
+```
  - **LEA** -> LEA(destino, origen) -> mueve punteros (las direcciones no los datos) de un sitio a otro.
  - **PUSH** -> mete el ultimo valor en la pila
  - **POP** -> POP(destino) mueve el ultimo valor de la pila en tal registro.
