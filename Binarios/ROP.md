@@ -7,6 +7,8 @@ Fuente: [Savitar-RedCross](https://www.youtube.com/watch?v=prg88ajxAPc)
 Tenemos un binario que tiene las funciones "execvp" y "setuid", queremos usarlas pero pasandoles los argumentos que nos de la gana. El PIE desabilitado (direcciones
 estáticas)   
 Para ello hay que tirar de ROP y pasarle argumentos con las calling conventions(rdi, rsi, rdx, rcx, r8, r9)
+Primeros buscamos tanto las funciones como los gadgets para usarlos luego:
+
 ```console
 [cucuxii@parrot]~$: objdump -D ./binario | grep execv
 0000000000400760 <execvp@plt>:               # -> 0x400760
