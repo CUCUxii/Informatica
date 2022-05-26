@@ -180,6 +180,17 @@ EE, JA, SU
 
 ----------------------------------------------------------------------
 
+# SCRIPT SQL
+
+Puedes hace un archivo *setup.sql* con las querys escritas y pasarsela al servicio para que lo ejecute
+```sql
+MariaDB [pruebas]> SOURCE setp.sql;
+```
+```
+DROP DATABASE IF EXISTS contacts;  # Para borrar si exite y resetearlo
+```
+
+----------------------------------------------------------------------
 ## Tabla information schema
 
 Es una database especial que contiene los nombres de tablas, bases de datos y columnas del sistema
