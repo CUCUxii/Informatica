@@ -26,5 +26,14 @@ y si lo ves por primera vez, puede asustar un poco. Pero al final se trata de in
    ### Protecciones:
    Los binarios cuentan con varios tipos de protecciones disponibles, conocer estas es ideal para saber que tipo de ataque podríamos probar
    
-   
+---------------------------------------------------------------------------
+
+## Objdump
+
+- **Ver la direccion de las funciones**
+```console
+[cucuxii@parrot]~$: objdump -D ./bianrio | grep "printf"
+00000000118b <printf@plt>:    # La direccion de printf (llamada a plt) en el bianrio es 118b
+```
+
 
