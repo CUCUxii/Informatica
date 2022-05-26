@@ -55,6 +55,7 @@ pwndbg> x/s 0x555555556018
 0x555555556018: "you have modified the target :)"   # O sea esta string se la hemos pasado a puts
 > puts("you have modified the target :)")
 ```
+> En 64 bits los argumentos se leen de estos registros en este orden: rdi, rsi, rdx,
 
 ------------------------------------------------------------------------------------------
 
