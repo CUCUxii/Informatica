@@ -35,5 +35,26 @@ y si lo ves por primera vez, puede asustar un poco. Pero al final se trata de in
 [cucuxii@parrot]~$: objdump -D ./bianrio | grep "printf"
 00000000118b <printf@plt>:    # La direccion de printf (llamada a plt) en el bianrio es 118b
 ```
+- **Ver todas las funciones**
+```console
+[cucuxii@parrot]~$: objdump -t ./bianrio | grep "text"  # Filtramos por la seccion text que es el codigo ensamblador
+000000001172 g F .text     filecount    # La direccion de la funcion "filecount" es 1172
+#####  Lo mismo con el resto de funciones
+```
+
+---------------------------------------------------------------------------
+
+## Radare2
+
+---------------------------------------------------------------------------
+
+## Ropper
+
+Ropper encuentra los gadgets para programacion "ROP", corre el bianrio una vez para cargar datos en memoria y enontrar las instrucciones.
+```pip install ropper```
+```console
+[cucuxii@parrot]~$: ropper --search "pop rdi" -f ./binario
+0x5555558cb: pop rdi, ret
+```
 
 
