@@ -49,10 +49,9 @@ programas  Archivo.txt
 ```console
 [usuario@linux]-[~/escritorio]:$ pwd
 /home/usuario/escritorio
-[usuario@linux]-[~/escritorio]:$ cd ../
+[usuario@linux]-[~/escritorio]:$ cd ../; ls
 escritorio   musica   documentos   descargas  
-[usuario@linux]-[~]:$ cd ./musica
-[usuario@linux]-[~/musica]:$ ls
+[usuario@linux]-[~]:$ cd ./musica; ls
 nirvana   depeche_mode   metallica
 ```
 ---------------------------------------------------------------------------
@@ -68,15 +67,11 @@ nirvana   depeche_mode   metallica
 ```console
 [usuario@linux]-[~/escritorio]:$ ls
 programas  Archivo.txt
-[usuario@linux]-[~/escritorio]:$ mkdir ./Carpeta
+[usuario@linux]-[~/escritorio]:$ mkdir ./Carpeta; ls
 programas  Archivo.txt  Carpeta  
-[usuario@linux]-[~]:$ cd ./Carpeta
-[usuario@linux]-[~/musica]:$ touch Ejemplo.txt
-[usuario@linux]-[~/musica]:$ ls 
+[usuario@linux]-[~]:$ cd ./Carpeta; touch Ejemplo.txt; ls
 Ejemplo.txt
-[usuario@linux]-[~/musica]:$ cd ../
-[usuario@linux]-[~/musica]:$ rm -rf ./Carpeta
-[usuario@linux]-[~/musica]:$ ls
+[usuario@linux]-[~/musica]:$ cd ../; rm -rf ./Carpeta; ls
 programas  Archivo.txt
 ```
 ---------------------------------------------------------------------------
@@ -88,16 +83,16 @@ programas  Archivo.txt
      * mv nombre.txt nuevo_nombre.txt → renombra el archivo (si no existe el segundo, si existe lo sobreescribe)
      * mv /* /dev/null → *mueve toda la raiz al "dev null" y manda el sistema operativo a tomar por culo*
 ```console
-[usuario@linux]-[~/escritorio]:$ mv ../musica/nirvana .
-[usuario@linux]-[~/escritorio]:$ ls
+[usuario@linux]-[~/escritorio]:$ mv ../musica/nirvana .; ls
 programas  Archivo.txt Nirvana
-[usuario@linux]-[~/escritorio]:$ rm -rf ./nivana
+[usuario@linux]-[~/escritorio]:$ rm -rf ./nivana; ls
+programas  Archivo.txt
 ```
 -  **CP** -> copiar. Al contrario de mover, el archivo original no desaparece, sino que se duplica.
      * cp ruta/documento nueva_ruta/ → haz una copia del fichero en otra carpeta
      * cp ruta/documento nueva_ruta/ nuevo_nombre → Que la copia tenga otro nombre diferente.
      * cp -r ruta/ nueva_ruta/ → si es una carpeta (con cosas dentro) -r de recursividad
-     * 
+
 ---------------------------------------------------------------------------   	
 
 ## Leer, escribir
@@ -183,7 +178,15 @@ Darlene@mail.com
      * tr -s / → Borrar caracteres repetidos
      * tr -d “ “  → Eliminar caracteres → “\n” saltos de linea “ “ espacios     
      * tr ‘r’ ‘T’ → Susitutye caracteres (r por T) →  para palabras no va por que no toma la palabra sino todas sus letras
-     * 
+---------------------------------------------------------------------------
+
+## Enlaces
+ 
+Simbolicos
+```console
+[usuario@linux]-[~]:$ ln -s -f ~/ssh/id_rsa ./ssh.txt  # Lo que escribas en ssh.txt lo escribira en ssh/id_rsa (son como el mismo archivo)
+[usuario@linux]-[~]:$ unlink ./ssh.txt # Quitar el link
+```
 -------------------------------------------------------------------------------------------------------------------
    
 ## Peticiones WEB curl
