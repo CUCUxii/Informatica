@@ -50,21 +50,28 @@ cualquier puerto, pero hay convenciones, es decir, puertos que se suelen poner p
 
 ## REDES
 
-- **Máscaras de subred**:
+- **Máscaras de red**:
 Permiten identificar la clase de RED a la que estas conectado, separando de la IP los octetos pertenecientes a la red y al host (dispositivo)
 1. 255.0.0.0 /8 → Clase A -> redes grandes, corporativas (muchos dispositivos) →  1 - 126
 2. 255.255.0.0 /16 → Clase B -> redes medianas (ejemplo universidades)  → 128 - 191
 3.	255.255.255.0 /24 → Clase C -> redes domesticas (pocos dispositivos)  → 192 - 223
 
-Las / son maneras abreviadas por tanto de indicar la mascara de subred, indican cuantos "1" tiene la IP (siempre de izquierda a derecha y nunca hay 0 antes que 1)
-    Ej. 1 (el 255.0.0.0 son 8) Este conteo de 0 y 1 
-    Ej 20.80.30.168/27  tiene la mascara 255.255.255.224 →  (11111111.11111111.11111111.11111110), = 27 “1” Como tiene 3 “255” es de clase C
+Las / son maneras abreviadas por tanto de indicar la mascara de subred, indican cuantos "1" tiene la IP (siempre de izquierda a derecha y nunca hay 0 antes que 1)   
+Ej. 1 *En 255.0.0.0 son 8*
+Ej. 2  *20.80.30.168/27  tiene la mascara 255.255.255.224 →  (11111111.11111111.11111111.11111110), = 27 “1” Como tiene 3 “255” es de clase C*
+
 
  - **Segmento de red**:
-Una red se suele dividir entre partes independientes para su menjor manejo. Cada parte es un segmento de red
+Una red se suele dividir entre partes independientes para su menjor manejo. Cada parte es un segmento de red.
+Esta division de una red en partes mas pequeñas se llama "Subneteo"
 
+--------------------------------------------------------------------
 
+## Direccion MAC
 
+Cada dispositivo que se puede conectar a internet tiene un componente fisico (hardware) llamado "tarjeta de red" Cada tarjeta de red tiene un identificador, (la MAC)
+Cada MAC la componen 48 bits en numeros y letras (6 caracteres de 8 bits)
+Los tres primeros octetos son el OUI, identifican al fabricante de la tarjeta, los otros los asigna el fabricante para identificar la tarjeta.
 
 
 
