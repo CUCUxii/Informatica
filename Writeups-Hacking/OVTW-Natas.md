@@ -193,7 +193,8 @@ Este nivel es exactamente lo mismo que el anterior, solo que aqui nos filtran el
 El tema es que si ponemos la ";" en urlencoder tambien la insterpretará y nos habremos saltado el filtro. ```php > echo urlencode(";");
 %3B``` Pero tampoco funciona.
 
-Como el comando hace un ```curl palabra diccionario``` Lo que podemos es meterle nosotros el diccionario del que tirara y comnetando el original para que lo ignore. Para asegurarnos de que salgan resultados con el curl, lo mejor es poner letras indiviuales y probar.
+Como el comando hace un ```curl palabra diccionario``` Lo que podemos es meterle nosotros el diccionario del que tirara. El comando va a usar dos diccioanrios por lo  que nos dice de cual esta tirando.
+Para asegurarnos de que salgan resultados con el curl, lo mejor es poner letras indiviuales y probar.
 Para hacer varias pruebas facilmente, mejor recurrir a un script
 
 ```bash
@@ -210,7 +211,10 @@ $> b /etc/natas_webpass/natas11
 dictionary.txt:B
 $> c /etc/natas_webpass/natas11
 /etc/natas_webpass/natas11:U82q5TCMMQ9xuFoI3dYX61s7OZD9JKoK
+$> c /etc/natas_webpass/natas11 #
+U82q5TCMMQ9xuFoI3dYX61s7OZD9JKoK
 ```
+Truco -> En el ultimo comando como hemos metido un "#" comenta el otro diccionario y solo busca del nuestro /etc/natas_webpass...
 Comando que resulta ```grep c /etc/natas_webpass/natas11 # diccionario.txt``
 
 
