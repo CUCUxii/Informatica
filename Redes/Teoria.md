@@ -8,9 +8,12 @@ externa (la tipica Tp-link) es otra interfaz más
 
  - Loopback 
 Siempre usa la IP 127.0.0.1, es una conexion que hace el sistema hacia si mismo (no accesible desde fuera) por tanto puede albergar por ejemplo direcciones web en produccion.  
+
  - Red Local "LAN"
-Esa red la constituyen todos los equipos conectados a un mismo punto de acceso (un router), suele empezar por "192.168.1" y tu direccion dentro te la asigna el router.
-(IP privada). 
+Esa red la constituyen todos los equipos conectados a un mismo punto de acceso (un router), suele empezar por "192.168.1"   
+Cada dispotivo tiene una ip dentro de la LAN (IP privada) pero luego todos esos dispositivos salen a internet por el router con una misma IP pública. 
+Todo esto lo hace el "NAT" (traductor de direcciones) del router
+
  - VPN 
 
 #### VPN
