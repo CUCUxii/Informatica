@@ -45,3 +45,43 @@ cualquier puerto, pero hay convenciones, es decir, puertos que se suelen poner p
  - FTP (compartir archivos) -> 21
  - SMB (compartir archivos) ->  137
  - NFS (compartir archivos) -> 2049
+
+--------------------------------------------------------------------
+
+## REDES
+
+- **Máscaras de subred**:
+Permiten identificar la clase de RED a la que estas conectado, separando de la IP los octetos pertenecientes a la red y al host (dispositivo)
+1. 255.0.0.0 /8 → Clase A -> redes grandes, corporativas (muchos dispositivos) →  1 - 126
+2. 255.255.0.0 /16 → Clase B -> redes medianas (ejemplo universidades)  → 128 - 191
+3.	255.255.255.0 /24 → Clase C -> redes domesticas (pocos dispositivos)  → 192 - 223
+
+Las / son maneras abreviadas por tanto de indicar la mascara de subred, indican cuantos "1" tiene la IP (siempre de izquierda a derecha y nunca hay 0 antes que 1)
+    Ej. 1 (el 255.0.0.0 son 8) Este conteo de 0 y 1 
+    Ej 20.80.30.168/27  tiene la mascara 255.255.255.224 →  (11111111.11111111.11111111.11111110), = 27 “1” Como tiene 3 “255” es de clase C
+
+ - **Segmento de red**:
+Una red se suele dividir entre partes independientes para su menjor manejo. Cada parte es un segmento de red
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
