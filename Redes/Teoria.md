@@ -55,9 +55,11 @@ cualquier puerto, pero hay convenciones, es decir, puertos que se suelen poner p
 
 - **Máscaras de red**:
 Permiten identificar la clase de RED a la que estas conectado, separando de la IP los octetos pertenecientes a la red y al host (dispositivo)
-1. 255.0.0.0 /8 → Clase A -> redes grandes, corporativas (muchos dispositivos) →  1 - 126
-2. 255.255.0.0 /16 → Clase B -> redes medianas (ejemplo universidades)  → 128 - 191
-3.	255.255.255.0 /24 → Clase C -> redes domesticas (pocos dispositivos)  → 192 - 223
+Teniendo estas redes privadas:
+
+1. 255.0.0.0 /8 → Clase A -> redes grandes, corporativas (muchos dispositivos) →  1 - 126 -> 10.0.0.0
+2. 255.255.0.0 /16 → Clase B -> redes medianas (ejemplo universidades)  → 128 - 191  -> 172.16.0.0
+3.	255.255.255.0 /24 → Clase C -> redes domesticas (pocos dispositivos)  → 192 - 223  -> 192.168.0.0
 
 Las / son maneras abreviadas por tanto de indicar la mascara de subred, indican cuantos "1" tiene la IP (siempre de izquierda a derecha y nunca hay 0 antes que 1)   
 Ej. 1 *En 255.0.0.0 son 8*
