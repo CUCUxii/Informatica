@@ -83,7 +83,9 @@ Well done, the 'changeme' variable has been changed!
 -----------------------------------------------------------------------------------------
 
 ## Stack - One
-```
+
+Aquí hay que sobreescribir la varaible pero con un valor en conreto, lo desensamble como arriba: 
+```console
    mov edi,0x400750 ;call 0x4004c0 <puts@plt>
             puts("Welcome to phoenix/stack-one, brought to you by https://exploit.education")
 
