@@ -189,8 +189,23 @@ Congratulations, you've finished phoenix/stack-four :-) Well done!
 
 ---------------------------------------------------------------------------------------
 
+# Stack - Five
 
-
+Este tiene pinta de ser un shellcode buffer overflow
+```
+Dump of assembler code for function start_level:
+   0x000000000040058d <+0>:     push   rbp
+   0x000000000040058e <+1>:     mov    rbp,rsp
+   0x0000000000400591 <+4>:     add    rsp,0xffffffffffffff80
+   0x0000000000400595 <+8>:     lea    rax,[rbp-0x80]
+   0x0000000000400599 <+12>:    mov    rdi,rax
+   0x000000000040059c <+15>:    call   0x4003f0 <gets@plt>
+   0x00000000004005a1 <+20>:    nop
+   0x00000000004005a2 <+21>:    leave  
+   0x00000000004005a3 <+22>:    ret    
+(gdb) p/d 0x80
+$1 = 128
+```
 
 
 
