@@ -57,6 +57,7 @@ Otra buena práctica es buscar por el robots.txt, que es una ruta que le indica 
 User-agent: *
 Disallow: /ftp
 ```
+Probé a intentar acceder al ftp con un wrapper desde el navegador tal que ```ftp://127.0.0.0.1:3000``` pero no resultó.
 Otra ruta nueva :3 
 ```console
 [cucuxii]:$  curl http://127.0.0.1:3000/ftp -s | html2text                                                                                                
@@ -65,16 +66,13 @@ Otra ruta nueva :3
     * quarantine5/22/2022_12:17:25_PM
     * acquisitions.md9095/22/2022_12:17:18_PM
     * announcement_encrypted.md3692375/22/2022_12:17:18_PM
-    * coupons_2013.md.bak1315/22/2022_12:17:18_PM
-    * eastere.gg3245/22/2022_12:17:18_PM
-    * encrypt.pyc5735/22/2022_12:17:18_PM
-    * incident-support.kdbx32465/22/2022_12:17:18_PM
-    * legal.md30476/15/2022_5:13:39_PM
-    * package.json.bak42915/22/2022_12:17:18_PM
-    * suspicious_errors.yml7235/22/2022_12:17:18_PM
+....
+[cucuxii]:$ curl http://127.0.0.1:3000/ftp/acquisitions.md
+# Todo el archivo nada interesante...
 ```
 Todo esto son archivos...
 Aprovechando el XSS de antes tambien podemos llegar ahí ```<iframe src="http://127.0.0.1:3000/ftp">```
+
 
 
 
