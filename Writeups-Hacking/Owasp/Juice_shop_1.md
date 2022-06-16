@@ -49,7 +49,9 @@ La solución otra vez está en aplicar filtros. En scoreboard hablan de descubri
 [cucuxii]:$  curl http://127.0.0.1:3000/redirect?to=https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm
 Found. Redirecting to https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm
 ```
-
+Como curiosidad esta web tiene un iframe, es decir un cuadro que carga la web real, como una web dentro de otra. Cuando hacemos un curl nos da 
+el mismo código siempre, el del marco y no el del contenido, esto es una buena práctica ya que hace que dicho código sea mas complicado de acceder,
+pero todavía desde el navegador con boton derecho inspeccionar se ve el bueno.
 
 Otra buena práctica es buscar por el robots.txt, que es una ruta que le indica al motor de busqueda que no indexe ciertas rutas críticas.
 ```console
@@ -72,6 +74,27 @@ Otra ruta nueva :3
 ```
 Todo esto son archivos...
 Aprovechando el XSS de antes tambien podemos llegar ahí ```<iframe src="http://127.0.0.1:3000/ftp">```
+
+----------------------------------------------------------------------------------------------
+
+## 3. Malas practicas de programación
+
+- **Mala codificación** 
+Una página suele mostrar recursos como fotos y demas, esto está definido en el código fuente con por ejemplo ```<img src=/images/gato.png>``` el 
+asunto está en el nombre de la foto "gato.png", este tiene que cumplir ciertos requisitos como no incluir caracteres especiales porque va a entrar 
+en conflicto, me explicaré con un ejeplo -> un "/" refiere a un subdirectorio o "#" a una sección. Así que el sistema los interpretaá como tal y no 
+como simples caracteres del título. Por lo que esos caracteres se codificarán (ejemplo un espacio es %20) y de ahí todos esos caracteres raros que 
+salen en las urls. 
+
+En esta web tenemos cierto problema en la seccion "Photo Wall", donde salen fotos y enlaces a twitter. Hay una foto que no carga y su nombre tiene un 
+emoticono... Si le das a inspeccionar elemento en la parte de la foto sale un ```src="assets/public/images/uploads/😼-#zatschi-#whoneedsfourlegs-1572600969477.jpg``` O sea un emoticono y algunos "#". Como el sisteam no sabe interpretarlo la foto no carga. Hay que ccorregir el titulo, ponerlo y recargar.
+
+```console
+[cucuxii]:$  php --interactive
+php > echo urlencode("😼-#zatschi-#whoneedsfourlegs-1572600969477.jpg");
+%F0%9F%98%BC-%23zatschi-%23whoneedsfourlegs-1572600969477.jpg    
+```
+Esto es lo que hay que poner en img src detras de "uploads/"
 
 
 
