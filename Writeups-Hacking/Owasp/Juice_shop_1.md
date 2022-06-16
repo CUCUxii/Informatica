@@ -53,6 +53,15 @@ Como curiosidad esta web tiene un iframe, es decir un cuadro que carga la web re
 el mismo código siempre, el del marco y no el del contenido, esto es una buena práctica ya que hace que dicho código sea mas complicado de acceder,
 pero todavía desde el navegador con boton derecho inspeccionar se ve el bueno.
 
+El score-board tambien se encuentra facilmente con el grep, y la seccion de admin.
+```console
+[cucuxii]:$  cat main.js | grep "score"
+path: "score-board"
+[cucuxii]:$  cat main.js | grep "admin"
+path: "administration"
+```
+
+
 Otra buena práctica es buscar por el robots.txt, que es una ruta que le indica al motor de busqueda que no indexe ciertas rutas críticas.
 ```console
 [cucuxii]:$  curl http://127.0.0.1:3000/robots.txt
