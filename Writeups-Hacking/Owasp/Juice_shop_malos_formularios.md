@@ -7,6 +7,9 @@ al servidor) vemos que es una peticion POST hacia /api/Feedbacks/ con los parám
 interesa. Si por ejemplo hemos puesto dos estrellas, saldra un "2" que podremos cambiar a 0 y darle a Fordward para que llegue la petición. Dandonos con eso el logro
 "Zero Stars"
 
+Ponerle zero estrellas a algo no es crítico, lo que si es crítico es modificar de la misma manera un parámetro que diga si eres admin o no para hacer algo con
+altos privilegios.
+
 ----------------------------------------------------------------------------------
 
 ## Error en el formulario al repetir contraseña
