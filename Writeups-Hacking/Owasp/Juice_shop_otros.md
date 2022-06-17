@@ -12,3 +12,14 @@ es una técnica muy comun para las contraseñas, asi que el reto no ha sido otra
 ## Actua como un white-hat
 
 Básicmanete, lee el /security.txt (ruta secreta con asuntos de seguirdad, para informar sobre una falla supongo), el cual te revela un email 
+
+------------------------------------------------------------
+
+## Informar de un algoritmo de crifrado pobre.
+
+Este reto es como los anteriores, otra leccioncita de ciberseguridad. Te dice que busques uno de los 5 algoritmos que no se deben usar y se lo digas a los de la 
+página, tras una busqueda de google doy con que:
+
+> No uses MD5, ni SHA1 sino SHA512 ni DES / 3DES sino AES
+
+Asi que en "Feedback" tienes que escribir cada uno de estos y probar.
