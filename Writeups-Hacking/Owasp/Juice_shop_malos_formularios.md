@@ -8,3 +8,9 @@ interesa. Si por ejemplo hemos puesto dos estrellas, saldra un "2" que podremos 
 "Zero Stars"
 
 ----------------------------------------------------------------------------------
+
+## Error en el formulario al repetir contraseña
+
+En el panel de login está el clasico "contraseña" y "repetir contraseña", que es para verificar que has puesto una contraseña de la que te acuerdes, obligandote a 
+repetirla, pero está tan mal programado que si repites la contraseña y eliminas un caracter en uno de los paneles no pasa nada y te deja continaur.
+Nos dan el logro de DRY o "Dont Repeat Yourself" o sea no repetir cosas.
