@@ -57,7 +57,6 @@ La solución otra vez está en aplicar filtros. En scoreboard hablan de descubri
 [cucuxii]:$  curl http://127.0.0.1:3000/redirect?to=https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm
 Found. Redirecting to https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm
 ```
-
 El score-board tambien se encuentra facilmente con el grep, y la seccion de administración oculta también
 ```console
 [cucuxii]:$  cat main.js | grep "score"
@@ -65,6 +64,10 @@ path: "score-board"
 [cucuxii]:$  cat main.js | grep "admin"
 path: "administration"
 ```
+Conseguir la ruta de /administracion que no era visible en la wwb nos da el logro "Admin Section"
+Con la ruta de /administration y gracias a la inyeccion sql que nos otorgó ser admin, si borramos del customer feedback la que dio 5 estrellas, obtendremos el logro
+**Five-Star-Feedback**
+
 -----------------------------------------------------------------------------------------------
 
 
