@@ -78,7 +78,23 @@ localización de una persona. Los metadatos son datos sobre una imagen (resoluci
 ahi están, y si tienen inoformación muy personal puede ser desastroso. Un consejo para evitar esto es desactivar la geolocalización del teléfono cuando se saca
 una foto.
 
-Hay una foto de un tal "jhonny" que siguiendo la lógica de la web, su correo es "johnny@juice-sh.op"  
+Hay una foto de un tal "jhonny" que siguiendo la lógica de la web, su correo es "john@juice-sh.op"  (no johnnt segun las pistas)
+
+```console
+[cucuxii]:$ curl -s "http://localhost:3000/assets/public/images/uploads/favorite-hiking-place.png" -o foto.png
+[cucuxii]:$ exiftool foto.png | grep "GPS" | tail -n1
+GPS Position                    : 36 deg 57' 31.38" N, 84 deg 20' 53.58" W
+[cucuxii]:$ echo "36º 57' 31.38\" N 84º 20' 53.58\" W"
+36º 57' 31.38" N 84º 20' 53.58" W
+```
+Buscamos estas coordenadas en google maps y nos sale un bosque de Kentucky "Daniel Boone National Forest"
+Asi que en el panel de login se le cambia a john la contraseña gracias a la pregunta de seguirdad, "¿Cual es tu sitio favorito
+para ir de paseo?" y la respuesta es el bosque este que hemos encontrado. Como error de la web, cuando un usaurio existe, se muestra
+su pregunta de seguridad, asi que puede ser un mecanismo para hallar usaurios existentes.
+
+Con una tal emma pasa lo mismo, pregunta de seguridad gracias a foto. Solo que con ella el procedimiento era diferente. En concreto 
+visualizando la foto y haciendo zoom, hasta ver la palabra "ITSec" en una ventana.
+
 
 
 
