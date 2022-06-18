@@ -70,5 +70,21 @@ Con la ruta de /administration y gracias a la inyeccion sql que nos otorgó ser 
 
 -----------------------------------------------------------------------------------------------
 
+## Foto con Metadatos de localización
+
+Este reto toca la pata del OSINT, o "busqueda de información de fuentes abiertas" que consisten en buscar información personal mediante busquedas especialiazadas
+en redes sociales y motores de búsqueda entre otros (por tanto no se considera ilegal). Este en concreto, aprovecha los metadatos de una imagen para sacar la 
+localización de una persona. Los metadatos son datos sobre una imagen (resolución, tamaño, dispositivo y lcoalización...) Estos no se ven a primera vista, pero
+ahi están, y si tienen inoformación muy personal puede ser desastroso. Un consejo para evitar esto es desactivar la geolocalización del teléfono cuando se saca
+una foto.
+
+Hay una foto de un tal "jhonny" que siguiendo la lógica de la web, su correo es "johnny@juice-sh.op"  
+
+
+
+
+
+
+
 
 
