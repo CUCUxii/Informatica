@@ -23,3 +23,16 @@ página, tras una busqueda de google doy con que:
 > No uses MD5, ni SHA1 sino SHA512 ni DES / 3DES sino AES
 
 Asi que en "Feedback" tienes que escribir cada uno de estos y probar.
+
+------------------------------------------------------------
+
+## Admin Password
+
+Este reto habla de hacer contraseñas fuertes. El admin, cuyo email es demasiado obvio, tiene una contraseña igual de obvia y debil
+"admin123" esta se obtiene con fuzzing en el formulario
+```wfuzz -t 50 -w /usr/share/wordlists/rockyuu.txt -d "email=admin@juice-sh.op&password=FUZZ"  http://localhost:3000/#/login```
+
+Como estoy hosteando la web, el servidor no aguanta fuzzing para nada, la otra alternativa es buscarlo a mano
+"password" "password123" "admin" "admin123".
+
+
