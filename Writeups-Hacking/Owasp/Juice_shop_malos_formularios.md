@@ -31,3 +31,23 @@ respecto a la cesta de la compra.
 En "almacenamiento de sesion" hay dos campos "item.total" y "key", por lo que parece que estos datos si se refieren a los pedidos.
 El bid de emma es 6, el de jhon un 7, asi que dicho bid parece un id de usaurio. Si ponemos un 2 y refrescamos, veremos el pedido de otro
 usaurio y nos dará el logro.
+
+----------------------------------------------------------------------------------
+
+## Registrar a un usaurio directamente como administrador
+
+En la seccion de registro de un nuevo usaurio. Creamos un usaurio random (da igual lo que pongamos), en el navegador en la seccion "Red" vemos todas las peticiones,
+si buscamos por las del método POST, hay una hacia /api/Users, clicamos y en la pestaña solicitud y "sin procesar" podemos ver el formulario de la petición para
+crear un nuevo usaurio, lo copiamos y con curl crearemos otro usaurio con privilegios de adminsitrador, esto se suele hacer al poner el campo oculto "role"
+como "admin" o como "1". No me funcionó y lo acabé haciendo con el navegador. 
+
+En concreto en la seccion de red de antes, click derecho y "editar peticion y volver a enviar", añadimos lo de "role":"admin" en el "cuerpo de la petición" y 
+le damos a enviar, con esto ya tendremos el logro. Tambien se puede hacer de manera muy similar con la herramienta "burpsuite" que edita las peticiones antes de
+que lleguen.
+
+
+
+
+
+
+
