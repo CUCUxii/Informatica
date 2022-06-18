@@ -17,3 +17,17 @@ altos privilegios.
 En el panel de login está el clasico "contraseña" y "repetir contraseña", que es para verificar que has puesto una contraseña de la que te acuerdes, obligandote a 
 repetirla, pero está tan mal programado que si repites la contraseña y eliminas un caracter en uno de los paneles no pasa nada y te deja continaur.
 Nos dan el logro de DRY o "Dont Repeat Yourself" o sea no repetir cosas.
+
+----------------------------------------------------------------------------------
+
+## Mirar la cesta de la compra de otro usuario
+
+Nos registramos como la emma (retos de OSINT), y añadimos un par de productos a la cesta de la compra
+Cuando un usaurio hace un pedido en una web, normalmente esto se guarda en alguna parte de la web como datos asociados al usaurio (modificables
+en cualquier momento) pudiendo estar tanto en la cookie o la peticion.
+
+Esto en un navegador se ve en la seccion "Almacenamiento", descrifrando la cookie con jwt.io he encontrado cosas interesantes, pero nada 
+respecto a la cesta de la compra.
+En "almacenamiento de sesion" hay dos campos "item.total" y "key", por lo que parece que estos datos si se refieren a los pedidos.
+El bid de emma es 6, el de jhon un 7, asi que dicho bid parece un id de usaurio. Si ponemos un 2 y refrescamos, veremos el pedido de otro
+usaurio y nos dará el logro.
