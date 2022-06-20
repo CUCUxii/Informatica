@@ -34,6 +34,15 @@ usaurio y nos dará el logro.
 
 ----------------------------------------------------------------------------------
 
+## Hacer un review en nombre de otro usaurio
+
+Cuando clicas sobre un producto, puedes dejar una review, si editamos la peticion... vemos un campo "author", donde sale el nombre de quien hace la 
+review, si lo cambiamos por cualquier otra cosa nos da el logro.
+```
+{"message":"test","author":"Anonymous"} -> {"message":"test","author":"bender"} 
+```
+----------------------------------------------------------------------------------
+
 ## Registrar a un usaurio directamente como administrador
 
 En la seccion de registro de un nuevo usaurio. Creamos un usaurio random (da igual lo que pongamos), en el navegador en la seccion "Red" vemos todas las peticiones,
