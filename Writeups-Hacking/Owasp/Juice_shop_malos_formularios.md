@@ -45,6 +45,45 @@ En concreto en la seccion de red de antes, click derecho y "editar peticion y vo
 le damos a enviar, con esto ya tendremos el logro. Tambien se puede hacer de manera muy similar con la herramienta "burpsuite" que edita las peticiones antes de
 que lleguen.
 
+----------------------------------------------------------------------------------
+
+## Hacer un pedido a nombre de otro usaurio
+
+Cuando hacemos un pedido (le damos a un producto a "Add to basket") en el apartado de "Red" se produce una petición POST al endpoint 
+"/api/BasketItems" y un parámetro "Basket ID" que se refiere a nuestra cesta. 
+
+SI lo cambiamos nos da un forbidden en la seccion de errores, es decir ese parametro está santizado y no se puede cambiar, asi que tuve que estar mucho
+más tiempo para ver como bypasear todo:
+
+Gracias a la vulnerabilidad **"Parameter pollution"** podemos añadir otro "Basket Id" con otro valor despues
+```
+ {"ProductId":24,"BasketId":"3","quantity":1} -> {"ProductId":24,"BasketId":"3","quantity":1, "BasketId":"2"} 
+```
+El primero esta sanitizado, pero no lo hemos cambiado asi que sin problema, el segundo no, asi que se efectua y ademas cancela al primero
+asi que hacemos la peticion por otro usaurio y a nosotros no se nos añade nada,
+
+----------------------------------------------------------------------------------
+
+## Pedir el producto especial Navideño de 2014
+
+En el endpoint vulnerable a una sqli (ver inyecciones), vimos todos los productos, si hacemos un ctrl+F y buscamos por "Christmas" nos sale que el 
+producto aparentemente retirado de navidad de 2014 tiene el id de 10. Así que modificando la petición a "/api/BasketItems" con su "productId":
+```
+ {"ProductId":10,"BasketId":"3","quantity":1} 
+```
+Y siguiendo todos los pasos para hacer la compra obtendremos el logro.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
