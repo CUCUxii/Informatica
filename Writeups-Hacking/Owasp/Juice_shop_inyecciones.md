@@ -41,7 +41,8 @@ mal la contraseña.
 En el panel de busqueda de producto, probé una sqli, lo tipico de '  pero no funcionaba. Resulta que este ```"http://localhost:3000/#/search?q="```
 no es el endpoint verdadero al que le hace la petición...
 Cuando analizamos en "Red" la peticion (con ctrol derecho inspeccionar), vamos una petición GET a search?q= y le damos a abrir en una pestaña nueva 
-nos sale ```"http://localhost:3000/rest/products/search?q="```, siendo este vulnerable (por algo estaba escondido)
+nos sale ```"http://localhost:3000/rest/products/search?q="```, siendo este vulnerable (por algo estaba escondido). Si sigue sin salir, recarga la página hasta ver
+"/search?q"
 
 **INYECCION**
 ```
