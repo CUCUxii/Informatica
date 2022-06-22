@@ -82,9 +82,26 @@ producto aparentemente retirado de navidad de 2014 tiene el id de 10. Así que m
 ```
 Y siguiendo todos los pasos para hacer la compra obtendremos el logro.
 
+----------------------------------------------------------------------------------
 
+## Hacer una redirección saltandose la whitelist
 
+Con el "main.js", archivo que sacamos de ver el codigo fuente del iframe de la web. Si filtramos por ./redirect (lo hicimos para sacar una wallet oculta
+en otro reto)  ```console [cucuxii]:$ cat main.js | grep "redirect"``` Nos da varias url como por ejemplo esta
+```"./redirect?to=https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm"```. SI la ponemos nos redirige a esta cartera de la blockchain,
+esto es parámetro de redirección (esta se hace a nombre del servidor y no del cliente). Es decir con este endpoint podemos redirigir la web a donde
+queramos....
 
+O no. SI ponemos una redireccion a otra página (ejemplo wargames que es para practicar pentesting)
+```http://localhost:3000/redirect?to=https://overthewire.org/wargames``` Nos da un error de que no tenemos permiso para redirigir a un sitio externo.
+
+Las urls que nos habian salido tras lo de redirect (como la de la wallet) son una whitelist, es decir una lista de sitios a los que puedes redirigir sin 
+error. Todo lo que esté fuera de ahi estará prohibido. Pero hay alguna manera de saltarse eso como el **parameter pollution**, una vulnerabilidad
+que consiste en meter varios paráemtros iguales para que lea solo uno y cancele el restringido.
+```http://localhost:3000/redirect?to=https://overthewire.org/wargames?to=https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm```
+
+Aquí el sistema lee que hemos puesto la página de la wallet, por lo que no se queja, pero al haber dos parametros "to" solo lee uno (en este caso el 
+primero) que es el nuestro, por lo que nos redirige a dodne nos de la gana.
 
 
 
