@@ -33,6 +33,57 @@ Aprovechando el XSS del panel del búsquéda tambien podemos llegar ahí ```<ifr
 
 -----------------------------------------------------------------------------------------------
 
+## BYPASSEAR LA EXTENSIÓN PARA VER DATOS CONFIDENCIALES
+
+En esa ruta "/ftp" hay unos cuantos archivos, pero no todos se pueden ver, por ejemplo "package.json.bak" al intentar mirarlo da error diciendo que 
+no tiene una extensión permitida. Eso es porque el sistema le concatena otra extension (no de cual) para que el navegador no te deje visualizarlo.
+
+Pero eso se puede saltar. Hay una cosa llamada "null byte", que es %00 o %2500 (urlencodeando el % a %25) y si se pone al final la ruta que nos ponen 
+siempre se deja de leer y ya no da problemas. Si ademas de este "%2500" le metemos ".md" nos dira de descargar el archivo o abrirlo (no esque el
+archivo sea un md porque el null byte lo quita sino que el navegador lo entiende como tal)
+Asi que podemos bajar tres archivos
+```
+http://localhost:3000/ftp/eastere.gg%2500.md
+http://localhost:3000/ftp/package.json.bak%2500.md
+```
+Vale, sabemos que hace un null byte, pero ¿porque? En lenguaje de mas bajo nivel, cuando le pasadmos una string a una funcion, por ejemplo 
+en C ```printf("Hola Mundo\n")``` a nivel de binario (a parte del salto de linea) le mete un byte "\00" que le indica a la funcion que la string
+que le hemos pasado acaba ahí y que no siga leyendo.
+
+-----------------------------------------------------------------------------------------------
+
+## HUEVO DE PASCUA
+
+Un huevo de pascua o easter egg es un pequeño juego que tienen los programadores (normalmente de videojuegos) de esconder una referencia a algo que no 
+tiene nada que ver como chiste interno. Como si estamos en un juego de guerra y abrimos una puerta escondida y hay un muñeco de super mario porque si.
+
+En esta web el huevo de pascua es uno de esos archivos que pudimos ver con el truco del null byte, pero no esque sea el huevo en si, sino un mensaje
+con una cadena de base64 (se puede distinguir facilmente porque tiene un "==" al final y letras maysuculas/minusuclas/numeros)
+
+Esto en bash se decodifica así
+```console
+[cucuxii]:$ echo "L2d1ci9xcmlmL25lci9mYi9zaGFhbC9ndXJsL3V2cS9uYS9ybmZncmUvcnR0L2p2Z3V2YS9ndXIvcm5mZ3JlL3J0dA==" | base64 -d; echo
+/gur/qrif/ner/fb/shaal/gurl/uvq/na/rnfgre/rtt/jvguva/gur/rnfgre/rtt
+```
+Tenemos una serie de rutas (se ve por los "/") pero cuyos nombres no tienen sentido. Eso es que se le ha aplicado un ROT13, un algoritmo de criptograia
+muy muy básico en el que cada letra se corre 13 posiciones en el alfabeto (pero no afecta a simbolos especiales como los "/"). Esto se puede descrifrar 
+en alguna [web](https://rot13.com/). 
+Queda:
+```
+/the/devs/are/so/funny/they/hid/an/easter/egg/within/the/easter/egg
+```
+Haces una peticion a ```http://localhost:3000/the/devs/are/so/funny/they/hid/an/easter/egg/within/the/easter/egg``` y te sale un minijuego con un 
+planeta, eso es el easter egg.
+
+**EXTRA** -> ¿Que es base64?. Cando hablamos de base hablamos del sistema numerico, base 2 es 0 y 1 (dos caracteres), base 10 son nuestros numeros del 
+1 al 9 y base16 (hexadecimal) son numeros hasat el 8 y letras de la "a" a la "f" porque no hay mas numeros, siendo la "a" el numero 10 y la "f" el 16.
+Cuando mas alta sea una base menos caracteres habra que usar para representar un número (y por tanto una letra)
+
+> La "A" es 41 en hexadecimal y 65 en decimal, mientras que en binario es "01000001" 
+
+
+-----------------------------------------------------------------------------------------------
+
 ## ACCESO A RUTAS SECRETAS
 
 Le hice un *curl* a la web para ver el código fuente, la cosa esque tira de iframe, aun así, este nos revela ciertas rutas. Para no tener que leer 
