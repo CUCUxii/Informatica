@@ -103,10 +103,52 @@ que consiste en meter varios paráemtros iguales para que lea solo uno y cancele
 Aquí el sistema lee que hemos puesto la página de la wallet, por lo que no se queja, pero al haber dos parametros "to" solo lee uno (en este caso el 
 primero) que es el nuestro, por lo que nos redirige a dodne nos de la gana.
 
+----------------------------------------------------------------------------------
 
+## Subir un archivo no permitido
 
+En la seccion "complaint" te dejan subir un archivo, el asunto esque solo puede ser un pdf o zip. Si queremos subir por ejemplo un php no nos dejará.
+Subimos un pdf cualquiera, preferiblemente pequeño "Test.php". 
+Interceptemos con Burpsuite la petición (o editemos y repitamos una capturada por el navegador en Red).
 
+Si la web está muy vagamente programada (este es el caso), podremos editarlo y nos lo acepta, ademas lo intepreta si cambiamos:
 
+```filename="Test.php" Content-Type: aplication/php```
+
+----------------------------------------------------------------------------------
+
+## Usar una interfaz desactualizada.
+
+Si miramos en codigo fuente "main.js" y buscamos por "allowed" para que nos salga la lista de archivos permitidos
+```console
+[cucuxii]:$ cat main.js | grep -B3 -n "allowed"                                                                                                           
+2881:  url: "./file-upload"
+2882:  #nada interesante
+2883:  allowedMimeType: ["application/pdf", "application/xml", "text/xml", "application/zip", "application/x-zip-compressed", "multipart/x-zip"]
+```
+
+Sale tambien "xml", pero solo nos deja seleccionar pdf y zip, asi que hay que subir uno de estos, lo que sea... 
+modificar la peticion con el burpsuite y cambiar lo correspondiente para que nos den el logro;
+En la parte del cuerpo, poner el xml, en este ejemplo "star_wars.xml".
+
+```
+Content-Disposition: form-data; name="file"; filename="star_wars.xml"
+Content-Type: application/xml
+
+<!DOCTYPE foo>
+<episode_1>
+        <year>1999</year>
+        <name>The phantom menace</name>
+</episode_1>
+<episode_2>
+    <year>2002</year>
+    <name>Attack of the Clones</name>
+</episode_2>
+<episode_3>
+    <year>2005</year>
+    <name>Revenge of the Sith</name>
+</episode_3>
+```
 
 
 
