@@ -150,9 +150,20 @@ Content-Type: application/xml
 </episode_3>
 ```
 
+----------------------------------------------------------------------------------
 
+## Obten las credenciales de otra persona sin inyecciones sql
 
+Cuando pagas una serie de productos (completas todo el proceso, en este caso con la cuenta de "Bender"), hay una peticion tal que asi
+```http://localhost:3000/rest/track-order/130f-3e9c4157d07fe339```
+```json
+{"status":"success","data":[{"promotionalAmount":"0","paymentId":"6","addressId":"6","orderId":"130f-3e9c4157d07fe339","delivered":false,"email":"b*nd*r@j**c*-sh.*p","totalPrice":5005.98,"products":[{"quantity":1,"id":4,"name":"Raspberry Juice (1000ml)","price":4.99,"total":4.99,"bonus":0},{"quantity":1,"id":42,"name":"Best Juice Shop Salesman Artwork","price":5000,"total":5000,"bonus":500}],"bonus":500,"deliveryPrice":0.99,"eta":"1","_id":"m9nCHN65dCFNLcXez"}]}
+```
+Aquí lo que interesa es el campo del email -> "email":"b*nd*r@j**c*-sh.*p" 
+Los "*" se han puesto para susituir caracteres y que no haya una filtracion de información personal, eliminando un trozo de esta.
 
+La vulnerabilidad reside en registrar otro usaurio cuyo email tambien coincida con este patron ```"b*nd*r@j**c*-sh.*p"```
+como "bandor@juice-sh.op". Una vez eso, en la seccion de "Privacidad y seguridad" dale a "Request Data Export" para que te de todo sus datos.
 
 
 
