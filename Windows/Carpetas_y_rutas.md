@@ -28,3 +28,11 @@ Reportes de crasheos e informacion del sistema, en teoria porque siempre suele e
      * C:\Windows\System32\control.exe -> pandel de control
      * C:\Windows\System32\config\ -> carpeta donde está el registro de windows (\sam \security \system \software)
  	
+## **C:\inetput** → ruta para los IIS o servidores web Windows, equivale al var/www/html de linux
+ - **C:\inetpub\wwwroot** → 
+      * C:\inetpub\wwwroot\web.config -> ruta con las credenciales/direcciones web del servidor
+
+
+
+
+
