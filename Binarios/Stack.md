@@ -248,6 +248,8 @@ Program received signal SIGSEGV, Segmentation fault. Cannot access memory at add
 (gdb) x/16x $esp
 0xbffff650:	0xbffff660	0xb7ec6165	0xbffff668	0xb7eada75
 0xbffff660:	0x41414141	0x41414141	0x41414141	0x41414141 -> La entrada de "A" empeiza en 0xbffff660
+(gdb) x/x $ebp+4
+0xbffff6ac:     0x41414141  -> 4 bytes despues del ebp esta el Eip 
 (gdb) p 0xbffff6ac - 0xbffff660
 $4 = 76 -> La diferencia entre el cominezo de las AAAA y el eip es de 76.
 ```
