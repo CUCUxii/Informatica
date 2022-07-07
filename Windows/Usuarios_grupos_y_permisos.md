@@ -14,7 +14,10 @@ Global Group memberships     *Domain Users         *Development
 ```
 
 Los utlimos datos se refieren a los grupos.
+
 ### Tipos de grupos
 
+Con el comando ```net user nombre``` se puede buscar a un usuario y ver sus grupos.
 
+ - Remote management Users -> se pueden concetar por medio del servicio Winrm proporcionando su contraseña.
 
