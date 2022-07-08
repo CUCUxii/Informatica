@@ -164,3 +164,17 @@ C:\Users\cucuxii> tasklist /fi "pid eq 13988"
 chrome.exe                   13988 Console                    1    43.372 KB
 ```
 Pues era el Chrome.
+
+--------------------------------------------------------------------------------
+
+## Usuarios
+
+- Crear usuario
+```cmd
+C:\Users\cucuxii> net user cucuxii password123 /add             # crear el usaurio cucuxii con la contraseña password123
+C:\Users\cucuxii> net localgroup Administrators cucuxii /add    # añadirle al grupo Administradores
+```
+
+
+
+
