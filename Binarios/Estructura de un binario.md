@@ -4,6 +4,7 @@
  - [Global offset table](#global-offset-table)
  - [Procedure Linkage Table](#procedure-linkage-table)
  - [La pila](#la-pila)
+ - [El heap](#el-heap)
 
 
 ----------------------------------------------------------------
@@ -222,13 +223,68 @@ La pila de vuln empieza en  0xbffff66c (0xbffff690 - 0x18) O sea es 18 direccion
 0x8048435 <main+25>:	leave
 ```
 
-Cuando ejecute **leave**: eliminara el stack frame de vuln para varaibles, restaurara el ebp (pop ebp ->  0xbffff6a8) y volvera a la siguiente insutruccion de main (pop eip -> 0x08048435).
+Cuando ejecute **leave**: eliminara el stack frame de vuln para varaibles, restaurara el ebp (pop ebp ->  0xbffff6a8) y volvera a la siguiente instruccion de main (pop eip -> 0x08048435).
 Ahora main vuelve con su stack original (0xbffff690 a 0xbffff6a8 (16)) Pero como la siguiente insutrccion de main es otro leave, adios al stack de main tambien.
 
+----------------------------------------------------------------
 
+# El heap
 
+La pila es la memoria principal del programa, pero tiene un tamaño bastante reducido, cuando hay que meter datos en masa, se utiliza otra memoria mas 
+grande llamada **heap**. El heap se divide en trozos o *chunks* de memoria. 
+Vamos a ver una implementación muy simplificada del heap.
 
+La función que trabaja con el heap es  **malloc**, tengamos en cuenta el siguiente código en C:
+```c
+int main(int argc, char **argv){
+  struct animal *i1, *i2, *i3;   // Tres objetos, aunque solo usaremos 2
 
+  perro = malloc(sizeof(struct animal)); // Objeto basado en la estrcutura "animal"
+  perro->patas = 4;                      // Atributo 1: numero de patas
+  perro->nombre = malloc(8);             // Atributo 2: nombre
+
+  canario = malloc(sizeof(struct animal)); // Objeto basado en la estrcutura "animal"
+  canario->patas = 2;                    // Atributo 1: numero de patas
+  canario->nombre = malloc(8);           // Atributo 2: nombre
+
+  strcpy(perro->nombre, argv[1]);        // El nombre de estos animales, se lo damos nosotros con cada argumento
+  strcpy(canario->nombre, argv[2]);}
+```
+Hemos llamado cuatro veces a la función malloc, o sea, hemos pedido cuatro chunks de memoria. Dos para los animales y otros dos para sus nombres.
+
+Abrimos este mismo programa en gbd:
+
+```console
+# Vemos el desensamblado "(gdb) disas main". Vamos a hacer un breakpoint justo despues de la llamada a strcpy
+
+0x08048555 <main+156>:  call   0x804838c <strcpy@plt>
+0x0804855a <main+161>:  mov    [esp0],x804864b
+(gdb) b *0x0804855a
+(gdb) run AAAABBBB BBBBCCCC
+(gdb) info proc map
+(gdb) x/64wx 0x804a000    
+
+[El heap]
+                [ Encabezado (8 bytes)   ]      [   Cuerpo   (8 bytes)    ]  
+0x804a000:      0x00000000      0x00000011      0x00000004      0x0804a018     
+0x804a010:      0x00000000      0x00000011      0x41414141      0x42424242
+0x804a000:      0x00000000      0x00000011      0x00000002      0x0804a038
+0x804a030:      0x00000000      0x00000011      0x43434343      0x44444444
+0x804a040:      0x00000000      0x00020fc1      0x00000000      0x00000000
+
+```
+Como hemos llamado al malloc 4 veces, tenemos estos cuatro chunks (0x804a000, 0x804a010, 0x804a000, 0x804a030)
+La función malloc nos da una direccion de memoria de un chunk libre de ese tamaño pedido, pero del cuerpo (donde va aescribir)  
+
+Cada chunk se compone de dos partes:
+ - El encabezado: suele tener información con sobre el chunk en sí
+    - El tamaño -> 0x00000011  -> EL tamaño es 0x10 (o sea 16bits, los 8 bytes de malloc(8)) + 1 (solo si está ocupado). Numero impar = chunk lleno
+ - El cuerpo: es la propia información que guarda el chunk, los datos. en este caso 8 bytes, 4 bytes por atributo (patas y nombre). 
+ 
+Como en la parte del nombre ha llamado al malloc otra vez, en esos 4 bytes está la direccion del cuerpo del chunk donde esta escrito el nombre
+(0x0804a018). El nombre del perro es "AAAABBBB" (0x41414141      0x42424242), lo mismo pasa con el canario.
+
+> el espacio restante del heap, es como un chunk gigante (0x804a040) y el numero es su tamaño (0x00020fc1)
 
 
 
