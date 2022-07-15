@@ -64,12 +64,9 @@ Es decir, salta a la dirección  "0x80483cc" que está en la tabla .plt (siguien
 Instrucciones de main entre ellas, saltar a vuln()
 0x0804851a <main+6>:	call   0x80484d2 <vuln>
 (gdb) disas vuln
-Insutrcciones para crear el stack frame de vuln, alguna varaible y tomar input de usuario para meterlo en un buffer de 520 bytes.
-0x080484fa <vuln+40>:	lea    eax,[ebp-0x208]
-0x08048500 <vuln+46>:	mov    DWORD PTR [esp],eax
+...
 0x08048503 <vuln+49>:	call   0x80483cc <printf@plt>
-Esta funcion es en la que nos vamos a centrar, imprimir dicho buffer
-Mas instrucciones que ahora no vienen a cuento...
+...
 0x0804850f <vuln+61>:	call   0x80483ec <exit@plt>
 
 (gdb) disas 0x80483cc -> printf@plt
@@ -91,14 +88,15 @@ Mas instrucciones que ahora no vienen a cuento...
 EL binario, que todavía no sabe donde está la direccion real de la funcion de libc, salta a un sitio que si conoce, la tabla .plt (Function trampoline)
 Esta siempre tiene tres insutrcciones por funcion.
 
-1. *La primera insutruccion* alberga una direccion de memoria, de la siguiente función a ejecutar (puntero de funcion)
+1. *La primera instruccion* alberga una direccion de memoria, de la siguiente función a ejecutar (puntero de funcion)
  Si quisieramos que ejecutara otra funcion, tendríamos que cambiar el valor que guarda dicha dirección
 - Si es la primera vez que se ejecuta, la direccion de la insturuccíon que esta guardada te vuelve a mandar a la PLT (\<exit@plt+6>).
 - Si es la sgunda, ya no saltara a \<exit@plt+6> sino que te mandará a la entrada de la GOT en la que ya estará escrita su direccion correspondiente.
 
-2. *La segunda insutrucción* (plt+6) escribe un valor en la pila. Es el argumento que se le pasara a ld.so, como un indice de funciones, (ej: en printf es 0x20 y en exit 0x30) Este se basará en este índice a la hora de buscar la función a escribir en GOT.
+2. *La segunda instrucción* (plt+6) escribe un valor en la pila. Es el argumento que se le pasara a ld.so, como un indice de funciones, (ej: en printf es 0x20 y en exit 0x30) Este se basará en este índice a la hora de buscar la función a escribir en GOT.
 3. *La tercera instrucción* siempre es la misma, salta al inicio de la seccion "plt", este ejecuta el ld.so con el indice de antes. (Buscar la direcion, escribirla en la GOT y saltar a la primera insutrccion de exit@plt (o prinf@plt) que como ya tira de una GOT con la direccion buena, funciona)
 
+Resumen:
 > Primera vez: plt -> got vacio -> plt+6 y +12 (perdirle al loader que busque la direccion) -> got con la direccion. -> funcion  
 > Segunda vez: plt -> got con la direccion -> funcion
 
@@ -109,9 +107,7 @@ Vamos a correr el programa:
 Break antes de que salga del programa
 (gdb) b *0x0804850f  -> llamada a exit()
 (gdb) r
-Starting program: /opt/protostar/bin/format4 
-AAA
-AAA
+AAA   # printf("AAA")
 Breakpoint alcanzado!
 ```
 
@@ -124,8 +120,7 @@ Ahora veremos el prinf (que como el programa ya esta en exit lo ha pasado de sob
 (gdb) x/x 0xb7eddf90
 0xb7eddf90 <__printf>:	0x53e58955 -> Código de la funcion prtinf, es decir la GOT ya  tiene bien
 ```
-Pero exit al haber hecho el breakpoint antes de que se ejecute (no está su dicha direccion escrita en la GOT todavía)
-
+Pero exit al haber hecho el breakpoint antes de que se ejecute (no está su dicha direccion escrita en la GOT todavía):
 ```console
 (gdb) disas 0x80483ec  -> Primera entrada de la plt de exit
 Dump of assembler code for function exit@plt:
@@ -133,8 +128,8 @@ Dump of assembler code for function exit@plt:
 0x080483f2 <exit@plt+6>:	push   0x30
 0x080483f7 <exit@plt+11>:	jmp    0x804837c
 End of assembler dump.
-(gdb) x/x 0x8049724 -> ¿Adónde nos mandará el puntero esta vez?
-0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x080483f2 -> Curiosamente como no existe todavía la direccion en la GOT nos manda otra vez a plt.
+(gdb) x/x 0x8049724  # ¿Adónde nos mandará el puntero esta vez?
+0x8049724 <_GLOBAL_OFFSET_TABLE_+36>:	0x080483f2 # Curiosamente como no existe todavía la direccion en la GOT nos manda otra vez a plt.
 (gdb) x/2i 0x80483f2
 0x80483f2 <exit@plt+6>:	push   0x30
 0x80483f7 <exit@plt+11>:	jmp    0x804837c -> Salta a esta dirección...
