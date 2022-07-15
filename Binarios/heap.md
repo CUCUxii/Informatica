@@ -71,9 +71,12 @@ Program received signal SIGSEGV, Segmentation fault.
 Program received signal SIGSEGV, Segmentation fault.
 *__GI_strcpy (dest=0x46464646 <Address 0x46464646 out of bounds>, src=0xbffff8ad "0000111122223333") at strcpy.c:40
 ```
-El segundo argumento por tanto es ¿que escribir? Y aquí es como podemos abusar de la [Global Offset Table](https://github.com/CUCUxii/Informatica/blob/main/Binarios/Format_strings.md#sobreescribir-la-got-para-saltar-a-la-funcion-que-queramos)
-> tabla donde estan las direcciones de las funciones, las escribe una funcion del sistema, pero tambien la podemos escribir nosotros con la funcion que
-> nos de la gana ejecutar en lugar de la funcion buena.
+El segundo argumento por tanto es ¿que escribir? Y aquí es como podemos abusar de la [Global Offset Table](https://github.com/CUCUxii/Informatica/blob/main/Binarios/Estructura%20de%20un%20binario.md#global-offset-table)
+> tabla donde estan las direcciones de las funciones, las escribe una funcion del sistema,
+
+Podemos escribir nosotros la GOT con direccion de la funcion que nos de la gana ejecutar en lugar de la funcion buena. En este caso funcion winner
+en vez de puts, el sistema se creera que la direccion que hay escrita es la de puts, no llamara a la funcion que escribe la de puts original y saltará
+ahí.
 
 ```console
 [cucuxii]:$ objdump -D ./heap1
