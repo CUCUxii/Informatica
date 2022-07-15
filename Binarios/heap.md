@@ -1,8 +1,9 @@
+# Heap buffer overflow
 
 [heap1](#https://exploit.education/protostar/heap-one/)
 
 
-Para entender esto es muy importante ver como funciona el [heap]()
+Para entender esto es muy importante ver como funciona el [heap](https://github.com/CUCUxii/Informatica/blob/main/Binarios/Estructura%20de%20un%20binario.md#el-heap)
 
 ```console
 (gdb) disas main
@@ -70,7 +71,7 @@ Program received signal SIGSEGV, Segmentation fault.
 Program received signal SIGSEGV, Segmentation fault.
 *__GI_strcpy (dest=0x46464646 <Address 0x46464646 out of bounds>, src=0xbffff8ad "0000111122223333") at strcpy.c:40
 ```
-El segundo argumento por tanto es ¿que escribir? Y aquí es como podemos abusar de la Global Offset Table;
+El segundo argumento por tanto es ¿que escribir? Y aquí es como podemos abusar de la [Global Offset Table](https://github.com/CUCUxii/Informatica/blob/main/Binarios/Format_strings.md#sobreescribir-la-got-para-saltar-a-la-funcion-que-queramos)
 > tabla donde estan las direcciones de las funciones, las escribe una funcion del sistema, pero tambien la podemos escribir nosotros con la funcion que
 > nos de la gana ejecutar en lugar de la funcion buena.
 
