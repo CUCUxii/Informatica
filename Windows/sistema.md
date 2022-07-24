@@ -22,27 +22,7 @@ Con el comando ```net user nombre``` se puede buscar a un usuario y ver sus grup
  - Remote management Users -> se pueden concetar por medio del servicio Winrm proporcionando su contraseña.
  - Administrators -> Administradores
 
-----------------------------------------------------------------------------------------
 
-# Registro
-
-El registro de windows es una base de datos con archivos de configuracion (el equivalente en Linux de /etc y archivos *.conf*)
-El registro se guarda en System32\config. El registro se organiza por rutas, empezando por la clave principal
-
-Clave principal:
-- HKLM → HKEY_LOCAL_MACHINE → configuraciones del sistema local.
-- HKU → HKEY_USERS → configuraciones especificas de cada usaurio.
-- HKCU → HKEY_CURRENT_USER → configuraciones del usuario actual.
-
-Segunda clave: → HKLM\segunda_clave
-- \SOFTWARE → ajustes de software y de Windows
- 
-Desde consola se puede editar con el programa preinstalado "regedit.exe" 
-
-/v -> Que clave quieres modificar
-/t -> que tipo de dato vas a introducir. REG_DWORD es para numeros (ejemplo 1=activado 0=desactivado)
-/d -> dato
-/f -> force, añade la clave de registro sin preguntar
 
 
 
