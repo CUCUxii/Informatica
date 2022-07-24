@@ -1,5 +1,5 @@
 
-### Tipos de usuarios wn Windows
+### Tipos de usuarios en Windows
  - **Administrator** -> El administrador, equivalente al root en linux, superusuario, con máximos privilegios.
  - **Public** -> El usuario que adopta cualquier persona que se conecte (ej, para bajar cosas por smb)
 
@@ -20,4 +20,5 @@ Los utlimos datos se refieren a los grupos.
 Con el comando ```net user nombre``` se puede buscar a un usuario y ver sus grupos.
 
  - Remote management Users -> se pueden concetar por medio del servicio Winrm proporcionando su contraseña.
+ - Administrators -> Administradores
 
