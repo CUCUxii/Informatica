@@ -176,7 +176,7 @@ PS C:\users\century13\desktop> (Get-ChildItem | Get-Content | Measure-Object -Wo
 ```
 -----------------------
 
-## Nivel 13
+## Nivel 14
 
 Este es el ultimo reto. Nos dan un archivo con muchas palabras y hay que contar todos los "polo"s que salgan. El split '' nos lo parte en lineas y 
 sls (Select-String) nos filtra polos. El regex es para filtrar palabras que contengan *polo* como *carpology* diciendo que quiero filtrar todas las 
