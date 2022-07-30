@@ -121,13 +121,9 @@ Credenciales siguiente nivel -> century9:696
 ## Nivel 9
 
 En este nivel te dan un archivo de texto con palabras random y te piden que cojas la numero 161. Como se separan por espacios, hay que hacer que se 
-separen por saltos de linea para aplicar el conteo. Eso se hace con el metodo **.Replace**
+separen por saltos de linea para aplicar el conteo. Eso se hace con "split '' "
 ```powershell
-(Get-Content .\Word_File.txt).Replace(" ","`r`n") | Select -first 161 
-``` 
-Por alguna razon este comando no me funcionó (salia toda la lista sin mas) asi que tuve que traerme la lista a mi equipo linux.
-```console
-[cucuxii]:$ cat lista.txt | head -n 161 | tail -n 1 # -> pierid
+PS C:\users\century9\desktop> (Get-Content .\Word_File.txt) -split ' ' | Select -First 161 
 ``` 
 Credenciales siguiente nivel -> century10:pierid
 
@@ -159,11 +155,35 @@ A parte de este salian mas, pero este era el que mas llamaba la atencion y el ul
 
 Credenciales siguiente nivel -> century12:secret_sauce
 
+-----------------------
 
+## Nivel 12
 
+Nos piden la descripción del ordenador que es Controlador de Dominio (ordenador que administra un grupo empresarial) y el nombre del archivo del
+escritorio.
+```powershell
+PS C:\users\century12\desktop> (Get-ChildItem).Name #  -> 9 _things
+PS C:\users\century12\desktop> (Get-ADDomainController).Name  # -> UTW
+PS C:\users\century12\desktop> Get-ADComputer UTW -Properties Description # -> i_authenticate_things
+``` 
+-----------------------
 
+## Nivel 13
 
+Nos dan un archivo de texto que contiene muchas palabras, hay que contarlas. Para eso el **Meausre_Object** pero con otro parámetro (si no cuenta lineas)
+```powershell
+PS C:\users\century13\desktop> (Get-ChildItem | Get-Content | Measure-Object -Word).Words  # -> 755           
+```
+-----------------------
 
+## Nivel 13
 
+Este es el ultimo reto. Nos dan un archivo con muchas palabras y hay que contar todos los "polo"s que salgan. El split '' nos lo parte en lineas y 
+sls (Select-String) nos filtra polos. El regex es para filtrar palabras que contengan *polo* como *carpology* diciendo que quiero filtrar todas las 
+lineas que empiezen y acaben por *polo*
+
+```powershell
+PS C:\users\century14\desktop> ((Get-Content .\countpolos) -split ' ' | sls "^polo$").Count  # -> 153
+```
 
 
